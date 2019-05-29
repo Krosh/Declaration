@@ -1,0 +1,43 @@
+{
+  "name": "nalogia-crm",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@types/jest": "^24.0.13",
+    "@types/react": "16.8.1",
+    "@types/react-dom": "16.0.11",
+    "@types/react-redux": "^7.0.8",
+    "@types/recompose": "^0.30.5",
+    "@types/redux-form": "^8.1.1",
+    "date-fns": "^1.30.1",
+    "joi": "^14.3.1",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "react-scripts": "2.1.3",
+    "react-select": "^2.4.3",
+    "typescript": "3.3.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "@types/joi": "^14.3.3",
+    "@types/query-string": "^6.2.0",
+    "@types/react-select": "^2.0.17",
+    "jest": "^24.8.0",
+    "prettier": "1.16.4",
+    "ts-jest": "^24.0.2"
+  }
+}
