@@ -28,5 +28,5 @@
     "url": "https://github.com/Krosh/Declaration/issues"
   },
   "homepage": "https://github.com/Krosh/Declaration#readme",
-  "prepublish": "tsc && cp -r ./dist/* . && rm -rf ./lib"
+  "postinstall": "tsc && cp -r ./dist/* . && rm -rf ./lib"
 }
