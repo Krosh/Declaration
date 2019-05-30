@@ -28,6 +28,6 @@
     "url": "https://github.com/Krosh/Declaration/issues"
   },
   "homepage": "https://github.com/Krosh/Declaration#readme",
-  "preinstall": "npm install && tsc && cp -r ./dist/* . && rm -rf ./lib",
+  "preinstall": "npm ci && tsc && cp -r ./dist/* . && rm -rf ./lib",
   "postinstall": "git clean -fd"
 }
