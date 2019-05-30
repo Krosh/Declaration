@@ -1,5 +1,5 @@
-import { Question, ShowInputsAction } from '../types/declaration'
-import { getVisibleQuestions } from './logic'
+import { Question, ShowInputsAction } from './types/declaration'
+import { getVisibleQuestions } from './getVisibleQuestions'
 
 const getValue = (obj: any) => (code: string, id: number) =>
   obj[code] ? obj[code] : ''
@@ -20,7 +20,12 @@ test('basic', () => {
     },
   ]
 
-  const filteredQuestions = getVisibleQuestions(mock, getValue({}), 0)
+  const filteredQuestions = getVisibleQuestions(
+    mock,
+    getValue({}),
+    () => false,
+    0
+  )
   expect(filteredQuestions).toHaveLength(2)
   expect(filteredQuestions[0].code).toBe('1')
   expect(filteredQuestions[1].code).toBe('2')
@@ -71,6 +76,8 @@ test('simple select with action', () => {
   const filteredQuestionsWithA1 = getVisibleQuestions(
     mock,
     getValue({ q: 'a1' }),
+    () => false,
+
     0
   )
   expect(filteredQuestionsWithA1).toHaveLength(2)
@@ -80,6 +87,8 @@ test('simple select with action', () => {
   const filteredQuestionsWithA2 = getVisibleQuestions(
     mock,
     getValue({ q: 'a2' }),
+    () => false,
+
     0
   )
   expect(filteredQuestionsWithA2).toHaveLength(2)
@@ -100,7 +109,7 @@ test('complex select with related questions', () => {
           code: 'a1',
           hint: '',
           action: {
-            codes: ['q2'],
+            codes: ['q2', '2', '4'],
             type: 'show_inputs',
           } as ShowInputsAction,
         },
@@ -161,13 +170,19 @@ test('complex select with related questions', () => {
     },
   ]
 
-  const filteredWithoutAnswers = getVisibleQuestions(mock, getValue({}), 0)
+  const filteredWithoutAnswers = getVisibleQuestions(
+    mock,
+    getValue({}),
+    () => false,
+    0
+  )
   expect(filteredWithoutAnswers).toHaveLength(1)
   expect(filteredWithoutAnswers[0].code).toBe('q1')
 
   const filteredQuestionsWithA1 = getVisibleQuestions(
     mock,
     getValue({ q1: 'a1' }),
+    () => false,
     0
   )
   expect(filteredQuestionsWithA1).toHaveLength(2)
@@ -177,11 +192,24 @@ test('complex select with related questions', () => {
   const filteredQuestionsWith3 = getVisibleQuestions(
     mock,
     getValue({ q1: 'a2' }),
+    () => false,
+
     0
   )
   expect(filteredQuestionsWith3).toHaveLength(2)
   expect(filteredQuestionsWith3[0].code).toBe('q1')
   expect(filteredQuestionsWith3[1].code).toBe('3')
+
+  const filteredQuestionsWith3ButWithout1 = getVisibleQuestions(
+    mock,
+    getValue({ q1: 'a2', q2: 'a3' }),
+    () => false,
+
+    0
+  )
+  expect(filteredQuestionsWith3ButWithout1).toHaveLength(2)
+  expect(filteredQuestionsWith3ButWithout1[0].code).toBe('q1')
+  expect(filteredQuestionsWith3ButWithout1[1].code).toBe('3')
 
   const filteredQuestionsWithA1AndA3 = getVisibleQuestions(
     mock,
@@ -189,6 +217,8 @@ test('complex select with related questions', () => {
       q1: 'a1',
       q2: 'a3',
     }),
+    () => false,
+
     0
   )
   expect(filteredQuestionsWithA1AndA3).toHaveLength(3)
@@ -202,6 +232,8 @@ test('complex select with related questions', () => {
       q1: 'a1',
       q2: 'a4',
     }),
+    () => false,
+
     0
   )
   expect(filteredQuestionsWithA1AndA4).toHaveLength(3)

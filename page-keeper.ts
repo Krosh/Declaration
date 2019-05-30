@@ -1,5 +1,5 @@
-import { Values, FullyLoadedDeclaration, Page } from '../types/declaration'
-import { getHidedQuestionCodes } from './logic'
+import { Values, FullyLoadedDeclaration, Page } from './types/declaration'
+import { getHidedElementCodes } from './getHidedElementCodes'
 
 export default class PageKeeper {
   tabs: string[]
@@ -46,14 +46,14 @@ export default class PageKeeper {
     questionCode: string,
     getValue: (code: string) => string
   ) => {
-    // TODO:: проверить, нужно ли пересчитывать табы в зависимости от изменивешгося вопроса
+    // TODO:: проверить, нужно ли пересчитывать табы в зависимости от изменившегося вопроса
     this.hidedPagesCodes = this.getHidedPagesCodes(getValue)
     this.visiblePages = this.getVisiblePages()
   }
 
   getHidedPagesCodes = (getValue: (code: string) => string) => {
     return this.pages.flatMap(page =>
-      getHidedQuestionCodes(page.questions, getValue, 'show_pages')
+      getHidedElementCodes(page.questions, getValue, () => false, 'show_pages')
     )
   }
 }

@@ -23,6 +23,7 @@ interface BaseQuestion {
   name: string
   hint: string
   code: string
+  parent_code?: string | null
 }
 
 export interface TextQuestion extends BaseQuestion {
@@ -94,7 +95,7 @@ export interface MoneyIntegerQuestion extends BaseQuestion {
   type: 'money_integer'
 }
 
-type SingleQuestion =
+export type SingleQuestion =
   | TextQuestion
   | AutocompleteQuestion
   | CurrencyAutocompleteQuestion
