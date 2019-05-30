@@ -4,10 +4,10 @@ import {
   Page,
   SingleQuestion,
   Question,
-} from './types/declaration'
+} from '../types/declaration'
 import ValuesKeeper from './values-keeper'
 import PageKeeper from './page-keeper'
-import { MultipleQuestion } from './types/declaration'
+import { MultipleQuestion } from '../types/declaration'
 import { canHasActionsOnChild } from './getHidedElementCodes'
 import { VisibilityKeeper } from './visibility-keeper'
 import ValidateKeeper from './validate-keeper'

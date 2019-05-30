@@ -3,7 +3,7 @@ import {
   RadioQuestion,
   SelectQuestion,
   CheckboxQuestion,
-} from './types/declaration'
+} from '../types/declaration'
 
 export function canHasActionsOnChild(
   question: Question

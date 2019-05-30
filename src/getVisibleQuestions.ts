@@ -1,4 +1,4 @@
-import { Question } from './types/declaration'
+import { Question } from '../types/declaration'
 import { getHidedElementCodes } from './getHidedElementCodes'
 
 const getActionedQuestions = (action: string) => (

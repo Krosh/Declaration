@@ -1,4 +1,4 @@
-import { Question, ShowInputsAction } from './types/declaration'
+import { Question, ShowInputsAction } from '../types/declaration'
 import { getVisibleQuestions } from './getVisibleQuestions'
 import { getHidedElementCodes } from './getHidedElementCodes'
 

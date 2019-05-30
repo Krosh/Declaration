@@ -1,4 +1,4 @@
-import { Page, Question } from './types/declaration'
+import { Page, Question } from '../types/declaration'
 import ValuesKeeper from './values-keeper'
 
 export default class TouchKeeper {

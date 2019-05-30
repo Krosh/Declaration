@@ -1,5 +1,5 @@
 import ValuesKeeper from './values-keeper'
-import { Question, Page } from './types/declaration'
+import { Question, Page } from '../types/declaration'
 import TouchKeeper from './touch-keeper'
 import { VisibilityKeeper } from './visibility-keeper'
 
