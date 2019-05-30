@@ -1,5 +1,5 @@
 {
-  "name": "nalogia-declaration",
+  "name": "declaration",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
@@ -28,6 +28,6 @@
     "url": "https://github.com/Krosh/Declaration/issues"
   },
   "homepage": "https://github.com/Krosh/Declaration#readme",
-  "prepublishOnly": "npm install && tsc && cp -r ./dist/* . && rm -rf ./lib",
-  "postpublish": "git clean -fd"
+  "preinstall": "npm install && tsc && cp -r ./dist/* . && rm -rf ./lib",
+  "postinstall": "git clean -fd"
 }
