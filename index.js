@@ -3,12 +3,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var values_keeper_1 = __importDefault(require("./src/values-keeper"));
-var page_keeper_1 = __importDefault(require("./src/page-keeper"));
-var getHidedElementCodes_1 = require("./src/getHidedElementCodes");
-var visibility_keeper_1 = require("./src/visibility-keeper");
-var validate_keeper_1 = __importDefault(require("./src/validate-keeper"));
-var touch_keeper_1 = __importDefault(require("./src/touch-keeper"));
+var values_keeper_1 = __importDefault(require("./values-keeper"));
+var page_keeper_1 = __importDefault(require("./page-keeper"));
+var getHidedElementCodes_1 = require("./getHidedElementCodes");
+var visibility_keeper_1 = require("./visibility-keeper");
+var validate_keeper_1 = __importDefault(require("./validate-keeper"));
+var touch_keeper_1 = __importDefault(require("./touch-keeper"));
 var Declaration = /** @class */ (function () {
     function Declaration(schema, initialValues, dataProvider) {
         var _this = this;

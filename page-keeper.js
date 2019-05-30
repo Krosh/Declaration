@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var getHidedElementCodes_1 = require("./src/getHidedElementCodes");
+var getHidedElementCodes_1 = require("./getHidedElementCodes");
 var PageKeeper = /** @class */ (function () {
     function PageKeeper(schema, getValue) {
         var _this = this;

@@ -1,5 +1,5 @@
-import { Question } from './types/declaration';
-import ValuesKeeper from './src/values-keeper';
+import { Question } from '../types/declaration';
+import ValuesKeeper from './values-keeper';
 export declare class VisibilityKeeper {
     private cache;
     private valuesKeeper;

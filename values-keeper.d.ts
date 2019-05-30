@@ -1,5 +1,5 @@
-import { Values, Question } from './types/declaration';
-import { DataProvider } from './src';
+import { Values, Question } from '../types/declaration';
+import { DataProvider } from '.';
 export default class ValuesKeeper {
     private values;
     private dataProvider;

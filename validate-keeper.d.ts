@@ -1,7 +1,7 @@
-import ValuesKeeper from './src/values-keeper';
-import { Question, Page } from './types/declaration';
-import TouchKeeper from './src/touch-keeper';
-import { VisibilityKeeper } from './src/visibility-keeper';
+import ValuesKeeper from './values-keeper';
+import { Question, Page } from '../types/declaration';
+import TouchKeeper from './touch-keeper';
+import { VisibilityKeeper } from './visibility-keeper';
 export default class ValidateKeeper {
     private valuesKeeper;
     private touchKeeper;

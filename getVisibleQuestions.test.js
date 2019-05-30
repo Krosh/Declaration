@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var getVisibleQuestions_1 = require("./src/getVisibleQuestions");
+var getVisibleQuestions_1 = require("./getVisibleQuestions");
 var getValue = function (obj) { return function (code, id) {
     return obj[code] ? obj[code] : '';
 }; };

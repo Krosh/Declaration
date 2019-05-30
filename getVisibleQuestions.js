@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var getHidedElementCodes_1 = require("./src/getHidedElementCodes");
+var getHidedElementCodes_1 = require("./getHidedElementCodes");
 var getActionedQuestions = function (action) { return function (questions, getValue, getCurrencyNeedHideValue, id) {
     var myGetValue = function (code) { return getValue(code, id); };
     var myGetNeedHide = function (question) {

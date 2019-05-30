@@ -1,4 +1,4 @@
-import { FullyLoadedDeclaration, Page } from './types/declaration';
+import { FullyLoadedDeclaration, Page } from '../types/declaration';
 export default class PageKeeper {
     tabs: string[];
     pages: Page[];

@@ -1,5 +1,5 @@
-import { Page } from './types/declaration';
-import ValuesKeeper from './src/values-keeper';
+import { Page } from '../types/declaration';
+import ValuesKeeper from './values-keeper';
 export default class TouchKeeper {
     private values;
     valuesKeeper: ValuesKeeper;
