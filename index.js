@@ -150,6 +150,7 @@ var Declaration = /** @class */ (function () {
         this.getActivePage = this.pagesKeeper.getActivePage;
         this.getVisibleTabs = function () { return _this.pagesKeeper.tabs; };
         this.getVisiblePages = function () { return _this.pagesKeeper.visiblePages; };
+        this.getMultipleIds = this.valuesKeeper.getMultipleIds;
         this.validatePage = this.validateKeeper.validatePage;
     }
     return Declaration;

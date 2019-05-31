@@ -65,6 +65,7 @@ export default class Declaration {
   private visibilityKeeper: VisibilityKeeper
   validatePage: (page: Page) => string[]
   private touchKeeper: TouchKeeper
+  getMultipleIds: (code: string) => number[]
 
   constructor(
     schema: FullyLoadedDeclaration,
@@ -93,6 +94,7 @@ export default class Declaration {
 
     this.getVisibleTabs = () => this.pagesKeeper.tabs
     this.getVisiblePages = () => this.pagesKeeper.visiblePages
+    this.getMultipleIds = this.valuesKeeper.getMultipleIds
 
     this.validatePage = this.validateKeeper.validatePage
   }
