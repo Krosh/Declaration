@@ -1,4 +1,4 @@
-import { Values, FullyLoadedDeclaration, Page } from '../types/declaration'
+import { Values, FullyLoadedDeclaration, Page } from './types/declaration'
 import { getHidedElementCodes } from './getHidedElementCodes'
 
 export default class PageKeeper {

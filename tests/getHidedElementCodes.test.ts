@@ -1,6 +1,6 @@
 import { Question, ShowInputsAction } from '../types/declaration'
-import { getVisibleQuestions } from './getVisibleQuestions'
-import { getHidedElementCodes } from './getHidedElementCodes'
+import { getVisibleQuestions } from '../getVisibleQuestions'
+import { getHidedElementCodes } from '../getHidedElementCodes'
 
 const getValue = (obj: any) => (code: string) => (obj[code] ? obj[code] : '')
 

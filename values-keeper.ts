@@ -1,4 +1,4 @@
-import { Values, Question } from '../types/declaration'
+import { Values, Question } from './types/declaration'
 import { DataProvider } from '.'
 
 export default class ValuesKeeper {

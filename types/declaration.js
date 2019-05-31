@@ -10,7 +10,7 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 function processAnswers(answers) {
     return Object.keys(answers).reduce(function (tot, key) {
         tot[key] = __assign({}, answers[key]);
