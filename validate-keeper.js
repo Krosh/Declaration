@@ -6,7 +6,6 @@ var ValidateKeeper = /** @class */ (function () {
         this.cache = {};
         this.getErrors = function (question, id) {
             if (question.type === 'multiple') {
-                var requiredList = _this.visibilityKeeper.getRequiredList(question.code, question.answers, id);
                 var ids = _this.valuesKeeper.getMultipleIds(question.code);
                 return ids.flatMap(function (id) {
                     return _this.visibilityKeeper
@@ -21,15 +20,14 @@ var ValidateKeeper = /** @class */ (function () {
                 !_this.visibilityKeeper
                     .getRequiredList(question.parent_code, [], id)
                     .includes(question)) {
-                console.log(question.code, question.parent_code);
                 return [];
             }
-            if (question.type === 'text') {
-                return _this.valuesKeeper.getValue(question.code, id) !== ''
-                    ? []
-                    : ['Не должен быть пустым'];
+            if (question.can_be_skipped) {
+                return [];
             }
-            return [];
+            return _this.valuesKeeper.getValue(question.code, id) !== ''
+                ? []
+                : ['Не должен быть пустым'];
         };
         this.getPageErrors = function (page) {
             return _this.visibilityKeeper

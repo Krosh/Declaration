@@ -21,11 +21,6 @@ export default class ValidateKeeper {
 
   private getErrors = (question: Question, id: number) => {
     if (question.type === 'multiple') {
-      const requiredList = this.visibilityKeeper.getRequiredList(
-        question.code,
-        question.answers,
-        id
-      )
       const ids = this.valuesKeeper.getMultipleIds(question.code)
       return ids.flatMap(id =>
         this.visibilityKeeper
@@ -42,15 +37,15 @@ export default class ValidateKeeper {
         .getRequiredList(question.parent_code, [], id)
         .includes(question)
     ) {
-      console.log(question.code, question.parent_code)
       return []
     }
-    if (question.type === 'text') {
-      return this.valuesKeeper.getValue(question.code, id) !== ''
-        ? []
-        : ['Не должен быть пустым']
+
+    if (question.can_be_skipped) {
+      return []
     }
-    return []
+    return this.valuesKeeper.getValue(question.code, id) !== ''
+      ? []
+      : ['Не должен быть пустым']
   }
 
   private getPageErrors = (page: Page) => {

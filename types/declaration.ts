@@ -1,4 +1,4 @@
-export type Action = ShowInputsAction | ShowPagesAction
+export type Action = ShowInputsAction | ShowPagesAction | EnableRequiredAction
 
 export type ShowInputsAction = {
   type: 'show_inputs'
@@ -7,6 +7,11 @@ export type ShowInputsAction = {
 
 export type ShowPagesAction = {
   type: 'show_pages'
+  codes: string[]
+}
+
+export type EnableRequiredAction = {
+  type: 'enable_required'
   codes: string[]
 }
 
@@ -24,6 +29,7 @@ interface BaseQuestion {
   hint: string
   code: string
   parent_code?: string | null
+  can_be_skipped: boolean
 }
 
 export interface TextQuestion extends BaseQuestion {
