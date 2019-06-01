@@ -50,5 +50,7 @@ export default class Declaration {
     setActivePage: (page: Page) => void;
     setActiveTab: (tab: string) => void;
     filterMutlipleQuestionChilds: (multipleQuestion: MultipleQuestion, id: number) => SingleQuestion[];
+    getDefaultMutlipleQuestion: (page: Page) => import("./types/declaration").TextQuestion | import("./types/declaration").AutocompleteQuestion | import("./types/declaration").CurrencyAutocompleteQuestion | import("./types/declaration").AddressQuestion | import("./types/declaration").InfoQuestion | import("./types/declaration").DateQuestion | import("./types/declaration").PhoneQuestion | MultipleQuestion | import("./types/declaration").NumberQuestion | import("./types/declaration").RadioQuestion | import("./types/declaration").SelectQuestion | import("./types/declaration").CheckboxQuestion | import("./types/declaration").MoneyQuestion | import("./types/declaration").MoneyIntegerQuestion | import("./types/declaration").SharesQuestion | undefined;
+    isPageEmpty: (page: Page) => boolean;
     getQuestionProps: (question: Question, id: number) => QuestionProps;
 }

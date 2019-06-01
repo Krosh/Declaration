@@ -1,0 +1,1 @@
+rm *.d.ts && rm *.js && cd types && rm *.d.ts && rm *.js && cd .. && tsc

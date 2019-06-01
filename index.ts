@@ -185,6 +185,19 @@ export default class Declaration {
     ) as SingleQuestion[]
   }
 
+  getDefaultMutlipleQuestion = (page: Page) => {
+    return page.questions.find(item => item.type === 'multiple')
+  }
+
+  isPageEmpty = (page: Page) => {
+    const defaultQuestion = this.getDefaultMutlipleQuestion(page)
+    if (!defaultQuestion) {
+      return false
+    }
+    const ids = this.getMultipleIds(defaultQuestion.code)
+    return ids.length === 0
+  }
+
   getQuestionProps = (question: Question, id: number): QuestionProps => {
     if (question.type !== 'multiple') {
       return {

@@ -82,6 +82,17 @@ var Declaration = /** @class */ (function () {
         this.filterMutlipleQuestionChilds = function (multipleQuestion, id) {
             return _this.visibilityKeeper.getList(multipleQuestion.code, multipleQuestion.answers, id);
         };
+        this.getDefaultMutlipleQuestion = function (page) {
+            return page.questions.find(function (item) { return item.type === 'multiple'; });
+        };
+        this.isPageEmpty = function (page) {
+            var defaultQuestion = _this.getDefaultMutlipleQuestion(page);
+            if (!defaultQuestion) {
+                return false;
+            }
+            var ids = _this.getMultipleIds(defaultQuestion.code);
+            return ids.length === 0;
+        };
         this.getQuestionProps = function (question, id) {
             if (question.type !== 'multiple') {
                 return {
