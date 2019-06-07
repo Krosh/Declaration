@@ -1,9 +1,9 @@
 import { Question, ShowInputsAction } from '../types/declaration'
 import { getVisibleQuestions } from '../getVisibleQuestions'
 
-const getValue = (obj: any) => (code: string, id: number) =>
-  obj[code] ? obj[code] : ''
-
+const getValue = (obj: any) => (code: string, id: number) => {
+  return obj[code] ? obj[code] : ''
+}
 test('basic', () => {
   const mock: Question[] = [
     {

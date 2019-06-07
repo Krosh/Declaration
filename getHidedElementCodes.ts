@@ -31,13 +31,25 @@ export function getHidedElementCodes(
 
     // TODO:: tests
     if (canHasActionsOnChild(question)) {
-      const currentHide: string[] = question.answers.flatMap(item =>
-        !!item.action &&
-        item.action.type === action &&
-        item.code !== getValue(question.code)
+      let currentHide = question.answers.flatMap(function(item) {
+        return !!item.action && item.action.type === action
           ? item.action.codes
           : []
+      })
+
+      const activeAnswer = question.answers.find(
+        item => item.code === getValue(question.code)
       )
+      if (
+        activeAnswer &&
+        activeAnswer.action &&
+        activeAnswer.action.type === action
+      ) {
+        currentHide = currentHide.filter(hide => {
+          return !activeAnswer.action!.codes.includes(hide)
+        })
+      }
+
       hidedQuestions.push(...currentHide)
     }
 

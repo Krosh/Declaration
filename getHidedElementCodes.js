@@ -19,12 +19,18 @@ function getHidedElementCodes(questions, getValue, getCurrencyNeedHideValue, act
         // TODO:: tests
         if (canHasActionsOnChild(question)) {
             var currentHide = question.answers.flatMap(function (item) {
-                return !!item.action &&
-                    item.action.type === action &&
-                    item.code !== getValue(question.code)
+                return !!item.action && item.action.type === action
                     ? item.action.codes
                     : [];
             });
+            var activeAnswer_1 = question.answers.find(function (item) { return item.code === getValue(question.code); });
+            if (activeAnswer_1 &&
+                activeAnswer_1.action &&
+                activeAnswer_1.action.type === action) {
+                currentHide = currentHide.filter(function (hide) {
+                    return !activeAnswer_1.action.codes.includes(hide);
+                });
+            }
             hidedQuestions.push.apply(hidedQuestions, currentHide);
         }
         // TODO:: tests
