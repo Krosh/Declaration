@@ -2,6 +2,7 @@ import ValuesKeeper from './values-keeper'
 import { Question, Page } from './types/declaration'
 import TouchKeeper from './touch-keeper'
 import { VisibilityKeeper } from './visibility-keeper'
+import validate from './validation'
 
 export default class ValidateKeeper {
   private valuesKeeper: ValuesKeeper
@@ -31,21 +32,15 @@ export default class ValidateKeeper {
     if (!this.touchKeeper.getTouch(question.code, id)) {
       return []
     }
-    if (
+    const isRequiredFromAction =
       question.parent_code &&
-      !this.visibilityKeeper
+      this.visibilityKeeper
         .getRequiredList(question.parent_code, [], id)
         .includes(question)
-    ) {
-      return []
-    }
 
-    if (question.can_be_skipped) {
-      return []
-    }
-    return this.valuesKeeper.getValue(question.code, id) !== ''
-      ? []
-      : ['Не должен быть пустым']
+    return validate(question.code, question.validation, (code: string) =>
+      this.valuesKeeper.getValue(code, id)
+    , !!isRequiredFromAction)
   }
 
   private getPageErrors = (page: Page) => {

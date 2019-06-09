@@ -1,5 +1,9 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+var validation_1 = __importDefault(require("./validation"));
 var ValidateKeeper = /** @class */ (function () {
     function ValidateKeeper(valuesKeeper, touchKeeper, visibilityKeeper) {
         var _this = this;
@@ -16,18 +20,13 @@ var ValidateKeeper = /** @class */ (function () {
             if (!_this.touchKeeper.getTouch(question.code, id)) {
                 return [];
             }
-            if (question.parent_code &&
-                !_this.visibilityKeeper
+            var isRequiredFromAction = question.parent_code &&
+                _this.visibilityKeeper
                     .getRequiredList(question.parent_code, [], id)
-                    .includes(question)) {
-                return [];
-            }
-            if (question.can_be_skipped) {
-                return [];
-            }
-            return _this.valuesKeeper.getValue(question.code, id) !== ''
-                ? []
-                : ['Не должен быть пустым'];
+                    .includes(question);
+            return validation_1.default(question.code, question.validation, function (code) {
+                return _this.valuesKeeper.getValue(code, id);
+            }, !!isRequiredFromAction);
         };
         this.getPageErrors = function (page) {
             return _this.visibilityKeeper

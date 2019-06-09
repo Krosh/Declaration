@@ -23,6 +23,10 @@ function processData(data) {
         if (item.action) {
             item.action = JSON.parse(item.action);
         }
+        if (item.validation) {
+            console.log('WOW HAS VALIDATION');
+            item.validation = JSON.parse(item.validation);
+        }
         if (item.answers) {
             item.answers.forEach(function (answer) {
                 parseActions(answer);

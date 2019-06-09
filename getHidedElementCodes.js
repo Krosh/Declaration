@@ -4,6 +4,11 @@ function canHasActionsOnChild(question) {
     return question.type === 'radio' || question.type === 'select';
 }
 exports.canHasActionsOnChild = canHasActionsOnChild;
+function hasActionsOnChild(question) {
+    return (canHasActionsOnChild(question) &&
+        !!question.answers.find(function (item) { return !!item.action; }));
+}
+exports.hasActionsOnChild = hasActionsOnChild;
 function hasActions(question) {
     return question.type === 'checkbox' && !!question.action;
 }

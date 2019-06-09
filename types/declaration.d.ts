@@ -1,3 +1,9 @@
+export interface Validation {
+    maxLength?: number;
+    canBeSkipped?: boolean;
+    oneOf?: string[];
+    type?: 'inn' | 'kpp' | 'oktmo';
+}
 export declare type Action = ShowInputsAction | ShowPagesAction | EnableRequiredAction;
 export declare type ShowInputsAction = {
     type: 'show_inputs';
@@ -23,7 +29,7 @@ interface BaseQuestion {
     hint: string;
     code: string;
     parent_code?: string | null;
-    can_be_skipped: boolean;
+    validation?: Validation;
 }
 export interface TextQuestion extends BaseQuestion {
     type: 'text';

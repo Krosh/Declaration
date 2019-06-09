@@ -1,5 +1,4 @@
-import { FullyLoadedDeclaration, Values, Page, SingleQuestion, Question } from './types/declaration';
-import { MultipleQuestion } from './types/declaration';
+import { FullyLoadedDeclaration, MultipleQuestion, Page, Question, SingleQuestion, Values } from './types/declaration';
 export interface DataProvider {
     saveAnswer: (questionCode: string, id: number, value: string) => void;
     deleteMultiple: (questionCode: string, id: number) => void;

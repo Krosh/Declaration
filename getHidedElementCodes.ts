@@ -11,6 +11,13 @@ export function canHasActionsOnChild(
   return question.type === 'radio' || question.type === 'select'
 }
 
+export function hasActionsOnChild(question: Question) {
+  return (
+    canHasActionsOnChild(question) &&
+    !!question.answers.find(item => !!item.action)
+  )
+}
+
 export function hasActions(question: Question): question is CheckboxQuestion {
   return question.type === 'checkbox' && !!question.action
 }

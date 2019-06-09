@@ -3,12 +3,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var values_keeper_1 = __importDefault(require("./values-keeper"));
-var page_keeper_1 = __importDefault(require("./page-keeper"));
 var getHidedElementCodes_1 = require("./getHidedElementCodes");
-var visibility_keeper_1 = require("./visibility-keeper");
-var validate_keeper_1 = __importDefault(require("./validate-keeper"));
+var page_keeper_1 = __importDefault(require("./page-keeper"));
 var touch_keeper_1 = __importDefault(require("./touch-keeper"));
+var validate_keeper_1 = __importDefault(require("./validate-keeper"));
+var values_keeper_1 = __importDefault(require("./values-keeper"));
+var visibility_keeper_1 = require("./visibility-keeper");
 var Declaration = /** @class */ (function () {
     function Declaration(schema, initialValues, dataProvider) {
         var _this = this;
@@ -104,8 +104,9 @@ var Declaration = /** @class */ (function () {
                         }
                         _this.pagesKeeper.processChangeValue(question.code, _this.valuesKeeper.getValue);
                         _this.touchKeeper.setTouch(question.code, id, true);
-                        // TODO:: делать только в случае необходимости
-                        _this.visibilityKeeper.clear();
+                        if (getHidedElementCodes_1.hasActions(question) || getHidedElementCodes_1.hasActionsOnChild(question)) {
+                            _this.visibilityKeeper.clear();
+                        }
                         _this.validateKeeper.refreshQuestionCache(question, id);
                         _this.rerenderCallback && _this.rerenderCallback();
                     },

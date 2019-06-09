@@ -1,17 +1,21 @@
 import {
-  FullyLoadedDeclaration,
-  Values,
-  Page,
-  SingleQuestion,
-  Question,
-} from './types/declaration'
-import ValuesKeeper from './values-keeper'
+  canHasActionsOnChild,
+  hasActions,
+  hasActionsOnChild,
+} from './getHidedElementCodes'
 import PageKeeper from './page-keeper'
-import { MultipleQuestion } from './types/declaration'
-import { canHasActionsOnChild } from './getHidedElementCodes'
-import { VisibilityKeeper } from './visibility-keeper'
-import ValidateKeeper from './validate-keeper'
 import TouchKeeper from './touch-keeper'
+import {
+  FullyLoadedDeclaration,
+  MultipleQuestion,
+  Page,
+  Question,
+  SingleQuestion,
+  Values,
+} from './types/declaration'
+import ValidateKeeper from './validate-keeper'
+import ValuesKeeper from './values-keeper'
+import { VisibilityKeeper } from './visibility-keeper'
 
 type QuestionsMap = { [key: string]: Question }
 
@@ -212,8 +216,9 @@ export default class Declaration {
             this.valuesKeeper.getValue
           )
           this.touchKeeper.setTouch(question.code, id, true)
-          // TODO:: делать только в случае необходимости
-          this.visibilityKeeper.clear()
+          if (hasActions(question) || hasActionsOnChild(question)) {
+            this.visibilityKeeper.clear()
+          }
           this.validateKeeper.refreshQuestionCache(question, id)
           this.rerenderCallback && this.rerenderCallback()
         },

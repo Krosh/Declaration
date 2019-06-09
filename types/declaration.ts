@@ -1,3 +1,10 @@
+export interface Validation {
+  maxLength?: number
+  canBeSkipped?: boolean
+  oneOf?: string[]
+  type?: 'inn' | 'kpp' | 'oktmo'
+}
+
 export type Action = ShowInputsAction | ShowPagesAction | EnableRequiredAction
 
 export type ShowInputsAction = {
@@ -29,7 +36,7 @@ interface BaseQuestion {
   hint: string
   code: string
   parent_code?: string | null
-  can_be_skipped: boolean
+  validation?: Validation
 }
 
 export interface TextQuestion extends BaseQuestion {
@@ -156,6 +163,10 @@ export function processData(data: any) {
   const parseActions = (item: any) => {
     if (item.action) {
       item.action = JSON.parse(item.action)
+    }
+    if (item.validation) {
+      console.log('WOW HAS VALIDATION')
+      item.validation = JSON.parse(item.validation)
     }
     if (item.answers) {
       item.answers.forEach((answer: any) => {
