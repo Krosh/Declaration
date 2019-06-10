@@ -20,13 +20,12 @@ var ValidateKeeper = /** @class */ (function () {
             if (!_this.touchKeeper.getTouch(question.code, id)) {
                 return [];
             }
-            var isRequiredFromAction = question.parent_code &&
-                _this.visibilityKeeper
+            var isRequiredFromAction = !!question.parent_code
+                ? _this.visibilityKeeper
                     .getRequiredList(question.parent_code, [], id)
-                    .includes(question);
-            return validation_1.default(question.code, question.validation, function (code) {
-                return _this.valuesKeeper.getValue(code, id);
-            }, !!isRequiredFromAction);
+                    .includes(question)
+                : true;
+            return validation_1.default(question.code, question.validation, function (code) { return _this.valuesKeeper.getValue(code, id); }, !!isRequiredFromAction);
         };
         this.getPageErrors = function (page) {
             return _this.visibilityKeeper

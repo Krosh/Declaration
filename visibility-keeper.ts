@@ -6,49 +6,55 @@ import {
 import ValuesKeeper from './values-keeper'
 
 export class VisibilityKeeper {
-  private cache: { [key: string]: Question[] } = {}
+  private visibilityCache: { [key: string]: Question[] } = {}
+  private requiredCache: { [key: string]: Question[] } = {}
   private valuesKeeper: ValuesKeeper
 
   constructor(valuesKeeper: ValuesKeeper) {
     this.valuesKeeper = valuesKeeper
   }
 
-  clear() {
-    console.log('cache cleared')
-    this.cache = {}
+  clearVisibility() {
+    console.log('visibility cache cleared')
+    this.visibilityCache = {}
+  }
+
+  clearRequired() {
+    console.log('required cache cleared')
+    this.requiredCache = {}
   }
 
   getList(name: string, filteredItems: Question[], id: number) {
     const cacheName = name + id.toString()
-    if (this.cache[cacheName]) {
-      return this.cache[cacheName]
+    if (this.visibilityCache[cacheName]) {
+      return this.visibilityCache[cacheName]
     }
 
-    this.cache[cacheName] = getVisibleQuestions(
+    this.visibilityCache[cacheName] = getVisibleQuestions(
       filteredItems,
       this.valuesKeeper.getValue,
       this.valuesKeeper.getCurrencyQuestion,
       id
     ) as Question[]
 
-    return this.cache[cacheName]
+    return this.visibilityCache[cacheName]
   }
 
   getRequiredList(name: string, filteredItems: Question[], id: number) {
     const cacheName = name + id.toString() + '-required'
-    if (this.cache[cacheName]) {
-      return this.cache[cacheName]
+    if (this.requiredCache[cacheName]) {
+      return this.requiredCache[cacheName]
     }
 
-    const visibleQuestions = this.getList(name, filteredItems, id)
+    const requiredQuestions = this.getList(name, filteredItems, id)
 
-    this.cache[cacheName] = getRequiredQuestions(
-      visibleQuestions,
+    this.requiredCache[cacheName] = getRequiredQuestions(
+      requiredQuestions,
       this.valuesKeeper.getValue,
       this.valuesKeeper.getCurrencyQuestion,
       id
     )
 
-    return this.cache[cacheName]
+    return this.requiredCache[cacheName]
   }
 }

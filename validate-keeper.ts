@@ -32,15 +32,18 @@ export default class ValidateKeeper {
     if (!this.touchKeeper.getTouch(question.code, id)) {
       return []
     }
-    const isRequiredFromAction =
-      question.parent_code &&
-      this.visibilityKeeper
-        .getRequiredList(question.parent_code, [], id)
-        .includes(question)
+    const isRequiredFromAction = !!question.parent_code
+      ? this.visibilityKeeper
+          .getRequiredList(question.parent_code, [], id)
+          .includes(question)
+      : true
 
-    return validate(question.code, question.validation, (code: string) =>
-      this.valuesKeeper.getValue(code, id)
-    , !!isRequiredFromAction)
+    return validate(
+      question.code,
+      question.validation,
+      (code: string) => this.valuesKeeper.getValue(code, id),
+      isRequiredFromAction
+    )
   }
 
   private getPageErrors = (page: Page) => {

@@ -16,6 +16,15 @@ const validate = (
   if (value === '' && (validation.canBeSkipped || !requiredFromAction)) {
     return []
   }
+
+  if (
+    value === '' &&
+    validation.oneOf &&
+    validation.oneOf.some(item => getValue(item) !== '')
+  ) {
+    return []
+  }
+
   if (value === '') {
     return ['Не должен быть пустым']
   }

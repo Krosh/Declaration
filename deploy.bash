@@ -1,1 +1,1 @@
-rsync -av --exclude=".git" . ../nalogia-crm/node_modules/declaration/
+rsync -av --exclude=".git" --exclude="node_modules" . ../nalogia-crm/node_modules/declaration/

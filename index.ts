@@ -217,8 +217,9 @@ export default class Declaration {
           )
           this.touchKeeper.setTouch(question.code, id, true)
           if (hasActions(question) || hasActionsOnChild(question)) {
-            this.visibilityKeeper.clear()
+            this.visibilityKeeper.clearVisibility()
           }
+          this.visibilityKeeper.clearRequired()
           this.validateKeeper.refreshQuestionCache(question, id)
           this.rerenderCallback && this.rerenderCallback()
         },

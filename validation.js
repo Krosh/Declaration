@@ -20,6 +20,11 @@ var validate = function (questionCode, qValidation, getValue, requiredFromAction
     if (value === '' && (validation.canBeSkipped || !requiredFromAction)) {
         return [];
     }
+    if (value === '' &&
+        validation.oneOf &&
+        validation.oneOf.some(function (item) { return getValue(item) !== ''; })) {
+        return [];
+    }
     if (value === '') {
         return ['Не должен быть пустым'];
     }

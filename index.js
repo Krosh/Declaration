@@ -105,8 +105,9 @@ var Declaration = /** @class */ (function () {
                         _this.pagesKeeper.processChangeValue(question.code, _this.valuesKeeper.getValue);
                         _this.touchKeeper.setTouch(question.code, id, true);
                         if (getHidedElementCodes_1.hasActions(question) || getHidedElementCodes_1.hasActionsOnChild(question)) {
-                            _this.visibilityKeeper.clear();
+                            _this.visibilityKeeper.clearVisibility();
                         }
+                        _this.visibilityKeeper.clearRequired();
                         _this.validateKeeper.refreshQuestionCache(question, id);
                         _this.rerenderCallback && _this.rerenderCallback();
                     },
