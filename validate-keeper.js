@@ -25,7 +25,7 @@ var ValidateKeeper = /** @class */ (function () {
                     .getRequiredList(question.parent_code, [], id)
                     .includes(question)
                 : true;
-            return validation_1.default(question.code, question.validation, function (code) { return _this.valuesKeeper.getValue(code, id); }, !!isRequiredFromAction);
+            return validation_1.default(question.code, question.validation, function (code) { return _this.valuesKeeper.getValue(code, id); }, isRequiredFromAction);
         };
         this.getPageErrors = function (page) {
             return _this.visibilityKeeper
