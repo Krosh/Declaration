@@ -17,9 +17,13 @@ export default class ValuesKeeper {
     id: number,
     showCourseInput: boolean
   ) => {
+    if (this.getCurrencyQuestion(question, id) === showCourseInput) {
+      return false
+    }
     this.enabledCurrencies[question.code] =
       this.enabledCurrencies[question.code] || {}
     this.enabledCurrencies[question.code][id] = showCourseInput
+    return true
   }
 
   getCurrencyQuestion = (question: Question, id: number) => {

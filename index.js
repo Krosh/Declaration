@@ -104,7 +104,9 @@ var Declaration = /** @class */ (function () {
                         }
                         _this.pagesKeeper.processChangeValue(question.code, _this.valuesKeeper.getValue);
                         _this.touchKeeper.setTouch(question.code, id, true);
-                        if (getHidedElementCodes_1.hasActions(question) || getHidedElementCodes_1.hasActionsOnChild(question)) {
+                        if (getHidedElementCodes_1.hasActions(question) ||
+                            getHidedElementCodes_1.hasActionsOnChild(question) ||
+                            getHidedElementCodes_1.canHasCurrencyActionsOnChild(question)) {
                             _this.visibilityKeeper.clearVisibility();
                         }
                         _this.visibilityKeeper.clearRequired();

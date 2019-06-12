@@ -2,6 +2,7 @@ import {
   canHasActionsOnChild,
   hasActions,
   hasActionsOnChild,
+  canHasCurrencyActionsOnChild,
 } from './getHidedElementCodes'
 import PageKeeper from './page-keeper'
 import TouchKeeper from './touch-keeper'
@@ -32,7 +33,7 @@ export interface SingleQuestionProps {
   errors: string[]
   setTouched: () => void
   declaration: Declaration
-  setCourseInputVisibility: (needHideInput: boolean) => void
+  setCourseInputVisibility: (needHideInput: boolean) => boolean
 }
 
 export interface MultipleQuestionProps {
@@ -216,7 +217,11 @@ export default class Declaration {
             this.valuesKeeper.getValue
           )
           this.touchKeeper.setTouch(question.code, id, true)
-          if (hasActions(question) || hasActionsOnChild(question)) {
+          if (
+            hasActions(question) ||
+            hasActionsOnChild(question) ||
+            canHasCurrencyActionsOnChild(question)
+          ) {
             this.visibilityKeeper.clearVisibility()
           }
           this.visibilityKeeper.clearRequired()

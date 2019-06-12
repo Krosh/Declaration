@@ -11,7 +11,7 @@ export interface SingleQuestionProps {
     errors: string[];
     setTouched: () => void;
     declaration: Declaration;
-    setCourseInputVisibility: (needHideInput: boolean) => void;
+    setCourseInputVisibility: (needHideInput: boolean) => boolean;
 }
 export interface MultipleQuestionProps {
     question: MultipleQuestion;

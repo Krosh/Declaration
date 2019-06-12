@@ -5,7 +5,7 @@ export default class ValuesKeeper {
     private dataProvider;
     private enabledCurrencies;
     constructor(initialValues: Values, dataProvider: DataProvider);
-    processCurrencyQuestion: (question: Question, id: number, showCourseInput: boolean) => void;
+    processCurrencyQuestion: (question: Question, id: number, showCourseInput: boolean) => boolean;
     getCurrencyQuestion: (question: Question, id: number) => boolean;
     setValue: (code: string, id: number, newValue: string) => boolean;
     getMultipleIds: (code: string) => number[];

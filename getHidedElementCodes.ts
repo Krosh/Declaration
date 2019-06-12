@@ -3,6 +3,7 @@ import {
   RadioQuestion,
   SelectQuestion,
   CheckboxQuestion,
+  CurrencyAutocompleteQuestion,
 } from './types/declaration'
 
 export function canHasActionsOnChild(
@@ -16,6 +17,12 @@ export function hasActionsOnChild(question: Question) {
     canHasActionsOnChild(question) &&
     !!question.answers.find(item => !!item.action)
   )
+}
+
+export function canHasCurrencyActionsOnChild(
+  question: Question
+): question is CurrencyAutocompleteQuestion {
+  return question.type === 'currency_autocomplete'
 }
 
 export function hasActions(question: Question): question is CheckboxQuestion {
@@ -62,7 +69,7 @@ export function getHidedElementCodes(
 
     // TODO:: tests
     if (
-      question.type === 'currency_autocomplete' &&
+      canHasCurrencyActionsOnChild(question) &&
       question.action.value_action &&
       question.action.value_action.type === action &&
       getCurrencyNeedHideValue(question)

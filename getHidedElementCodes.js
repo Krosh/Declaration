@@ -9,6 +9,10 @@ function hasActionsOnChild(question) {
         !!question.answers.find(function (item) { return !!item.action; }));
 }
 exports.hasActionsOnChild = hasActionsOnChild;
+function canHasCurrencyActionsOnChild(question) {
+    return question.type === 'currency_autocomplete';
+}
+exports.canHasCurrencyActionsOnChild = canHasCurrencyActionsOnChild;
 function hasActions(question) {
     return question.type === 'checkbox' && !!question.action;
 }
@@ -39,7 +43,7 @@ function getHidedElementCodes(questions, getValue, getCurrencyNeedHideValue, act
             hidedQuestions.push.apply(hidedQuestions, currentHide);
         }
         // TODO:: tests
-        if (question.type === 'currency_autocomplete' &&
+        if (canHasCurrencyActionsOnChild(question) &&
             question.action.value_action &&
             question.action.value_action.type === action &&
             getCurrencyNeedHideValue(question)) {

@@ -15,9 +15,13 @@ var ValuesKeeper = /** @class */ (function () {
     function ValuesKeeper(initialValues, dataProvider) {
         var _this = this;
         this.processCurrencyQuestion = function (question, id, showCourseInput) {
+            if (_this.getCurrencyQuestion(question, id) === showCourseInput) {
+                return false;
+            }
             _this.enabledCurrencies[question.code] =
                 _this.enabledCurrencies[question.code] || {};
             _this.enabledCurrencies[question.code][id] = showCourseInput;
+            return true;
         };
         this.getCurrencyQuestion = function (question, id) {
             return _this.enabledCurrencies[question.code]
