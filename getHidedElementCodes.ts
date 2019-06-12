@@ -67,7 +67,6 @@ export function getHidedElementCodes(
       hidedQuestions.push(...currentHide)
     }
 
-    // TODO:: tests
     if (
       canHasCurrencyActionsOnChild(question) &&
       question.action.value_action &&

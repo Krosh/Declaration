@@ -42,7 +42,6 @@ function getHidedElementCodes(questions, getValue, getCurrencyNeedHideValue, act
             }
             hidedQuestions.push.apply(hidedQuestions, currentHide);
         }
-        // TODO:: tests
         if (canHasCurrencyActionsOnChild(question) &&
             question.action.value_action &&
             question.action.value_action.type === action &&

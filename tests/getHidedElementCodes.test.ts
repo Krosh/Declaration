@@ -1,4 +1,8 @@
-import { Question, ShowInputsAction } from '../types/declaration'
+import {
+  Question,
+  ShowInputsAction,
+  CurrencyAutocompleteQuestion,
+} from '../types/declaration'
 import { getVisibleQuestions } from '../getVisibleQuestions'
 import { getHidedElementCodes } from '../getHidedElementCodes'
 
@@ -73,4 +77,54 @@ test('simple select with action', () => {
   expect(filteredQuestionsWithoutAnswer).toHaveLength(2)
   expect(filteredQuestionsWithoutAnswer[0]).toBe('2')
   expect(filteredQuestionsWithoutAnswer[1]).toBe('3')
+})
+
+test('select with currency', () => {
+  const currencyQuestion: CurrencyAutocompleteQuestion = {
+    type: 'currency_autocomplete',
+    name: 'cur',
+    hint: '',
+    code: '',
+    action: {
+      action_type: 'show_inputs',
+      url: '',
+      value_action: {
+        type: 'show_inputs',
+        codes: ['2'],
+      },
+    },
+  }
+
+  const mock: Question[] = [
+    currencyQuestion,
+    {
+      type: 'text',
+      name: '',
+      code: '2',
+      hint: '',
+    },
+    {
+      type: 'text',
+      name: '',
+      code: '3',
+      hint: '',
+    },
+  ]
+
+  const filteredQuestionsWithA1 = getHidedElementCodes(
+    mock,
+    getValue({ q: 'a1' }),
+    () => true,
+    'show_inputs'
+  )
+  expect(filteredQuestionsWithA1).toHaveLength(1)
+  expect(filteredQuestionsWithA1[0]).toBe('2')
+
+  const filteredQuestionsWithoutA1 = getHidedElementCodes(
+    mock,
+    getValue({ q: 'a1' }),
+    () => false,
+    'show_inputs'
+  )
+  expect(filteredQuestionsWithoutA1).toHaveLength(0)
 })
