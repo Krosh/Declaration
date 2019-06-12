@@ -24,7 +24,6 @@ function processData(data) {
             item.action = JSON.parse(item.action);
         }
         if (item.validation) {
-            console.log('WOW HAS VALIDATION');
             item.validation = JSON.parse(item.validation);
         }
         if (item.answers) {

@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var validation_1 = __importDefault(require("./validation"));
+var address_1 = require("./types/address");
 var ValidateKeeper = /** @class */ (function () {
     function ValidateKeeper(valuesKeeper, touchKeeper, visibilityKeeper) {
         var _this = this;
@@ -16,6 +17,9 @@ var ValidateKeeper = /** @class */ (function () {
                         .getRequiredList(question.code, question.answers, id)
                         .flatMap(function (item) { return _this.validateQuestion(item, id); });
                 });
+            }
+            if (question.type === 'address') {
+                return Object.values(address_1.AddressModel.validate(_this.valuesKeeper.getValue(question.code, id), function (code) { return _this.touchKeeper.getTouch(question.code + code, id); })).flat();
             }
             if (!_this.touchKeeper.getTouch(question.code, id)) {
                 return [];

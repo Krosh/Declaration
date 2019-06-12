@@ -13,7 +13,9 @@ import {
   Question,
   SingleQuestion,
   Values,
+  AddressQuestion,
 } from './types/declaration'
+import { Address, AddressModel } from './types/address'
 import ValidateKeeper from './validate-keeper'
 import ValuesKeeper from './values-keeper'
 import { VisibilityKeeper } from './visibility-keeper'
@@ -36,6 +38,15 @@ export interface SingleQuestionProps {
   setCourseInputVisibility: (needHideInput: boolean) => boolean
 }
 
+export interface AddressQuestionProps {
+  question: AddressQuestion
+  value: string
+  setValue: (newValue: string) => void
+  errors: { [key in keyof Address]: string[] }
+  setTouched: (name: keyof Address) => void
+  declaration: Declaration
+}
+
 export interface MultipleQuestionProps {
   question: MultipleQuestion
   ids: number[]
@@ -49,7 +60,10 @@ export interface MultipleQuestionProps {
   ) => SingleQuestion[]
 }
 
-export type QuestionProps = SingleQuestionProps | MultipleQuestionProps
+export type QuestionProps =
+  | AddressQuestionProps
+  | SingleQuestionProps
+  | MultipleQuestionProps
 
 export default class Declaration {
   private schema: FullyLoadedDeclaration
@@ -204,7 +218,55 @@ export default class Declaration {
   }
 
   getQuestionProps = (question: Question, id: number): QuestionProps => {
-    if (question.type !== 'multiple') {
+    if (question.type === 'address') {
+      const t: AddressQuestionProps = {
+        question: question as AddressQuestion,
+        value: this.valuesKeeper.getValue(question.code, id),
+        setValue: newValue => {
+          if (!this.valuesKeeper.setValue(question.code, id, newValue)) {
+            return
+          }
+          this.pagesKeeper.processChangeValue(
+            question.code,
+            this.valuesKeeper.getValue
+          )
+          this.touchKeeper.setTouch(question.code, id, true)
+          if (
+            hasActions(question) ||
+            hasActionsOnChild(question) ||
+            canHasCurrencyActionsOnChild(question)
+          ) {
+            this.visibilityKeeper.clearVisibility()
+          }
+          this.visibilityKeeper.clearRequired()
+          this.validateKeeper.refreshQuestionCache(question, id)
+          this.rerenderCallback && this.rerenderCallback()
+        },
+        errors: AddressModel.validate(
+          this.valuesKeeper.getValue(question.code, id),
+          (name: string) =>
+            this.touchKeeper.getTouch(
+              AddressModel.getFullCodeName(question, name),
+              id
+            )
+        ),
+        setTouched: (name: string) => {
+          if (
+            !this.touchKeeper.setTouch(
+              AddressModel.getFullCodeName(question, name),
+              id,
+              true
+            )
+          ) {
+            return
+          }
+          this.validateKeeper.refreshQuestionCache(question, id)
+          this.rerenderCallback && this.rerenderCallback()
+        },
+        declaration: this,
+      }
+      return t
+    } else if (question.type !== 'multiple') {
       return {
         question: question as any, // TODO
         value: this.valuesKeeper.getValue(question.code, id),

@@ -12,6 +12,6 @@ export default class ValidateKeeper {
     private getPageErrors;
     private getCacheName;
     refreshQuestionCache(question: Question, id: number): void;
-    validateQuestion(question: Question, id: number): string[];
-    validatePage: (page: Page) => string[];
+    validateQuestion(question: Question, id: number): any;
+    validatePage: (page: Page) => any[];
 }

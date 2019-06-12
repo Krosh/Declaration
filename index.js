@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var getHidedElementCodes_1 = require("./getHidedElementCodes");
 var page_keeper_1 = __importDefault(require("./page-keeper"));
 var touch_keeper_1 = __importDefault(require("./touch-keeper"));
+var address_1 = require("./types/address");
 var validate_keeper_1 = __importDefault(require("./validate-keeper"));
 var values_keeper_1 = __importDefault(require("./values-keeper"));
 var visibility_keeper_1 = require("./visibility-keeper");
@@ -94,7 +95,40 @@ var Declaration = /** @class */ (function () {
             return ids.length === 0;
         };
         this.getQuestionProps = function (question, id) {
-            if (question.type !== 'multiple') {
+            if (question.type === 'address') {
+                var t = {
+                    question: question,
+                    value: _this.valuesKeeper.getValue(question.code, id),
+                    setValue: function (newValue) {
+                        if (!_this.valuesKeeper.setValue(question.code, id, newValue)) {
+                            return;
+                        }
+                        _this.pagesKeeper.processChangeValue(question.code, _this.valuesKeeper.getValue);
+                        _this.touchKeeper.setTouch(question.code, id, true);
+                        if (getHidedElementCodes_1.hasActions(question) ||
+                            getHidedElementCodes_1.hasActionsOnChild(question) ||
+                            getHidedElementCodes_1.canHasCurrencyActionsOnChild(question)) {
+                            _this.visibilityKeeper.clearVisibility();
+                        }
+                        _this.visibilityKeeper.clearRequired();
+                        _this.validateKeeper.refreshQuestionCache(question, id);
+                        _this.rerenderCallback && _this.rerenderCallback();
+                    },
+                    errors: address_1.AddressModel.validate(_this.valuesKeeper.getValue(question.code, id), function (name) {
+                        return _this.touchKeeper.getTouch(address_1.AddressModel.getFullCodeName(question, name), id);
+                    }),
+                    setTouched: function (name) {
+                        if (!_this.touchKeeper.setTouch(address_1.AddressModel.getFullCodeName(question, name), id, true)) {
+                            return;
+                        }
+                        _this.validateKeeper.refreshQuestionCache(question, id);
+                        _this.rerenderCallback && _this.rerenderCallback();
+                    },
+                    declaration: _this,
+                };
+                return t;
+            }
+            else if (question.type !== 'multiple') {
                 return {
                     question: question,
                     value: _this.valuesKeeper.getValue(question.code, id),

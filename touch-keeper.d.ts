@@ -6,5 +6,5 @@ export default class TouchKeeper {
     constructor(valuesKeeper: ValuesKeeper);
     touchAllFromPage: (page: Page) => void;
     setTouch: (code: string, id: number, newValue: boolean) => boolean;
-    getTouch: (code: string, id?: number | undefined) => boolean | "";
+    getTouch: (code: string, id?: number | undefined) => boolean;
 }

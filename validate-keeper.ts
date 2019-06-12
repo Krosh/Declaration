@@ -3,12 +3,13 @@ import { Question, Page } from './types/declaration'
 import TouchKeeper from './touch-keeper'
 import { VisibilityKeeper } from './visibility-keeper'
 import validate from './validation'
+import { AddressModel } from './types/address'
 
 export default class ValidateKeeper {
   private valuesKeeper: ValuesKeeper
   private touchKeeper: TouchKeeper
   private visibilityKeeper: VisibilityKeeper
-  private cache: { [key: string]: string[] } = {}
+  private cache: { [key: string]: any } = {}
 
   constructor(
     valuesKeeper: ValuesKeeper,
@@ -28,6 +29,14 @@ export default class ValidateKeeper {
           .getRequiredList(question.code, question.answers, id)
           .flatMap(item => this.validateQuestion(item, id))
       )
+    }
+    if (question.type === 'address') {
+      return Object.values(
+        AddressModel.validate(
+          this.valuesKeeper.getValue(question.code, id),
+          (code: string) => this.touchKeeper.getTouch(question.code + code, id)
+        )
+      ).flat()
     }
     if (!this.touchKeeper.getTouch(question.code, id)) {
       return []

@@ -1,5 +1,6 @@
 import { Page, Question } from './types/declaration'
 import ValuesKeeper from './values-keeper'
+import { AddressModel } from './types/address'
 
 export default class TouchKeeper {
   private values: { [key: string]: { [id: number]: boolean } }
@@ -18,6 +19,10 @@ export default class TouchKeeper {
           this.valuesKeeper
             .getMultipleIds(question.code)
             .forEach(multipleId => processTouches(question.answers, multipleId))
+        } else if (question.type === 'address') {
+          for (let key in AddressModel.create(null)) {
+            this.setTouch(AddressModel.getFullCodeName(question, key), id, true)
+          }
         } else {
           this.setTouch(question.code, id, true)
         }
@@ -40,7 +45,7 @@ export default class TouchKeeper {
       id = 0
     }
     if (!this.values[code] || !this.values[code][id]) {
-      return ''
+      return false
     }
     return this.values[code][id]
   }

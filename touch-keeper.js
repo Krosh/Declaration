@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var address_1 = require("./types/address");
 var TouchKeeper = /** @class */ (function () {
     function TouchKeeper(valuesKeeper) {
         var _this = this;
@@ -10,6 +11,11 @@ var TouchKeeper = /** @class */ (function () {
                         _this.valuesKeeper
                             .getMultipleIds(question.code)
                             .forEach(function (multipleId) { return processTouches(question.answers, multipleId); });
+                    }
+                    else if (question.type === 'address') {
+                        for (var key in address_1.AddressModel.create(null)) {
+                            _this.setTouch(address_1.AddressModel.getFullCodeName(question, key), id, true);
+                        }
                     }
                     else {
                         _this.setTouch(question.code, id, true);
@@ -31,7 +37,7 @@ var TouchKeeper = /** @class */ (function () {
                 id = 0;
             }
             if (!_this.values[code] || !_this.values[code][id]) {
-                return '';
+                return false;
             }
             return _this.values[code][id];
         };
