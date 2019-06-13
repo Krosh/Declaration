@@ -2,7 +2,7 @@ export interface Validation {
     maxLength?: number;
     canBeSkipped?: boolean;
     oneOf?: string[];
-    type?: 'inn' | 'kpp' | 'oktmo';
+    type?: 'inn' | 'kpp' | 'oktmo' | 'year';
 }
 export declare type Action = ShowInputsAction | ShowPagesAction | EnableRequiredAction;
 export declare type ShowInputsAction = {
@@ -28,6 +28,7 @@ interface BaseQuestion {
     name: string;
     hint: string;
     code: string;
+    page: Page;
     parent_code?: string | null;
     validation?: Validation;
 }

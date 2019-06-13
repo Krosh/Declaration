@@ -26,9 +26,18 @@ var validate = function (questionCode, qValidation, getValue, requiredFromAction
         return [];
     }
     if (value === '') {
+        if (validation.oneOf) {
+            return ['Пожалуйста, заполните хотя бы одно из этих полей'];
+        }
         return ['Не должен быть пустым'];
     }
     if (validation.type) {
+        if (validation.type === 'year') {
+            var result = validateYear(value);
+            if (!!result.length) {
+                return result;
+            }
+        }
         if (validation.type === 'inn') {
             var result = validateInn(value);
             if (!!result.length) {
@@ -44,6 +53,12 @@ var validate = function (questionCode, qValidation, getValue, requiredFromAction
     }
     return [];
 };
+function validateYear(value) {
+    if (parseInt(value) < 1950 || parseInt(value) > 2050) {
+        return ['Указан некорректный год'];
+    }
+    return [];
+}
 function validateBik(bik) {
     if (typeof bik === 'number') {
         bik = bik.toString();

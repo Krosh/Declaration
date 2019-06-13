@@ -2,7 +2,7 @@ export interface Validation {
   maxLength?: number
   canBeSkipped?: boolean
   oneOf?: string[]
-  type?: 'inn' | 'kpp' | 'oktmo'
+  type?: 'inn' | 'kpp' | 'oktmo' | 'year'
 }
 
 export type Action = ShowInputsAction | ShowPagesAction | EnableRequiredAction
@@ -35,6 +35,7 @@ interface BaseQuestion {
   name: string
   hint: string
   code: string
+  page: Page
   parent_code?: string | null
   validation?: Validation
 }
@@ -160,7 +161,8 @@ export function processAnswers(answers: any) {
 }
 
 export function processData(data: any) {
-  const parseActions = (item: any) => {
+  const parseActions = (item: any, page: Page) => {
+    item.page = page
     if (item.action) {
       item.action = JSON.parse(item.action)
     }
@@ -169,13 +171,13 @@ export function processData(data: any) {
     }
     if (item.answers) {
       item.answers.forEach((answer: any) => {
-        parseActions(answer)
+        parseActions(answer, page)
       })
     }
   }
 
   data.pages.forEach((page: any) => {
-    page.questions.forEach(parseActions)
+    page.questions.forEach((item: any) => parseActions(item, page))
   })
 
   return data

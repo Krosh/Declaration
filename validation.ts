@@ -26,10 +26,19 @@ const validate = (
   }
 
   if (value === '') {
+    if (validation.oneOf) {
+      return ['Пожалуйста, заполните хотя бы одно из этих полей']
+    }
     return ['Не должен быть пустым']
   }
 
   if (validation.type) {
+    if (validation.type === 'year') {
+      const result = validateYear(value)
+      if (!!result.length) {
+        return result
+      }
+    }
     if (validation.type === 'inn') {
       const result = validateInn(value)
       if (!!result.length) {
@@ -45,6 +54,13 @@ const validate = (
     }
   }
 
+  return []
+}
+
+function validateYear(value: string) {
+  if (parseInt(value) < 1950 || parseInt(value) > 2050) {
+    return ['Указан некорректный год']
+  }
   return []
 }
 

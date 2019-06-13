@@ -10,6 +10,9 @@ var ValidateKeeper = /** @class */ (function () {
         var _this = this;
         this.cache = {};
         this.getErrors = function (question, id) {
+            if (question.type === 'info') {
+                return [];
+            }
             if (question.type === 'multiple') {
                 var ids = _this.valuesKeeper.getMultipleIds(question.code);
                 return ids.flatMap(function (id) {
@@ -28,7 +31,9 @@ var ValidateKeeper = /** @class */ (function () {
                 ? _this.visibilityKeeper
                     .getRequiredList(question.parent_code, [], id)
                     .includes(question)
-                : true;
+                : _this.visibilityKeeper
+                    .getRequiredList(question.page.code, question.page.questions, 0)
+                    .includes(question);
             return validation_1.default(question.code, question.validation, function (code) { return _this.valuesKeeper.getValue(code, id); }, isRequiredFromAction);
         };
         this.getPageErrors = function (page) {

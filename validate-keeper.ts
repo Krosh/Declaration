@@ -22,6 +22,9 @@ export default class ValidateKeeper {
   }
 
   private getErrors = (question: Question, id: number) => {
+    if (question.type === 'info') {
+      return []
+    }
     if (question.type === 'multiple') {
       const ids = this.valuesKeeper.getMultipleIds(question.code)
       return ids.flatMap(id =>
@@ -45,7 +48,9 @@ export default class ValidateKeeper {
       ? this.visibilityKeeper
           .getRequiredList(question.parent_code, [], id)
           .includes(question)
-      : true
+      : this.visibilityKeeper
+          .getRequiredList(question.page.code, question.page.questions, 0)
+          .includes(question)
 
     return validate(
       question.code,

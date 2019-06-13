@@ -19,7 +19,8 @@ function processAnswers(answers) {
 }
 exports.processAnswers = processAnswers;
 function processData(data) {
-    var parseActions = function (item) {
+    var parseActions = function (item, page) {
+        item.page = page;
         if (item.action) {
             item.action = JSON.parse(item.action);
         }
@@ -28,12 +29,12 @@ function processData(data) {
         }
         if (item.answers) {
             item.answers.forEach(function (answer) {
-                parseActions(answer);
+                parseActions(answer, page);
             });
         }
     };
     data.pages.forEach(function (page) {
-        page.questions.forEach(parseActions);
+        page.questions.forEach(function (item) { return parseActions(item, page); });
     });
     return data;
 }
