@@ -4,11 +4,31 @@ var getHidedElementCodes_1 = require("./getHidedElementCodes");
 var PageKeeper = /** @class */ (function () {
     function PageKeeper(schema, getValue) {
         var _this = this;
+        this.setActiveQuestion = function (question) {
+            _this.activeQuestion = question;
+        };
+        this.getActiveQuestion = function () { return _this.activeQuestion; };
         this.setActivePage = function (page) {
+            if (_this.activePage === page) {
+                return;
+            }
+            _this.activeQuestion = undefined;
             _this.activePage = page;
+            _this.activeTab = page.tab;
         };
         this.setActiveTab = function (tab) {
+            if (_this.activeTab === tab) {
+                return;
+            }
             _this.activeTab = tab;
+            var titlePage = _this.getTitlePage(tab);
+            if (titlePage) {
+                _this.activePage = titlePage;
+                _this.activeQuestion = undefined;
+            }
+        };
+        this.getTitlePage = function (tab) {
+            return _this.pages.find(function (item) { return item.tab === tab && item.is_title; });
         };
         this.isActiveTab = function (tab) { return _this.activeTab === tab; };
         this.isActivePage = function (page) { return _this.activePage.id === page.id; };
@@ -27,6 +47,7 @@ var PageKeeper = /** @class */ (function () {
                 return getHidedElementCodes_1.getHidedElementCodes(page.questions, getValue, function () { return false; }, 'show_pages');
             });
         };
+        this.activeQuestion = undefined;
         this.pages = schema.pages;
         this.tabs = schema.pages
             .map(function (item) { return item.tab; })

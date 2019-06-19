@@ -1,4 +1,4 @@
-import { FullyLoadedDeclaration, Page } from './types/declaration';
+import { FullyLoadedDeclaration, Page, Question } from './types/declaration';
 export default class PageKeeper {
     tabs: string[];
     pages: Page[];
@@ -6,9 +6,13 @@ export default class PageKeeper {
     activeTab: string;
     hidedPagesCodes: string[];
     visiblePages: Page[];
+    activeQuestion: Question | undefined;
     constructor(schema: FullyLoadedDeclaration, getValue: (code: string) => string);
+    setActiveQuestion: (question: Question) => void;
+    getActiveQuestion: () => import("./types/declaration").TextQuestion | import("./types/declaration").AutocompleteQuestion | import("./types/declaration").CurrencyAutocompleteQuestion | import("./types/declaration").AddressQuestion | import("./types/declaration").InfoQuestion | import("./types/declaration").DateQuestion | import("./types/declaration").PhoneQuestion | import("./types/declaration").MultipleQuestion | import("./types/declaration").NumberQuestion | import("./types/declaration").RadioQuestion | import("./types/declaration").SelectQuestion | import("./types/declaration").CheckboxQuestion | import("./types/declaration").MoneyQuestion | import("./types/declaration").MoneyIntegerQuestion | import("./types/declaration").SharesQuestion | undefined;
     setActivePage: (page: Page) => void;
     setActiveTab: (tab: string) => void;
+    getTitlePage: (tab: string) => Page | undefined;
     isActiveTab: (tab: string) => boolean;
     isActivePage: (page: Page) => boolean;
     getActiveTab: () => string;

@@ -31,6 +31,7 @@ export interface DataProvider {
 export interface SingleQuestionProps {
   question: SingleQuestion
   value: string
+  setActive: () => void
   setValue: (newValue: string) => void
   errors: string[]
   setTouched: () => void
@@ -85,6 +86,8 @@ export default class Declaration {
   validatePage: (page: Page) => string[]
   private touchKeeper: TouchKeeper
   getMultipleIds: (code: string) => number[]
+  getTitlePage: (tab: string) => Page | undefined
+  getActiveQuestion: () => Question | undefined
 
   constructor(
     schema: FullyLoadedDeclaration,
@@ -107,9 +110,11 @@ export default class Declaration {
 
     this.isActiveTab = this.pagesKeeper.isActiveTab
     this.isActivePage = this.pagesKeeper.isActivePage
+    this.getTitlePage = this.pagesKeeper.getTitlePage
 
     this.getActiveTab = this.pagesKeeper.getActiveTab
     this.getActivePage = this.pagesKeeper.getActivePage
+    this.getActiveQuestion = this.pagesKeeper.getActiveQuestion
 
     this.getVisibleTabs = () => this.pagesKeeper.tabs
     this.getVisiblePages = () => this.pagesKeeper.visiblePages
@@ -267,9 +272,16 @@ export default class Declaration {
       }
       return t
     } else if (question.type !== 'multiple') {
-      return {
+      const t: SingleQuestionProps = {
         question: question as any, // TODO
         value: this.valuesKeeper.getValue(question.code, id),
+        setActive: () => {
+          if (this.pagesKeeper.getActiveQuestion() === question) {
+            return
+          }
+          this.pagesKeeper.setActiveQuestion(question)
+          this.rerenderCallback && this.rerenderCallback()
+        },
         setValue: newValue => {
           if (!this.valuesKeeper.setValue(question.code, id, newValue)) {
             return
@@ -302,6 +314,7 @@ export default class Declaration {
           this.valuesKeeper.processCurrencyQuestion(question, id, needHide),
         declaration: this,
       }
+      return t
     } else {
       return {
         question: question as MultipleQuestion,

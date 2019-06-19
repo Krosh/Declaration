@@ -8,6 +8,7 @@ export interface DataProvider {
 export interface SingleQuestionProps {
     question: SingleQuestion;
     value: string;
+    setActive: () => void;
     setValue: (newValue: string) => void;
     errors: string[];
     setTouched: () => void;
@@ -52,6 +53,8 @@ export default class Declaration {
     validatePage: (page: Page) => string[];
     private touchKeeper;
     getMultipleIds: (code: string) => number[];
+    getTitlePage: (tab: string) => Page | undefined;
+    getActiveQuestion: () => Question | undefined;
     constructor(schema: FullyLoadedDeclaration, initialValues: Values, dataProvider: DataProvider);
     processShowInputsActions: (schema: FullyLoadedDeclaration) => void;
     calculateQuestionsMap: (schema: FullyLoadedDeclaration) => {};

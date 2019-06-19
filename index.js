@@ -129,9 +129,16 @@ var Declaration = /** @class */ (function () {
                 return t;
             }
             else if (question.type !== 'multiple') {
-                return {
+                var t = {
                     question: question,
                     value: _this.valuesKeeper.getValue(question.code, id),
+                    setActive: function () {
+                        if (_this.pagesKeeper.getActiveQuestion() === question) {
+                            return;
+                        }
+                        _this.pagesKeeper.setActiveQuestion(question);
+                        _this.rerenderCallback && _this.rerenderCallback();
+                    },
                     setValue: function (newValue) {
                         if (!_this.valuesKeeper.setValue(question.code, id, newValue)) {
                             return;
@@ -160,6 +167,7 @@ var Declaration = /** @class */ (function () {
                     },
                     declaration: _this,
                 };
+                return t;
             }
             else {
                 return {
@@ -195,8 +203,10 @@ var Declaration = /** @class */ (function () {
         this.validateKeeper = new validate_keeper_1.default(this.valuesKeeper, this.touchKeeper, this.visibilityKeeper);
         this.isActiveTab = this.pagesKeeper.isActiveTab;
         this.isActivePage = this.pagesKeeper.isActivePage;
+        this.getTitlePage = this.pagesKeeper.getTitlePage;
         this.getActiveTab = this.pagesKeeper.getActiveTab;
         this.getActivePage = this.pagesKeeper.getActivePage;
+        this.getActiveQuestion = this.pagesKeeper.getActiveQuestion;
         this.getVisibleTabs = function () { return _this.pagesKeeper.tabs; };
         this.getVisiblePages = function () { return _this.pagesKeeper.visiblePages; };
         this.getMultipleIds = this.valuesKeeper.getMultipleIds;

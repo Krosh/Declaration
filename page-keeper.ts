@@ -1,4 +1,9 @@
-import { Values, FullyLoadedDeclaration, Page } from './types/declaration'
+import {
+  Values,
+  FullyLoadedDeclaration,
+  Page,
+  Question,
+} from './types/declaration'
 import { getHidedElementCodes } from './getHidedElementCodes'
 
 export default class PageKeeper {
@@ -9,11 +14,13 @@ export default class PageKeeper {
 
   hidedPagesCodes: string[]
   visiblePages: Page[]
+  activeQuestion: Question | undefined
 
   constructor(
     schema: FullyLoadedDeclaration,
     getValue: (code: string) => string
   ) {
+    this.activeQuestion = undefined
     this.pages = schema.pages
     this.tabs = schema.pages
       .map(item => item.tab)
@@ -25,13 +32,35 @@ export default class PageKeeper {
     this.visiblePages = this.getVisiblePages()
   }
 
+  setActiveQuestion = (question: Question) => {
+    this.activeQuestion = question
+  }
+
+  getActiveQuestion = () => this.activeQuestion
+
   setActivePage = (page: Page) => {
+    if (this.activePage === page) {
+      return
+    }
+    this.activeQuestion = undefined
     this.activePage = page
+    this.activeTab = page.tab
   }
 
   setActiveTab = (tab: string) => {
+    if (this.activeTab === tab) {
+      return
+    }
     this.activeTab = tab
+    const titlePage = this.getTitlePage(tab)
+    if (titlePage) {
+      this.activePage = titlePage
+      this.activeQuestion = undefined
+    }
   }
+
+  getTitlePage = (tab: string) =>
+    this.pages.find(item => item.tab === tab && item.is_title)
 
   isActiveTab = (tab: string) => this.activeTab === tab
   isActivePage = (page: Page) => this.activePage.id === page.id

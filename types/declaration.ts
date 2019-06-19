@@ -138,6 +138,7 @@ export interface Page {
   tab: string
   id: number
   questions: Question[]
+  is_title: boolean
 }
 
 export interface Declaration {
