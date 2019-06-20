@@ -14,6 +14,7 @@ import {
   SingleQuestion,
   Values,
   AddressQuestion,
+  CheckboxQuestion,
 } from './types/declaration'
 import { Address, AddressModel } from './types/address'
 import ValidateKeeper from './validate-keeper'
@@ -89,6 +90,24 @@ export default class Declaration {
   getTitlePage: (tab: string) => Page | undefined
   getActiveQuestion: () => Question | undefined
 
+  canGoToNextPage: () => boolean
+  canGoToPrevPage: () => boolean
+  goToNextPage: () => void = () => {
+    const page = this.pagesKeeper.getNextPage()
+    if (undefined === page) {
+      return
+    }
+    this.setActivePage(page)
+  }
+
+  goToPrevPage: () => void = () => {
+    const page = this.pagesKeeper.getPrevPage()
+    if (undefined === page) {
+      return
+    }
+    this.setActivePage(page)
+  }
+
   constructor(
     schema: FullyLoadedDeclaration,
     initialValues: Values,
@@ -107,6 +126,9 @@ export default class Declaration {
       this.touchKeeper,
       this.visibilityKeeper
     )
+
+    this.canGoToNextPage = this.pagesKeeper.canGoToNextPage
+    this.canGoToPrevPage = this.pagesKeeper.canGoToPrevPage
 
     this.isActiveTab = this.pagesKeeper.isActiveTab
     this.isActivePage = this.pagesKeeper.isActivePage
@@ -222,6 +244,36 @@ export default class Declaration {
     return ids.length === 0
   }
 
+  /**
+   * Вызывать, когда меняем чекбокс,
+   * если ставим чекбокс, который показывает страницу, и у этой страницы
+   * есть multipleQuestion, и в нем нет вариантов, то добавляем вариант
+   */
+  private processCheckboxChange = (question: CheckboxQuestion) => {
+    if (
+      question.action &&
+      question.action.type === 'show_pages' &&
+      question.action.codes.length
+    ) {
+      const pageCode = question.action.codes[0]
+      const page = this.pagesKeeper.pages.find(item => item.code === pageCode)
+      if (!page) {
+        return
+      }
+      const defaultQuestion = this.getDefaultMutlipleQuestion(page)
+      if (!defaultQuestion) {
+        return
+      }
+      const ids = this.getMultipleIds(defaultQuestion.code)
+      if (!ids.length) {
+        this.valuesKeeper.addMultiple(
+          defaultQuestion.code,
+          new Date().valueOf()
+        )
+      }
+    }
+  }
+
   getQuestionProps = (question: Question, id: number): QuestionProps => {
     if (question.type === 'address') {
       const t: AddressQuestionProps = {
@@ -290,6 +342,9 @@ export default class Declaration {
             question.code,
             this.valuesKeeper.getValue
           )
+          if (newValue === '1' && question.type === 'checkbox') {
+            this.processCheckboxChange(question)
+          }
           this.touchKeeper.setTouch(question.code, id, true)
           if (
             hasActions(question) ||

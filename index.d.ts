@@ -1,4 +1,4 @@
-import { FullyLoadedDeclaration, MultipleQuestion, Page, Question, SingleQuestion, Values, AddressQuestion } from './types/declaration';
+import { FullyLoadedDeclaration, MultipleQuestion, Page, Question, SingleQuestion, Values, AddressQuestion, CheckboxQuestion } from './types/declaration';
 import { Address } from './types/address';
 export interface DataProvider {
     saveAnswer: (questionCode: string, id: number, value: string) => void;
@@ -55,6 +55,10 @@ export default class Declaration {
     getMultipleIds: (code: string) => number[];
     getTitlePage: (tab: string) => Page | undefined;
     getActiveQuestion: () => Question | undefined;
+    canGoToNextPage: () => boolean;
+    canGoToPrevPage: () => boolean;
+    goToNextPage: () => void;
+    goToPrevPage: () => void;
     constructor(schema: FullyLoadedDeclaration, initialValues: Values, dataProvider: DataProvider);
     processShowInputsActions: (schema: FullyLoadedDeclaration) => void;
     calculateQuestionsMap: (schema: FullyLoadedDeclaration) => {};
@@ -63,7 +67,13 @@ export default class Declaration {
     setActivePage: (page: Page) => void;
     setActiveTab: (tab: string) => void;
     filterMutlipleQuestionChilds: (multipleQuestion: MultipleQuestion, id: number) => SingleQuestion[];
-    getDefaultMutlipleQuestion: (page: Page) => import("./types/declaration").TextQuestion | import("./types/declaration").AutocompleteQuestion | import("./types/declaration").CurrencyAutocompleteQuestion | AddressQuestion | import("./types/declaration").InfoQuestion | import("./types/declaration").DateQuestion | import("./types/declaration").PhoneQuestion | MultipleQuestion | import("./types/declaration").NumberQuestion | import("./types/declaration").RadioQuestion | import("./types/declaration").SelectQuestion | import("./types/declaration").CheckboxQuestion | import("./types/declaration").MoneyQuestion | import("./types/declaration").MoneyIntegerQuestion | import("./types/declaration").SharesQuestion | undefined;
+    getDefaultMutlipleQuestion: (page: Page) => import("./types/declaration").TextQuestion | import("./types/declaration").AutocompleteQuestion | import("./types/declaration").CurrencyAutocompleteQuestion | AddressQuestion | import("./types/declaration").InfoQuestion | import("./types/declaration").DateQuestion | import("./types/declaration").PhoneQuestion | MultipleQuestion | import("./types/declaration").NumberQuestion | import("./types/declaration").RadioQuestion | import("./types/declaration").SelectQuestion | CheckboxQuestion | import("./types/declaration").MoneyQuestion | import("./types/declaration").MoneyIntegerQuestion | import("./types/declaration").SharesQuestion | undefined;
     isPageEmpty: (page: Page) => boolean;
+    /**
+     * Вызывать, когда меняем чекбокс,
+     * если ставим чекбокс, который показывает страницу, и у этой страницы
+     * есть multipleQuestion, и в нем нет вариантов, то добавляем вариант
+     */
+    private processCheckboxChange;
     getQuestionProps: (question: Question, id: number) => QuestionProps;
 }

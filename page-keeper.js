@@ -17,12 +17,9 @@ var PageKeeper = /** @class */ (function () {
             _this.activeTab = page.tab;
         };
         this.setActiveTab = function (tab) {
-            if (_this.activeTab === tab) {
-                return;
-            }
             _this.activeTab = tab;
             var titlePage = _this.getTitlePage(tab);
-            if (titlePage) {
+            if (titlePage && titlePage !== _this.activePage) {
                 _this.activePage = titlePage;
                 _this.activeQuestion = undefined;
             }
@@ -34,6 +31,27 @@ var PageKeeper = /** @class */ (function () {
         this.isActivePage = function (page) { return _this.activePage.id === page.id; };
         this.getActiveTab = function () { return _this.activeTab; };
         this.getActivePage = function () { return _this.activePage; };
+        this.canGoToNextPage = function () {
+            return (_this.visiblePages.indexOf(_this.activePage) !==
+                _this.visiblePages.length - 1);
+        };
+        this.canGoToPrevPage = function () {
+            return _this.visiblePages.indexOf(_this.activePage) !== 0;
+        };
+        this.getNextPage = function () {
+            if (!_this.canGoToNextPage()) {
+                return undefined;
+            }
+            var currentIndex = _this.visiblePages.indexOf(_this.activePage);
+            return _this.visiblePages[currentIndex + 1];
+        };
+        this.getPrevPage = function () {
+            if (!_this.canGoToPrevPage()) {
+                return undefined;
+            }
+            var currentIndex = _this.visiblePages.indexOf(_this.activePage);
+            return _this.visiblePages[currentIndex - 1];
+        };
         this.getVisiblePages = function () {
             return _this.pages.filter(function (item) { return !_this.hidedPagesCodes.includes(item.code); });
         };

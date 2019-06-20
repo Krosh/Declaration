@@ -17,7 +17,11 @@ export default class PageKeeper {
     isActivePage: (page: Page) => boolean;
     getActiveTab: () => string;
     getActivePage: () => Page;
-    getVisiblePages: () => Page[];
+    canGoToNextPage: () => boolean;
+    canGoToPrevPage: () => boolean;
+    getNextPage: () => Page | undefined;
+    getPrevPage: () => Page | undefined;
+    private getVisiblePages;
     processChangeValue: (questionCode: string, getValue: (code: string) => string) => void;
-    getHidedPagesCodes: (getValue: (code: string) => string) => string[];
+    private getHidedPagesCodes;
 }

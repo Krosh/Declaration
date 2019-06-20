@@ -48,12 +48,9 @@ export default class PageKeeper {
   }
 
   setActiveTab = (tab: string) => {
-    if (this.activeTab === tab) {
-      return
-    }
     this.activeTab = tab
     const titlePage = this.getTitlePage(tab)
-    if (titlePage) {
+    if (titlePage && titlePage !== this.activePage) {
       this.activePage = titlePage
       this.activeQuestion = undefined
     }
@@ -68,7 +65,34 @@ export default class PageKeeper {
   getActiveTab = () => this.activeTab
   getActivePage = () => this.activePage
 
-  getVisiblePages = () =>
+  canGoToNextPage = () => {
+    return (
+      this.visiblePages.indexOf(this.activePage) !==
+      this.visiblePages.length - 1
+    )
+  }
+
+  canGoToPrevPage = () => {
+    return this.visiblePages.indexOf(this.activePage) !== 0
+  }
+
+  getNextPage = () => {
+    if (!this.canGoToNextPage()) {
+      return undefined
+    }
+    const currentIndex = this.visiblePages.indexOf(this.activePage)
+    return this.visiblePages[currentIndex + 1]
+  }
+
+  getPrevPage = () => {
+    if (!this.canGoToPrevPage()) {
+      return undefined
+    }
+    const currentIndex = this.visiblePages.indexOf(this.activePage)
+    return this.visiblePages[currentIndex - 1]
+  }
+
+  private getVisiblePages = () =>
     this.pages.filter(item => !this.hidedPagesCodes.includes(item.code))
 
   processChangeValue = (
@@ -80,7 +104,7 @@ export default class PageKeeper {
     this.visiblePages = this.getVisiblePages()
   }
 
-  getHidedPagesCodes = (getValue: (code: string) => string) => {
+  private getHidedPagesCodes = (getValue: (code: string) => string) => {
     return this.pages.flatMap(page =>
       getHidedElementCodes(page.questions, getValue, () => false, 'show_pages')
     )

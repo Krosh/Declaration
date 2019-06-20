@@ -13,6 +13,20 @@ var visibility_keeper_1 = require("./visibility-keeper");
 var Declaration = /** @class */ (function () {
     function Declaration(schema, initialValues, dataProvider) {
         var _this = this;
+        this.goToNextPage = function () {
+            var page = _this.pagesKeeper.getNextPage();
+            if (undefined === page) {
+                return;
+            }
+            _this.setActivePage(page);
+        };
+        this.goToPrevPage = function () {
+            var page = _this.pagesKeeper.getPrevPage();
+            if (undefined === page) {
+                return;
+            }
+            _this.setActivePage(page);
+        };
         this.processShowInputsActions = function (schema) {
             var parseActions = function (item) {
                 if (item.action && item.action.type === 'show_inputs') {
@@ -94,6 +108,30 @@ var Declaration = /** @class */ (function () {
             var ids = _this.getMultipleIds(defaultQuestion.code);
             return ids.length === 0;
         };
+        /**
+         * Вызывать, когда меняем чекбокс,
+         * если ставим чекбокс, который показывает страницу, и у этой страницы
+         * есть multipleQuestion, и в нем нет вариантов, то добавляем вариант
+         */
+        this.processCheckboxChange = function (question) {
+            if (question.action &&
+                question.action.type === 'show_pages' &&
+                question.action.codes.length) {
+                var pageCode_1 = question.action.codes[0];
+                var page = _this.pagesKeeper.pages.find(function (item) { return item.code === pageCode_1; });
+                if (!page) {
+                    return;
+                }
+                var defaultQuestion = _this.getDefaultMutlipleQuestion(page);
+                if (!defaultQuestion) {
+                    return;
+                }
+                var ids = _this.getMultipleIds(defaultQuestion.code);
+                if (!ids.length) {
+                    _this.valuesKeeper.addMultiple(defaultQuestion.code, new Date().valueOf());
+                }
+            }
+        };
         this.getQuestionProps = function (question, id) {
             if (question.type === 'address') {
                 var t = {
@@ -144,6 +182,9 @@ var Declaration = /** @class */ (function () {
                             return;
                         }
                         _this.pagesKeeper.processChangeValue(question.code, _this.valuesKeeper.getValue);
+                        if (newValue === '1' && question.type === 'checkbox') {
+                            _this.processCheckboxChange(question);
+                        }
                         _this.touchKeeper.setTouch(question.code, id, true);
                         if (getHidedElementCodes_1.hasActions(question) ||
                             getHidedElementCodes_1.hasActionsOnChild(question) ||
@@ -201,6 +242,8 @@ var Declaration = /** @class */ (function () {
         this.pagesKeeper = new page_keeper_1.default(schema, this.valuesKeeper.getValue);
         this.touchKeeper = new touch_keeper_1.default(this.valuesKeeper);
         this.validateKeeper = new validate_keeper_1.default(this.valuesKeeper, this.touchKeeper, this.visibilityKeeper);
+        this.canGoToNextPage = this.pagesKeeper.canGoToNextPage;
+        this.canGoToPrevPage = this.pagesKeeper.canGoToPrevPage;
         this.isActiveTab = this.pagesKeeper.isActiveTab;
         this.isActivePage = this.pagesKeeper.isActivePage;
         this.getTitlePage = this.pagesKeeper.getTitlePage;
