@@ -70,6 +70,10 @@ export interface PhoneQuestion extends BaseQuestion {
   type: 'phone'
 }
 
+export interface OkvedQuestion extends BaseQuestion {
+  type: 'okved'
+}
+
 export interface AnswerQuestion extends BaseQuestion {
   action?: Action
 }
@@ -127,6 +131,7 @@ export type SingleQuestion =
   | SelectQuestion
   | CheckboxQuestion
   | MoneyQuestion
+  | OkvedQuestion
   | MoneyAbroadQuestion
   | MoneyCourseQuestion
   | MoneyIntegerQuestion
