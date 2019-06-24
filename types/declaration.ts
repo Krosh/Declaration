@@ -2,7 +2,7 @@ export interface Validation {
   maxLength?: number
   canBeSkipped?: boolean
   oneOf?: string[]
-  type?: 'inn' | 'kpp' | 'oktmo' | 'year'
+  type?: 'inn' | 'kpp' | 'oktmo' | 'year' | 'phone' | 'okved'
 }
 
 export type Action = ShowInputsAction | ShowPagesAction | EnableRequiredAction

@@ -32,6 +32,12 @@ var validate = function (questionCode, qValidation, getValue, requiredFromAction
         return ['Не должен быть пустым'];
     }
     if (validation.type) {
+        if (validation.type === 'phone') {
+            return validatePhone(value);
+        }
+        if (validation.type === 'okved') {
+            return validateOkved(value);
+        }
         if (validation.type === 'year') {
             var result = validateYear(value);
             if (!!result.length) {
@@ -53,6 +59,18 @@ var validate = function (questionCode, qValidation, getValue, requiredFromAction
     }
     return [];
 };
+function validatePhone(value) {
+    if (value.replace(/\D/g, function () { return ''; }).length !== 11) {
+        return ['Введен некорректный телефон'];
+    }
+    return [];
+}
+function validateOkved(value) {
+    if (!value.match(/\d\d\.\d\d\.\d\d/)) {
+        return ['Некорректный код ОКВЭД'];
+    }
+    return [];
+}
 function validateYear(value) {
     if (parseInt(value) < 1950 || parseInt(value) > 2050) {
         return ['Указан некорректный год'];

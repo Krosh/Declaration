@@ -33,6 +33,12 @@ const validate = (
   }
 
   if (validation.type) {
+    if (validation.type === 'phone') {
+      return validatePhone(value)
+    }
+    if (validation.type === 'okved') {
+      return validateOkved(value)
+    }
     if (validation.type === 'year') {
       const result = validateYear(value)
       if (!!result.length) {
@@ -54,6 +60,20 @@ const validate = (
     }
   }
 
+  return []
+}
+
+function validatePhone(value: string) {
+  if (value.replace(/\D/g, () => '').length !== 11) {
+    return ['Введен некорректный телефон']
+  }
+  return []
+}
+
+function validateOkved(value: string) {
+  if (!value.match(/\d\d\.\d\d\.\d\d/)) {
+    return ['Некорректный код ОКВЭД']
+  }
   return []
 }
 
