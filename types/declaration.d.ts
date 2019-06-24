@@ -81,13 +81,19 @@ export interface NumberQuestion extends BaseQuestion {
 export interface MoneyQuestion extends BaseQuestion {
     type: 'money';
 }
+export interface MoneyAbroadQuestion extends BaseQuestion {
+    type: 'money_abroad';
+}
+export interface MoneyCourseQuestion extends BaseQuestion {
+    type: 'money_course';
+}
 export interface SharesQuestion extends BaseQuestion {
     type: 'shares';
 }
 export interface MoneyIntegerQuestion extends BaseQuestion {
     type: 'money_integer';
 }
-export declare type SingleQuestion = TextQuestion | AutocompleteQuestion | CurrencyAutocompleteQuestion | AddressQuestion | PhoneQuestion | NumberQuestion | RadioQuestion | DateQuestion | SelectQuestion | CheckboxQuestion | MoneyQuestion | MoneyIntegerQuestion | SharesQuestion | InfoQuestion;
+export declare type SingleQuestion = TextQuestion | AutocompleteQuestion | CurrencyAutocompleteQuestion | AddressQuestion | PhoneQuestion | NumberQuestion | RadioQuestion | DateQuestion | SelectQuestion | CheckboxQuestion | MoneyQuestion | MoneyAbroadQuestion | MoneyCourseQuestion | MoneyIntegerQuestion | SharesQuestion | InfoQuestion;
 export declare type Question = SingleQuestion | MultipleQuestion;
 export declare type QuestionWithAction = {
     action?: Action;

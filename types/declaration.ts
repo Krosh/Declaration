@@ -101,6 +101,12 @@ export interface NumberQuestion extends BaseQuestion {
 export interface MoneyQuestion extends BaseQuestion {
   type: 'money'
 }
+export interface MoneyAbroadQuestion extends BaseQuestion {
+  type: 'money_abroad'
+}
+export interface MoneyCourseQuestion extends BaseQuestion {
+  type: 'money_course'
+}
 
 export interface SharesQuestion extends BaseQuestion {
   type: 'shares'
@@ -121,6 +127,8 @@ export type SingleQuestion =
   | SelectQuestion
   | CheckboxQuestion
   | MoneyQuestion
+  | MoneyAbroadQuestion
+  | MoneyCourseQuestion
   | MoneyIntegerQuestion
   | SharesQuestion
   | InfoQuestion
