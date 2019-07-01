@@ -59,6 +59,7 @@ export default class Declaration {
     canGoToPrevPage: () => boolean;
     goToNextPage: () => void;
     goToPrevPage: () => void;
+    getPages: () => Page[];
     constructor(schema: FullyLoadedDeclaration, initialValues: Values, dataProvider: DataProvider);
     processShowInputsActions: (schema: FullyLoadedDeclaration) => void;
     calculateQuestionsMap: (schema: FullyLoadedDeclaration) => {};
@@ -68,6 +69,7 @@ export default class Declaration {
     setActiveTab: (tab: string) => void;
     filterMutlipleQuestionChilds: (multipleQuestion: MultipleQuestion, id: number) => SingleQuestion[];
     getDefaultMutlipleQuestion: (page: Page) => import("./types/declaration").TextQuestion | import("./types/declaration").AutocompleteQuestion | import("./types/declaration").CurrencyAutocompleteQuestion | AddressQuestion | import("./types/declaration").InfoQuestion | import("./types/declaration").DateQuestion | import("./types/declaration").PhoneQuestion | import("./types/declaration").OkvedQuestion | MultipleQuestion | import("./types/declaration").NumberQuestion | import("./types/declaration").RadioQuestion | import("./types/declaration").SelectQuestion | CheckboxQuestion | import("./types/declaration").MoneyQuestion | import("./types/declaration").MoneyAbroadQuestion | import("./types/declaration").MoneyCourseQuestion | import("./types/declaration").MoneyIntegerQuestion | import("./types/declaration").SharesQuestion | undefined;
+    getDefaultCheckboxQuestion: (page: Page) => CheckboxQuestion | undefined;
     isPageEmpty: (page: Page) => boolean;
     /**
      * Вызывать, когда меняем чекбокс,

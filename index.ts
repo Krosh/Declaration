@@ -108,6 +108,8 @@ export default class Declaration {
     this.setActivePage(page)
   }
 
+  getPages = () => this.pagesKeeper.pages
+
   constructor(
     schema: FullyLoadedDeclaration,
     initialValues: Values,
@@ -233,6 +235,16 @@ export default class Declaration {
 
   getDefaultMutlipleQuestion = (page: Page) => {
     return page.questions.find(item => item.type === 'multiple')
+  }
+
+  getDefaultCheckboxQuestion = (page: Page) => {
+    return Object.values(this.questionsMap).find(
+      item =>
+        item.type === 'checkbox' &&
+        !!item.action &&
+        item.action.type === 'show_pages' &&
+        item.action.codes.includes(page.code)
+    ) as CheckboxQuestion | undefined
   }
 
   isPageEmpty = (page: Page) => {

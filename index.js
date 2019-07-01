@@ -27,6 +27,7 @@ var Declaration = /** @class */ (function () {
             }
             _this.setActivePage(page);
         };
+        this.getPages = function () { return _this.pagesKeeper.pages; };
         this.processShowInputsActions = function (schema) {
             var parseActions = function (item) {
                 if (item.action && item.action.type === 'show_inputs') {
@@ -99,6 +100,14 @@ var Declaration = /** @class */ (function () {
         };
         this.getDefaultMutlipleQuestion = function (page) {
             return page.questions.find(function (item) { return item.type === 'multiple'; });
+        };
+        this.getDefaultCheckboxQuestion = function (page) {
+            return Object.values(_this.questionsMap).find(function (item) {
+                return item.type === 'checkbox' &&
+                    !!item.action &&
+                    item.action.type === 'show_pages' &&
+                    item.action.codes.includes(page.code);
+            });
         };
         this.isPageEmpty = function (page) {
             var defaultQuestion = _this.getDefaultMutlipleQuestion(page);
