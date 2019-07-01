@@ -58,6 +58,27 @@ const validate = (
         return result
       }
     }
+
+    if (validation.type === 'bik') {
+      const result = validateBik(value)
+      if (!!result.length) {
+        return result
+      }
+    }
+
+    if (validation.type === 'correspondent_account') {
+      const result = validateKs(value, getValue(validation.bikName!))
+      if (!!result.length) {
+        return result
+      }
+    }
+
+    if (validation.type === 'client_account') {
+      const result = validateRs(value, getValue(validation.bikName!))
+      if (!!result.length) {
+        return result
+      }
+    }
   }
 
   return []

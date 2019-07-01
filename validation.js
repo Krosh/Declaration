@@ -56,6 +56,24 @@ var validate = function (questionCode, qValidation, getValue, requiredFromAction
                 return result;
             }
         }
+        if (validation.type === 'bik') {
+            var result = validateBik(value);
+            if (!!result.length) {
+                return result;
+            }
+        }
+        if (validation.type === 'correspondent_account') {
+            var result = validateKs(value, getValue(validation.bikName));
+            if (!!result.length) {
+                return result;
+            }
+        }
+        if (validation.type === 'client_account') {
+            var result = validateRs(value, getValue(validation.bikName));
+            if (!!result.length) {
+                return result;
+            }
+        }
     }
     return [];
 };
