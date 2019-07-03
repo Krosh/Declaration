@@ -3,6 +3,7 @@ import {
   hasActions,
   hasActionsOnChild,
   canHasCurrencyActionsOnChild,
+  hasForceValueAction,
 } from './getHidedElementCodes'
 import PageKeeper from './page-keeper'
 import TouchKeeper from './touch-keeper'
@@ -15,6 +16,8 @@ import {
   Values,
   AddressQuestion,
   CheckboxQuestion,
+  ForceValuesAction,
+  QuestionHasAction,
 } from './types/declaration'
 import { Address, AddressModel } from './types/address'
 import ValidateKeeper from './validate-keeper'
@@ -119,8 +122,27 @@ export default class Declaration {
     this.dataProvider = dataProvider
     this.questionsMap = this.calculateQuestionsMap(schema)
     this.processShowInputsActions(this.schema)
-    this.valuesKeeper = new ValuesKeeper(initialValues, dataProvider)
-    this.visibilityKeeper = new VisibilityKeeper(this.valuesKeeper)
+    const questionsWithForceValuesAction = Object.keys(
+      this.questionsMap
+    ).reduce(
+      (tot, cur) => {
+        const question = this.questionsMap[cur]
+        if (question.type === 'radio' && question.action) {
+          tot[cur] = question as QuestionHasAction<ForceValuesAction>
+        }
+        return tot
+      },
+      {} as { [key: string]: QuestionHasAction<ForceValuesAction> }
+    )
+    this.valuesKeeper = new ValuesKeeper(
+      initialValues,
+      dataProvider,
+      questionsWithForceValuesAction
+    )
+    this.visibilityKeeper = new VisibilityKeeper(
+      this.valuesKeeper,
+      questionsWithForceValuesAction
+    )
     this.pagesKeeper = new PageKeeper(schema, this.valuesKeeper.getValue)
     this.touchKeeper = new TouchKeeper(this.valuesKeeper)
     this.validateKeeper = new ValidateKeeper(
@@ -301,6 +323,7 @@ export default class Declaration {
           )
           this.touchKeeper.setTouch(question.code, id, true)
           if (
+            hasForceValueAction(question) ||
             hasActions(question) ||
             hasActionsOnChild(question) ||
             canHasCurrencyActionsOnChild(question)
@@ -359,6 +382,7 @@ export default class Declaration {
           }
           this.touchKeeper.setTouch(question.code, id, true)
           if (
+            hasForceValueAction(question) ||
             hasActions(question) ||
             hasActionsOnChild(question) ||
             canHasCurrencyActionsOnChild(question)

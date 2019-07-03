@@ -152,7 +152,8 @@ var Declaration = /** @class */ (function () {
                         }
                         _this.pagesKeeper.processChangeValue(question.code, _this.valuesKeeper.getValue);
                         _this.touchKeeper.setTouch(question.code, id, true);
-                        if (getHidedElementCodes_1.hasActions(question) ||
+                        if (getHidedElementCodes_1.hasForceValueAction(question) ||
+                            getHidedElementCodes_1.hasActions(question) ||
                             getHidedElementCodes_1.hasActionsOnChild(question) ||
                             getHidedElementCodes_1.canHasCurrencyActionsOnChild(question)) {
                             _this.visibilityKeeper.clearVisibility();
@@ -195,7 +196,8 @@ var Declaration = /** @class */ (function () {
                             _this.processCheckboxChange(question);
                         }
                         _this.touchKeeper.setTouch(question.code, id, true);
-                        if (getHidedElementCodes_1.hasActions(question) ||
+                        if (getHidedElementCodes_1.hasForceValueAction(question) ||
+                            getHidedElementCodes_1.hasActions(question) ||
                             getHidedElementCodes_1.hasActionsOnChild(question) ||
                             getHidedElementCodes_1.canHasCurrencyActionsOnChild(question)) {
                             _this.visibilityKeeper.clearVisibility();
@@ -246,8 +248,15 @@ var Declaration = /** @class */ (function () {
         this.dataProvider = dataProvider;
         this.questionsMap = this.calculateQuestionsMap(schema);
         this.processShowInputsActions(this.schema);
-        this.valuesKeeper = new values_keeper_1.default(initialValues, dataProvider);
-        this.visibilityKeeper = new visibility_keeper_1.VisibilityKeeper(this.valuesKeeper);
+        var questionsWithForceValuesAction = Object.keys(this.questionsMap).reduce(function (tot, cur) {
+            var question = _this.questionsMap[cur];
+            if (question.type === 'radio' && question.action) {
+                tot[cur] = question;
+            }
+            return tot;
+        }, {});
+        this.valuesKeeper = new values_keeper_1.default(initialValues, dataProvider, questionsWithForceValuesAction);
+        this.visibilityKeeper = new visibility_keeper_1.VisibilityKeeper(this.valuesKeeper, questionsWithForceValuesAction);
         this.pagesKeeper = new page_keeper_1.default(schema, this.valuesKeeper.getValue);
         this.touchKeeper = new touch_keeper_1.default(this.valuesKeeper);
         this.validateKeeper = new validate_keeper_1.default(this.valuesKeeper, this.touchKeeper, this.visibilityKeeper);

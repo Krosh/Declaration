@@ -5,10 +5,17 @@ export interface Validation {
     bikName?: string;
     type?: 'inn' | 'kpp' | 'oktmo' | 'year' | 'phone' | 'okved' | 'bik' | 'correspondent_account' | 'client_account';
 }
-export declare type Action = ShowInputsAction | ShowPagesAction | EnableRequiredAction;
+export declare type Action = ShowInputsAction | ShowPagesAction | EnableRequiredAction | ForceValuesAction;
 export declare type ShowInputsAction = {
     type: 'show_inputs';
     codes: string[];
+};
+export declare type ForceValuesAction = {
+    type: 'force_values';
+    value: string;
+    data: {
+        [questionCode: string]: string;
+    };
 };
 export declare type ShowPagesAction = {
     type: 'show_pages';
@@ -70,6 +77,7 @@ export interface MultipleQuestion extends BaseQuestion {
 export interface RadioQuestion extends BaseQuestion {
     type: 'radio';
     answers: AnswerQuestion[];
+    action?: ForceValuesAction;
 }
 export interface CheckboxQuestion extends BaseQuestion {
     type: 'checkbox';
@@ -99,6 +107,9 @@ export interface MoneyIntegerQuestion extends BaseQuestion {
 }
 export declare type SingleQuestion = TextQuestion | AutocompleteQuestion | CurrencyAutocompleteQuestion | AddressQuestion | PhoneQuestion | NumberQuestion | RadioQuestion | DateQuestion | SelectQuestion | CheckboxQuestion | MoneyQuestion | OkvedQuestion | MoneyAbroadQuestion | MoneyCourseQuestion | MoneyIntegerQuestion | SharesQuestion | InfoQuestion;
 export declare type Question = SingleQuestion | MultipleQuestion;
+export declare type QuestionHasAction<A extends Action> = Question & {
+    action: A;
+};
 export declare type QuestionWithAction = {
     action?: Action;
     code: string;

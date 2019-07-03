@@ -1,4 +1,8 @@
-import { Question } from './types/declaration'
+import {
+  Question,
+  QuestionHasAction,
+  ForceValuesAction,
+} from './types/declaration'
 import {
   getVisibleQuestions,
   getRequiredQuestions,
@@ -8,10 +12,17 @@ import ValuesKeeper from './values-keeper'
 export class VisibilityKeeper {
   private visibilityCache: { [key: string]: Question[] } = {}
   private requiredCache: { [key: string]: Question[] } = {}
-  private valuesKeeper: ValuesKeeper
+  private questionsCanBeForced: string[]
 
-  constructor(valuesKeeper: ValuesKeeper) {
-    this.valuesKeeper = valuesKeeper
+  constructor(
+    private valuesKeeper: ValuesKeeper,
+    private questionsWithForceValues: {
+      [key: string]: QuestionHasAction<ForceValuesAction>
+    }
+  ) {
+    this.questionsCanBeForced = Object.values(questionsWithForceValues).flatMap(
+      item => Object.keys(item.action.data)
+    )
   }
 
   clearVisibility() {
@@ -30,12 +41,22 @@ export class VisibilityKeeper {
       return this.visibilityCache[cacheName]
     }
 
-    this.visibilityCache[cacheName] = getVisibleQuestions(
+    this.visibilityCache[cacheName] = (getVisibleQuestions(
       filteredItems,
       this.valuesKeeper.getValue,
       this.valuesKeeper.getCurrencyQuestion,
       id
-    ) as Question[]
+    ) as Question[]).filter(item => {
+      if (!this.questionsCanBeForced.includes(item.code)) {
+        return true
+      }
+      return !Object.values(this.questionsWithForceValues).some(
+        questionsWithForce =>
+          this.valuesKeeper.getValue(questionsWithForce.code) ===
+            questionsWithForce.action.value &&
+          Object.keys(questionsWithForce.action.data).includes(item.code)
+      )
+    })
 
     return this.visibilityCache[cacheName]
   }

@@ -17,6 +17,10 @@ function hasActions(question) {
     return question.type === 'checkbox' && !!question.action;
 }
 exports.hasActions = hasActions;
+function hasForceValueAction(question) {
+    return question.type === 'radio' && !!question.action;
+}
+exports.hasForceValueAction = hasForceValueAction;
 function getHidedElementCodes(questions, getValue, getCurrencyNeedHideValue, action) {
     var hidedQuestions = [];
     questions.forEach(function (question) {

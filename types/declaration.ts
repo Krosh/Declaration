@@ -15,11 +15,21 @@ export interface Validation {
     | 'client_account'
 }
 
-export type Action = ShowInputsAction | ShowPagesAction | EnableRequiredAction
+export type Action =
+  | ShowInputsAction
+  | ShowPagesAction
+  | EnableRequiredAction
+  | ForceValuesAction
 
 export type ShowInputsAction = {
   type: 'show_inputs'
   codes: string[]
+}
+
+export type ForceValuesAction = {
+  type: 'force_values'
+  value: string
+  data: { [questionCode: string]: string }
 }
 
 export type ShowPagesAction = {
@@ -96,6 +106,7 @@ export interface MultipleQuestion extends BaseQuestion {
 export interface RadioQuestion extends BaseQuestion {
   type: 'radio'
   answers: AnswerQuestion[]
+  action?: ForceValuesAction
 }
 
 export interface CheckboxQuestion extends BaseQuestion {
@@ -149,6 +160,8 @@ export type SingleQuestion =
   | InfoQuestion
 
 export type Question = SingleQuestion | MultipleQuestion
+
+export type QuestionHasAction<A extends Action> = Question & { action: A }
 
 export type QuestionWithAction = {
   action?: Action

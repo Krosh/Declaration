@@ -4,6 +4,7 @@ import {
   SelectQuestion,
   CheckboxQuestion,
   CurrencyAutocompleteQuestion,
+  ShowInputsAction,
 } from './types/declaration'
 
 export function canHasActionsOnChild(
@@ -29,11 +30,17 @@ export function hasActions(question: Question): question is CheckboxQuestion {
   return question.type === 'checkbox' && !!question.action
 }
 
+export function hasForceValueAction(
+  question: Question
+): question is RadioQuestion {
+  return question.type === 'radio' && !!question.action
+}
+
 export function getHidedElementCodes(
   questions: Question[],
   getValue: (code: string) => string,
   getCurrencyNeedHideValue: (question: Question) => boolean,
-  action: string
+  action: 'show_inputs' | 'show_pages' | 'enable_required'
 ) {
   const hidedQuestions: string[] = []
   questions.forEach(question => {
@@ -60,7 +67,9 @@ export function getHidedElementCodes(
         activeAnswer.action.type === action
       ) {
         currentHide = currentHide.filter(hide => {
-          return !activeAnswer.action!.codes.includes(hide)
+          return !((activeAnswer.action as any) as ShowInputsAction).codes.includes(
+            hide
+          )
         })
       }
 

@@ -1,14 +1,25 @@
-import { Values, Question } from './types/declaration'
+import {
+  Values,
+  Question,
+  ForceValuesAction,
+  QuestionHasAction,
+} from './types/declaration'
 import { DataProvider } from '.'
 
 export default class ValuesKeeper {
-  private values: Values
-  private dataProvider: DataProvider
   private enabledCurrencies: { [key: string]: { [key: number]: boolean } }
+  questionsCanBeForced: string[]
 
-  constructor(initialValues: Values, dataProvider: DataProvider) {
-    this.values = initialValues
-    this.dataProvider = dataProvider
+  constructor(
+    private values: Values,
+    private dataProvider: DataProvider,
+    private questionsWithForceValues: {
+      [key: string]: QuestionHasAction<ForceValuesAction>
+    }
+  ) {
+    this.questionsCanBeForced = Object.values(questionsWithForceValues).flatMap(
+      item => Object.keys(item.action.data)
+    )
     this.enabledCurrencies = {}
   }
 
@@ -52,6 +63,18 @@ export default class ValuesKeeper {
   getValue = (code: string, id?: number) => {
     if (!id) {
       id = 0
+    }
+    if (this.questionsCanBeForced.includes(code)) {
+      for (let questionCode of Object.keys(this.questionsWithForceValues)) {
+        const action = this.questionsWithForceValues[questionCode].action
+        if (
+          // Смотрим только на переключатель на 0 уровне
+          this.getValue(questionCode, 0) === action.value &&
+          action.data[code] !== undefined
+        ) {
+          return action.data[code]
+        }
+      }
     }
     if (!this.values[code] || !this.values[code][id]) {
       return ''

@@ -12,8 +12,11 @@ var __assign = (this && this.__assign) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var ValuesKeeper = /** @class */ (function () {
-    function ValuesKeeper(initialValues, dataProvider) {
+    function ValuesKeeper(values, dataProvider, questionsWithForceValues) {
         var _this = this;
+        this.values = values;
+        this.dataProvider = dataProvider;
+        this.questionsWithForceValues = questionsWithForceValues;
         this.processCurrencyQuestion = function (question, id, showCourseInput) {
             if (_this.getCurrencyQuestion(question, id) === showCourseInput) {
                 return false;
@@ -47,6 +50,18 @@ var ValuesKeeper = /** @class */ (function () {
             if (!id) {
                 id = 0;
             }
+            if (_this.questionsCanBeForced.includes(code)) {
+                for (var _i = 0, _a = Object.keys(_this.questionsWithForceValues); _i < _a.length; _i++) {
+                    var questionCode = _a[_i];
+                    var action = _this.questionsWithForceValues[questionCode].action;
+                    if (
+                    // Смотрим только на переключатель на 0 уровне
+                    _this.getValue(questionCode, 0) === action.value &&
+                        action.data[code] !== undefined) {
+                        return action.data[code];
+                    }
+                }
+            }
             if (!_this.values[code] || !_this.values[code][id]) {
                 return '';
             }
@@ -75,8 +90,7 @@ var ValuesKeeper = /** @class */ (function () {
             _this.dataProvider.copyMultiple(questionCode, id, newId);
             // this.props.copyMultiple(questionCode, id, newId)
         };
-        this.values = initialValues;
-        this.dataProvider = dataProvider;
+        this.questionsCanBeForced = Object.values(questionsWithForceValues).flatMap(function (item) { return Object.keys(item.action.data); });
         this.enabledCurrencies = {};
     }
     return ValuesKeeper;
