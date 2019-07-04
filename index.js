@@ -111,11 +111,16 @@ var Declaration = /** @class */ (function () {
         };
         this.isPageEmpty = function (page) {
             var defaultQuestion = _this.getDefaultMutlipleQuestion(page);
-            if (!defaultQuestion) {
-                return false;
+            if (defaultQuestion) {
+                var ids = _this.getMultipleIds(defaultQuestion.code);
+                return ids.length === 0;
             }
-            var ids = _this.getMultipleIds(defaultQuestion.code);
-            return ids.length === 0;
+            var checkboxQuestion = _this.getDefaultCheckboxQuestion(page);
+            if (checkboxQuestion) {
+                var value = _this.valuesKeeper.getValue(checkboxQuestion.code);
+                return value !== '1';
+            }
+            return false;
         };
         /**
          * Вызывать, когда меняем чекбокс,

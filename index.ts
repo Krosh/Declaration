@@ -271,11 +271,16 @@ export default class Declaration {
 
   isPageEmpty = (page: Page) => {
     const defaultQuestion = this.getDefaultMutlipleQuestion(page)
-    if (!defaultQuestion) {
-      return false
+    if (defaultQuestion) {
+      const ids = this.getMultipleIds(defaultQuestion.code)
+      return ids.length === 0
     }
-    const ids = this.getMultipleIds(defaultQuestion.code)
-    return ids.length === 0
+    const checkboxQuestion = this.getDefaultCheckboxQuestion(page)
+    if (checkboxQuestion) {
+      const value = this.valuesKeeper.getValue(checkboxQuestion.code)
+      return value !== '1'
+    }
+    return false
   }
 
   /**
