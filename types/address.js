@@ -55,6 +55,7 @@ exports.AddressModel = {
     getFullCodeName: function (question, name) {
         return question.code + name;
     },
+    skipDefault: ['street', 'housing', 'flat'],
     skipOnShort: ['oktmo', 'ifnsfl', 'ifnsflName'],
     validate: function (value, isTouched, short) {
         var address = exports.AddressModel.create(value);
@@ -64,7 +65,10 @@ exports.AddressModel = {
                 result[key] = [];
                 continue;
             }
-            if (short && exports.AddressModel.skipOnShort.includes(key)) {
+            var skip = short
+                ? exports.AddressModel.skipOnShort.concat(exports.AddressModel.skipDefault)
+                : exports.AddressModel.skipDefault;
+            if (skip.includes(key)) {
                 result[key] = [];
                 continue;
             }
