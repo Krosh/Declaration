@@ -26,7 +26,6 @@ var defaultFields = {
     flat: '',
     ifnsfl: '',
     ifnsflName: '',
-    okato: '',
     oktmo: '',
     postal: '',
     userEdited: false,
@@ -48,7 +47,6 @@ exports.AddressModel = {
         relations.forEach(function (item) { return (newAddress[item] = __assign({}, defaultFiasElement)); });
         newAddress.ifnsfl = isUserEdited ? '' : changeValue.ifnsfl;
         newAddress.ifnsflName = isUserEdited ? '' : changeValue.ifnsfl_name;
-        newAddress.okato = isUserEdited ? '' : changeValue.okato;
         newAddress.oktmo = isUserEdited ? '' : changeValue.oktmo;
         newAddress.postal = isUserEdited ? '' : changeValue.postal;
         newAddress.userEdited = isUserEdited;

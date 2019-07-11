@@ -13,7 +13,6 @@ export interface Address {
   flat: string
   ifnsfl: string
   ifnsflName: string
-  okato: string
   oktmo: string
   postal: string
   userEdited: boolean
@@ -37,7 +36,6 @@ const defaultFields = {
   flat: '',
   ifnsfl: '',
   ifnsflName: '',
-  okato: '',
   oktmo: '',
   postal: '',
   userEdited: false,
@@ -84,7 +82,6 @@ export const AddressModel = {
     relations.forEach(item => (newAddress[item] = { ...defaultFiasElement }))
     newAddress.ifnsfl = isUserEdited ? '' : changeValue.ifnsfl
     newAddress.ifnsflName = isUserEdited ? '' : changeValue.ifnsfl_name
-    newAddress.okato = isUserEdited ? '' : changeValue.okato
     newAddress.oktmo = isUserEdited ? '' : changeValue.oktmo
     newAddress.postal = isUserEdited ? '' : changeValue.postal
 

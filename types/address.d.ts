@@ -12,7 +12,6 @@ export interface Address {
     flat: string;
     ifnsfl: string;
     ifnsflName: string;
-    okato: string;
     oktmo: string;
     postal: string;
     userEdited: boolean;
@@ -29,7 +28,6 @@ export declare const AddressModel: {
         flat: string;
         ifnsfl: string;
         ifnsflName: string;
-        okato: string;
         oktmo: string;
         postal: string;
         userEdited: boolean;
@@ -43,7 +41,6 @@ export declare const AddressModel: {
         flat: string[];
         ifnsfl: string[];
         ifnsflName: string[];
-        okato: string[];
         oktmo: string[];
         postal: string[];
         userEdited: string[];
