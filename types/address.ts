@@ -92,6 +92,7 @@ export const AddressModel = {
   getFullCodeName: (question: AddressQuestion, name: string) =>
     question.code + name,
 
+  skipDefault: ['street', 'housing', 'flat'],
   skipOnShort: ['oktmo', 'ifnsfl', 'ifnsflName'],
 
   validate: (
@@ -106,7 +107,10 @@ export const AddressModel = {
         result[key] = []
         continue
       }
-      if (short && AddressModel.skipOnShort.includes(key)) {
+      const skip = short
+        ? AddressModel.skipOnShort.concat(AddressModel.skipDefault)
+        : AddressModel.skipDefault
+      if (skip.includes(key)) {
         result[key] = []
         continue
       }
