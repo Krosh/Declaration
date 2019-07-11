@@ -92,11 +92,21 @@ export const AddressModel = {
   getFullCodeName: (question: AddressQuestion, name: string) =>
     question.code + name,
 
-  validate: (value: string, isTouched: (name: string) => boolean) => {
+  skipOnShort: ['oktmo', 'ifnsfl', 'ifnsflName'],
+
+  validate: (
+    value: string,
+    isTouched: (name: string) => boolean,
+    short: boolean
+  ) => {
     const address = AddressModel.create(value)
     const result: { [key: string]: string[] } = {}
     for (let key in address) {
       if (!isTouched(key)) {
+        result[key] = []
+        continue
+      }
+      if (short && AddressModel.skipOnShort.includes(key)) {
         result[key] = []
         continue
       }

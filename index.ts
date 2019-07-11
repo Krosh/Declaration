@@ -345,7 +345,8 @@ export default class Declaration {
             this.touchKeeper.getTouch(
               AddressModel.getFullCodeName(question, name),
               id
-            )
+            ),
+          !!question.validation && !!question.validation.shortAnswer
         ),
         setTouched: (name: string) => {
           if (

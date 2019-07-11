@@ -169,7 +169,7 @@ var Declaration = /** @class */ (function () {
                     },
                     errors: address_1.AddressModel.validate(_this.valuesKeeper.getValue(question.code, id), function (name) {
                         return _this.touchKeeper.getTouch(address_1.AddressModel.getFullCodeName(question, name), id);
-                    }),
+                    }, !!question.validation && !!question.validation.shortAnswer),
                     setTouched: function (name) {
                         if (!_this.touchKeeper.setTouch(address_1.AddressModel.getFullCodeName(question, name), id, true)) {
                             return;

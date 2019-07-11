@@ -22,7 +22,7 @@ var ValidateKeeper = /** @class */ (function () {
                 });
             }
             if (question.type === 'address') {
-                return Object.values(address_1.AddressModel.validate(_this.valuesKeeper.getValue(question.code, id), function (code) { return _this.touchKeeper.getTouch(question.code + code, id); })).flat();
+                return Object.values(address_1.AddressModel.validate(_this.valuesKeeper.getValue(question.code, id), function (code) { return _this.touchKeeper.getTouch(question.code + code, id); }, !!question.validation && !!question.validation.shortAnswer)).flat();
             }
             if (!_this.touchKeeper.getTouch(question.code, id)) {
                 return [];

@@ -55,11 +55,16 @@ exports.AddressModel = {
     getFullCodeName: function (question, name) {
         return question.code + name;
     },
-    validate: function (value, isTouched) {
+    skipOnShort: ['oktmo', 'ifnsfl', 'ifnsflName'],
+    validate: function (value, isTouched, short) {
         var address = exports.AddressModel.create(value);
         var result = {};
         for (var key in address) {
             if (!isTouched(key)) {
+                result[key] = [];
+                continue;
+            }
+            if (short && exports.AddressModel.skipOnShort.includes(key)) {
                 result[key] = [];
                 continue;
             }

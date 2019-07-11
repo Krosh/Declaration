@@ -1,4 +1,5 @@
 export interface Validation {
+    shortAnswer?: boolean;
     maxLength?: number;
     canBeSkipped?: boolean;
     oneOf?: string[];
@@ -54,6 +55,7 @@ export interface CurrencyAutocompleteQuestion extends BaseQuestion {
 }
 export interface AddressQuestion extends BaseQuestion {
     type: 'address';
+    validation?: Validation;
 }
 export interface InfoQuestion extends BaseQuestion {
     type: 'info';

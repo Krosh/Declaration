@@ -33,7 +33,8 @@ export declare const AddressModel: {
         userEdited: boolean;
     };
     getFullCodeName: (question: AddressQuestion, name: string) => string;
-    validate: (value: string, isTouched: (name: string) => boolean) => {
+    skipOnShort: string[];
+    validate: (value: string, isTouched: (name: string) => boolean, short: boolean) => {
         city: string[];
         street: string[];
         house: string[];

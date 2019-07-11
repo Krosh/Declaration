@@ -37,7 +37,8 @@ export default class ValidateKeeper {
       return Object.values(
         AddressModel.validate(
           this.valuesKeeper.getValue(question.code, id),
-          (code: string) => this.touchKeeper.getTouch(question.code + code, id)
+          (code: string) => this.touchKeeper.getTouch(question.code + code, id),
+          !!question.validation && !!question.validation.shortAnswer
         )
       ).flat()
     }
