@@ -3,7 +3,7 @@ import {
   RadioQuestion,
   SelectQuestion,
   CheckboxQuestion,
-  CurrencyAutocompleteQuestion,
+  AutocompleteWithActions,
   ShowInputsAction,
 } from './types/declaration'
 
@@ -20,10 +20,10 @@ export function hasActionsOnChild(question: Question) {
   )
 }
 
-export function canHasCurrencyActionsOnChild(
+export function isAutocompleteWithActions(
   question: Question
-): question is CurrencyAutocompleteQuestion {
-  return question.type === 'currency_autocomplete'
+): question is AutocompleteWithActions {
+  return question.type === 'autocomplete_with_actions'
 }
 
 export function hasActions(question: Question): question is CheckboxQuestion {
@@ -39,7 +39,7 @@ export function hasForceValueAction(
 export function getHidedElementCodes(
   questions: Question[],
   getValue: (code: string) => string,
-  getCurrencyNeedHideValue: (question: Question) => boolean,
+  getAutocompleteValueActionIndex: (question: Question) => string | undefined,
   action: 'show_inputs' | 'show_pages' | 'enable_required'
 ) {
   const hidedQuestions: string[] = []
@@ -76,13 +76,23 @@ export function getHidedElementCodes(
       hidedQuestions.push(...currentHide)
     }
 
-    if (
-      canHasCurrencyActionsOnChild(question) &&
-      question.action.value_action &&
-      question.action.value_action.type === action &&
-      getCurrencyNeedHideValue(question)
-    ) {
-      hidedQuestions.push(...question.action.value_action.codes)
+    if (isAutocompleteWithActions(question) && question.action.value_action) {
+      const actions = Object.values(question.action.value_action)
+      let currentHide = actions.flatMap(function(item) {
+        return item.type === action ? item.codes : []
+      })
+
+      const activeValueAction = getAutocompleteValueActionIndex(question)
+      if (undefined !== activeValueAction) {
+        const valueAction = question.action.value_action[activeValueAction]
+        if (undefined !== valueAction && valueAction.type === action) {
+          currentHide = currentHide.filter(hide => {
+            return !valueAction.codes.includes(hide)
+          })
+        }
+      }
+
+      hidedQuestions.push(...currentHide)
     }
   })
   return hidedQuestions

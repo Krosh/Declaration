@@ -44,7 +44,7 @@ export class VisibilityKeeper {
     this.visibilityCache[cacheName] = (getVisibleQuestions(
       filteredItems,
       this.valuesKeeper.getValue,
-      this.valuesKeeper.getCurrencyQuestion,
+      this.valuesKeeper.getValueActionIndex,
       id
     ) as Question[]).filter(item => {
       if (!this.questionsCanBeForced.includes(item.code)) {
@@ -72,7 +72,7 @@ export class VisibilityKeeper {
     this.requiredCache[cacheName] = getRequiredQuestions(
       requiredQuestions,
       this.valuesKeeper.getValue,
-      this.valuesKeeper.getCurrencyQuestion,
+      this.valuesKeeper.getValueActionIndex,
       id
     )
 

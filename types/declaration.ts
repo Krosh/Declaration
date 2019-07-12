@@ -49,7 +49,7 @@ export type AutocompleteAction = {
 }
 
 export type CurrencyAutocompleteAction = AutocompleteAction & {
-  value_action: Action
+  value_action: { [key: string]: Action }
 }
 
 interface BaseQuestion {
@@ -69,10 +69,10 @@ export interface AutocompleteQuestion extends BaseQuestion {
   type: 'autocomplete'
   action: AutocompleteAction
 }
-export interface CurrencyAutocompleteQuestion extends BaseQuestion {
-  type: 'currency_autocomplete'
+export interface AutocompleteWithActions extends BaseQuestion {
+  type: 'autocomplete_with_actions'
   action: CurrencyAutocompleteAction
-  needHideElements?: boolean
+  activeValueAction?: string
 }
 
 export interface AddressQuestion extends BaseQuestion {
@@ -145,7 +145,7 @@ export interface MoneyIntegerQuestion extends BaseQuestion {
 export type SingleQuestion =
   | TextQuestion
   | AutocompleteQuestion
-  | CurrencyAutocompleteQuestion
+  | AutocompleteWithActions
   | AddressQuestion
   | PhoneQuestion
   | NumberQuestion

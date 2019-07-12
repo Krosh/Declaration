@@ -23,7 +23,7 @@ var VisibilityKeeper = /** @class */ (function () {
         if (this.visibilityCache[cacheName]) {
             return this.visibilityCache[cacheName];
         }
-        this.visibilityCache[cacheName] = getVisibleQuestions_1.getVisibleQuestions(filteredItems, this.valuesKeeper.getValue, this.valuesKeeper.getCurrencyQuestion, id).filter(function (item) {
+        this.visibilityCache[cacheName] = getVisibleQuestions_1.getVisibleQuestions(filteredItems, this.valuesKeeper.getValue, this.valuesKeeper.getValueActionIndex, id).filter(function (item) {
             if (!_this.questionsCanBeForced.includes(item.code)) {
                 return true;
             }
@@ -41,7 +41,7 @@ var VisibilityKeeper = /** @class */ (function () {
             return this.requiredCache[cacheName];
         }
         var requiredQuestions = this.getList(name, filteredItems, id);
-        this.requiredCache[cacheName] = getVisibleQuestions_1.getRequiredQuestions(requiredQuestions, this.valuesKeeper.getValue, this.valuesKeeper.getCurrencyQuestion, id);
+        this.requiredCache[cacheName] = getVisibleQuestions_1.getRequiredQuestions(requiredQuestions, this.valuesKeeper.getValue, this.valuesKeeper.getValueActionIndex, id);
         return this.requiredCache[cacheName];
     };
     return VisibilityKeeper;

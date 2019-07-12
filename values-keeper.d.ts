@@ -4,13 +4,13 @@ export default class ValuesKeeper {
     private values;
     private dataProvider;
     private questionsWithForceValues;
-    private enabledCurrencies;
+    private valueActionIndexes;
     questionsCanBeForced: string[];
     constructor(values: Values, dataProvider: DataProvider, questionsWithForceValues: {
         [key: string]: QuestionHasAction<ForceValuesAction>;
     });
-    processCurrencyQuestion: (question: Question, id: number, showCourseInput: boolean) => boolean;
-    getCurrencyQuestion: (question: Question, id: number) => boolean;
+    processAutocompleteWithActions: (question: Question, id: number, valueActionIndex: string) => boolean;
+    getValueActionIndex: (question: Question, id: number) => string | undefined;
     setValue: (code: string, id: number, newValue: string) => boolean;
     getMultipleIds: (code: string) => number[];
     getValue: (code: string, id?: number | undefined) => string;

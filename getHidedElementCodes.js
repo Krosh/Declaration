@@ -9,10 +9,10 @@ function hasActionsOnChild(question) {
         !!question.answers.find(function (item) { return !!item.action; }));
 }
 exports.hasActionsOnChild = hasActionsOnChild;
-function canHasCurrencyActionsOnChild(question) {
-    return question.type === 'currency_autocomplete';
+function isAutocompleteWithActions(question) {
+    return question.type === 'autocomplete_with_actions';
 }
-exports.canHasCurrencyActionsOnChild = canHasCurrencyActionsOnChild;
+exports.isAutocompleteWithActions = isAutocompleteWithActions;
 function hasActions(question) {
     return question.type === 'checkbox' && !!question.action;
 }
@@ -21,7 +21,7 @@ function hasForceValueAction(question) {
     return question.type === 'radio' && !!question.action;
 }
 exports.hasForceValueAction = hasForceValueAction;
-function getHidedElementCodes(questions, getValue, getCurrencyNeedHideValue, action) {
+function getHidedElementCodes(questions, getValue, getAutocompleteValueActionIndex, action) {
     var hidedQuestions = [];
     questions.forEach(function (question) {
         if (hasActions(question) && getValue(question.code) !== '1') {
@@ -46,11 +46,21 @@ function getHidedElementCodes(questions, getValue, getCurrencyNeedHideValue, act
             }
             hidedQuestions.push.apply(hidedQuestions, currentHide);
         }
-        if (canHasCurrencyActionsOnChild(question) &&
-            question.action.value_action &&
-            question.action.value_action.type === action &&
-            getCurrencyNeedHideValue(question)) {
-            hidedQuestions.push.apply(hidedQuestions, question.action.value_action.codes);
+        if (isAutocompleteWithActions(question) && question.action.value_action) {
+            var actions = Object.values(question.action.value_action);
+            var currentHide = actions.flatMap(function (item) {
+                return item.type === action ? item.codes : [];
+            });
+            var activeValueAction = getAutocompleteValueActionIndex(question);
+            if (undefined !== activeValueAction) {
+                var valueAction_1 = question.action.value_action[activeValueAction];
+                if (undefined !== valueAction_1 && valueAction_1.type === action) {
+                    currentHide = currentHide.filter(function (hide) {
+                        return !valueAction_1.codes.includes(hide);
+                    });
+                }
+            }
+            hidedQuestions.push.apply(hidedQuestions, currentHide);
         }
     });
     return hidedQuestions;

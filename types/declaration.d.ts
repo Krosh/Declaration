@@ -31,7 +31,9 @@ export declare type AutocompleteAction = {
     url: string;
 };
 export declare type CurrencyAutocompleteAction = AutocompleteAction & {
-    value_action: Action;
+    value_action: {
+        [key: string]: Action;
+    };
 };
 interface BaseQuestion {
     name: string;
@@ -48,10 +50,10 @@ export interface AutocompleteQuestion extends BaseQuestion {
     type: 'autocomplete';
     action: AutocompleteAction;
 }
-export interface CurrencyAutocompleteQuestion extends BaseQuestion {
-    type: 'currency_autocomplete';
+export interface AutocompleteWithActions extends BaseQuestion {
+    type: 'autocomplete_with_actions';
     action: CurrencyAutocompleteAction;
-    needHideElements?: boolean;
+    activeValueAction?: string;
 }
 export interface AddressQuestion extends BaseQuestion {
     type: 'address';
@@ -107,7 +109,7 @@ export interface SharesQuestion extends BaseQuestion {
 export interface MoneyIntegerQuestion extends BaseQuestion {
     type: 'money_integer';
 }
-export declare type SingleQuestion = TextQuestion | AutocompleteQuestion | CurrencyAutocompleteQuestion | AddressQuestion | PhoneQuestion | NumberQuestion | RadioQuestion | DateQuestion | SelectQuestion | CheckboxQuestion | MoneyQuestion | OkvedQuestion | MoneyAbroadQuestion | MoneyCourseQuestion | MoneyIntegerQuestion | SharesQuestion | InfoQuestion;
+export declare type SingleQuestion = TextQuestion | AutocompleteQuestion | AutocompleteWithActions | AddressQuestion | PhoneQuestion | NumberQuestion | RadioQuestion | DateQuestion | SelectQuestion | CheckboxQuestion | MoneyQuestion | OkvedQuestion | MoneyAbroadQuestion | MoneyCourseQuestion | MoneyIntegerQuestion | SharesQuestion | InfoQuestion;
 export declare type Question = SingleQuestion | MultipleQuestion;
 export declare type QuestionHasAction<A extends Action> = Question & {
     action: A;

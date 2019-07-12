@@ -2,7 +2,7 @@ import {
   canHasActionsOnChild,
   hasActions,
   hasActionsOnChild,
-  canHasCurrencyActionsOnChild,
+  isAutocompleteWithActions,
   hasForceValueAction,
 } from './getHidedElementCodes'
 import PageKeeper from './page-keeper'
@@ -40,7 +40,7 @@ export interface SingleQuestionProps {
   errors: string[]
   setTouched: () => void
   declaration: Declaration
-  setCourseInputVisibility: (needHideInput: boolean) => boolean
+  setAutocompleteActionIndex: (value: string) => boolean
 }
 
 export interface AddressQuestionProps {
@@ -331,7 +331,7 @@ export default class Declaration {
             hasForceValueAction(question) ||
             hasActions(question) ||
             hasActionsOnChild(question) ||
-            canHasCurrencyActionsOnChild(question)
+            isAutocompleteWithActions(question)
           ) {
             this.visibilityKeeper.clearVisibility()
           }
@@ -391,7 +391,7 @@ export default class Declaration {
             hasForceValueAction(question) ||
             hasActions(question) ||
             hasActionsOnChild(question) ||
-            canHasCurrencyActionsOnChild(question)
+            isAutocompleteWithActions(question)
           ) {
             this.visibilityKeeper.clearVisibility()
           }
@@ -407,8 +407,12 @@ export default class Declaration {
           this.validateKeeper.refreshQuestionCache(question, id)
           this.rerenderCallback && this.rerenderCallback()
         }, // TODO
-        setCourseInputVisibility: (needHide: boolean) =>
-          this.valuesKeeper.processCurrencyQuestion(question, id, needHide),
+        setAutocompleteActionIndex: (actionIndex: string) =>
+          this.valuesKeeper.processAutocompleteWithActions(
+            question,
+            id,
+            actionIndex
+          ),
         declaration: this,
       }
       return t

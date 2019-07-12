@@ -7,7 +7,7 @@ import {
 import { DataProvider } from '.'
 
 export default class ValuesKeeper {
-  private enabledCurrencies: { [key: string]: { [key: number]: boolean } }
+  private valueActionIndexes: { [key: string]: { [key: number]: string } }
   questionsCanBeForced: string[]
 
   constructor(
@@ -20,27 +20,27 @@ export default class ValuesKeeper {
     this.questionsCanBeForced = Object.values(questionsWithForceValues).flatMap(
       item => Object.keys(item.action.data)
     )
-    this.enabledCurrencies = {}
+    this.valueActionIndexes = {}
   }
 
-  processCurrencyQuestion = (
+  processAutocompleteWithActions = (
     question: Question,
     id: number,
-    showCourseInput: boolean
+    valueActionIndex: string
   ) => {
-    if (this.getCurrencyQuestion(question, id) === showCourseInput) {
+    if (this.getValueActionIndex(question, id) === valueActionIndex) {
       return false
     }
-    this.enabledCurrencies[question.code] =
-      this.enabledCurrencies[question.code] || {}
-    this.enabledCurrencies[question.code][id] = showCourseInput
+    this.valueActionIndexes[question.code] =
+      this.valueActionIndexes[question.code] || {}
+    this.valueActionIndexes[question.code][id] = valueActionIndex
     return true
   }
 
-  getCurrencyQuestion = (question: Question, id: number) => {
-    return this.enabledCurrencies[question.code]
-      ? this.enabledCurrencies[question.code][id]
-      : true
+  getValueActionIndex = (question: Question, id: number) => {
+    return this.valueActionIndexes[question.code]
+      ? this.valueActionIndexes[question.code][id]
+      : undefined
   }
 
   setValue = (code: string, id: number, newValue: string) => {

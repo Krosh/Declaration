@@ -17,19 +17,19 @@ var ValuesKeeper = /** @class */ (function () {
         this.values = values;
         this.dataProvider = dataProvider;
         this.questionsWithForceValues = questionsWithForceValues;
-        this.processCurrencyQuestion = function (question, id, showCourseInput) {
-            if (_this.getCurrencyQuestion(question, id) === showCourseInput) {
+        this.processAutocompleteWithActions = function (question, id, valueActionIndex) {
+            if (_this.getValueActionIndex(question, id) === valueActionIndex) {
                 return false;
             }
-            _this.enabledCurrencies[question.code] =
-                _this.enabledCurrencies[question.code] || {};
-            _this.enabledCurrencies[question.code][id] = showCourseInput;
+            _this.valueActionIndexes[question.code] =
+                _this.valueActionIndexes[question.code] || {};
+            _this.valueActionIndexes[question.code][id] = valueActionIndex;
             return true;
         };
-        this.getCurrencyQuestion = function (question, id) {
-            return _this.enabledCurrencies[question.code]
-                ? _this.enabledCurrencies[question.code][id]
-                : true;
+        this.getValueActionIndex = function (question, id) {
+            return _this.valueActionIndexes[question.code]
+                ? _this.valueActionIndexes[question.code][id]
+                : undefined;
         };
         this.setValue = function (code, id, newValue) {
             if (_this.getValue(code, id) === newValue) {
@@ -91,7 +91,7 @@ var ValuesKeeper = /** @class */ (function () {
             // this.props.copyMultiple(questionCode, id, newId)
         };
         this.questionsCanBeForced = Object.values(questionsWithForceValues).flatMap(function (item) { return Object.keys(item.action.data); });
-        this.enabledCurrencies = {};
+        this.valueActionIndexes = {};
     }
     return ValuesKeeper;
 }());

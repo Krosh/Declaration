@@ -62,7 +62,7 @@ var PageKeeper = /** @class */ (function () {
         };
         this.getHidedPagesCodes = function (getValue) {
             return _this.pages.flatMap(function (page) {
-                return getHidedElementCodes_1.getHidedElementCodes(page.questions, getValue, function () { return false; }, 'show_pages');
+                return getHidedElementCodes_1.getHidedElementCodes(page.questions, getValue, function () { return '0'; }, 'show_pages');
             });
         };
         this.activeQuestion = undefined;

@@ -160,7 +160,7 @@ var Declaration = /** @class */ (function () {
                         if (getHidedElementCodes_1.hasForceValueAction(question) ||
                             getHidedElementCodes_1.hasActions(question) ||
                             getHidedElementCodes_1.hasActionsOnChild(question) ||
-                            getHidedElementCodes_1.canHasCurrencyActionsOnChild(question)) {
+                            getHidedElementCodes_1.isAutocompleteWithActions(question)) {
                             _this.visibilityKeeper.clearVisibility();
                         }
                         _this.visibilityKeeper.clearRequired();
@@ -204,7 +204,7 @@ var Declaration = /** @class */ (function () {
                         if (getHidedElementCodes_1.hasForceValueAction(question) ||
                             getHidedElementCodes_1.hasActions(question) ||
                             getHidedElementCodes_1.hasActionsOnChild(question) ||
-                            getHidedElementCodes_1.canHasCurrencyActionsOnChild(question)) {
+                            getHidedElementCodes_1.isAutocompleteWithActions(question)) {
                             _this.visibilityKeeper.clearVisibility();
                         }
                         _this.visibilityKeeper.clearRequired();
@@ -219,8 +219,8 @@ var Declaration = /** @class */ (function () {
                         _this.validateKeeper.refreshQuestionCache(question, id);
                         _this.rerenderCallback && _this.rerenderCallback();
                     },
-                    setCourseInputVisibility: function (needHide) {
-                        return _this.valuesKeeper.processCurrencyQuestion(question, id, needHide);
+                    setAutocompleteActionIndex: function (actionIndex) {
+                        return _this.valuesKeeper.processAutocompleteWithActions(question, id, actionIndex);
                     },
                     declaration: _this,
                 };

@@ -13,7 +13,7 @@ export interface SingleQuestionProps {
     errors: string[];
     setTouched: () => void;
     declaration: Declaration;
-    setCourseInputVisibility: (needHideInput: boolean) => boolean;
+    setAutocompleteActionIndex: (value: string) => boolean;
 }
 export interface AddressQuestionProps {
     question: AddressQuestion;
@@ -68,7 +68,7 @@ export default class Declaration {
     setActivePage: (page: Page) => void;
     setActiveTab: (tab: string) => void;
     filterMutlipleQuestionChilds: (multipleQuestion: MultipleQuestion, id: number) => SingleQuestion[];
-    getDefaultMutlipleQuestion: (page: Page) => import("./types/declaration").TextQuestion | import("./types/declaration").AutocompleteQuestion | import("./types/declaration").CurrencyAutocompleteQuestion | AddressQuestion | import("./types/declaration").InfoQuestion | import("./types/declaration").DateQuestion | import("./types/declaration").PhoneQuestion | import("./types/declaration").OkvedQuestion | MultipleQuestion | import("./types/declaration").NumberQuestion | import("./types/declaration").RadioQuestion | import("./types/declaration").SelectQuestion | CheckboxQuestion | import("./types/declaration").MoneyQuestion | import("./types/declaration").MoneyAbroadQuestion | import("./types/declaration").MoneyCourseQuestion | import("./types/declaration").MoneyIntegerQuestion | import("./types/declaration").SharesQuestion | undefined;
+    getDefaultMutlipleQuestion: (page: Page) => import("./types/declaration").TextQuestion | import("./types/declaration").AutocompleteQuestion | import("./types/declaration").AutocompleteWithActions | AddressQuestion | import("./types/declaration").InfoQuestion | import("./types/declaration").DateQuestion | import("./types/declaration").PhoneQuestion | import("./types/declaration").OkvedQuestion | MultipleQuestion | import("./types/declaration").NumberQuestion | import("./types/declaration").RadioQuestion | import("./types/declaration").SelectQuestion | CheckboxQuestion | import("./types/declaration").MoneyQuestion | import("./types/declaration").MoneyAbroadQuestion | import("./types/declaration").MoneyCourseQuestion | import("./types/declaration").MoneyIntegerQuestion | import("./types/declaration").SharesQuestion | undefined;
     getDefaultCheckboxQuestion: (page: Page) => CheckboxQuestion | undefined;
     isPageEmpty: (page: Page) => boolean;
     /**

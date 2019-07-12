@@ -106,7 +106,7 @@ export default class PageKeeper {
 
   private getHidedPagesCodes = (getValue: (code: string) => string) => {
     return this.pages.flatMap(page =>
-      getHidedElementCodes(page.questions, getValue, () => false, 'show_pages')
+      getHidedElementCodes(page.questions, getValue, () => '0', 'show_pages')
     )
   }
 }

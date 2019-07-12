@@ -1,7 +1,7 @@
 import {
   Question,
   ShowInputsAction,
-  CurrencyAutocompleteQuestion,
+  AutocompleteWithActions,
 } from '../types/declaration'
 import { getVisibleQuestions } from '../getVisibleQuestions'
 import { getHidedElementCodes } from '../getHidedElementCodes'
@@ -15,10 +15,12 @@ test('simple select with action', () => {
       name: '',
       code: 'q',
       hint: '',
+      page: {} as any,
       answers: [
         {
           name: '',
           code: 'a1',
+          page: {} as any,
           hint: '',
           action: {
             codes: ['2'],
@@ -28,6 +30,7 @@ test('simple select with action', () => {
         {
           name: '',
           code: 'a2',
+          page: {} as any,
           hint: '',
           action: {
             codes: ['3'],
@@ -39,6 +42,7 @@ test('simple select with action', () => {
     {
       type: 'text',
       name: '',
+      page: {} as any,
       code: '2',
       hint: '',
     },
@@ -46,6 +50,7 @@ test('simple select with action', () => {
       type: 'text',
       name: '',
       code: '3',
+      page: {} as any,
       hint: '',
     },
   ]
@@ -53,7 +58,7 @@ test('simple select with action', () => {
   const filteredQuestionsWithA1 = getHidedElementCodes(
     mock,
     getValue({ q: 'a1' }),
-    () => false,
+    () => '',
     'show_inputs'
   )
   expect(filteredQuestionsWithA1).toHaveLength(1)
@@ -62,7 +67,7 @@ test('simple select with action', () => {
   const filteredQuestionsWithA2 = getHidedElementCodes(
     mock,
     getValue({ q: 'a2' }),
-    () => false,
+    () => '',
     'show_inputs'
   )
   expect(filteredQuestionsWithA2).toHaveLength(1)
@@ -71,7 +76,7 @@ test('simple select with action', () => {
   const filteredQuestionsWithoutAnswer = getHidedElementCodes(
     mock,
     getValue({}),
-    () => false,
+    () => '',
     'show_inputs'
   )
   expect(filteredQuestionsWithoutAnswer).toHaveLength(2)
@@ -80,17 +85,20 @@ test('simple select with action', () => {
 })
 
 test('select with currency', () => {
-  const currencyQuestion: CurrencyAutocompleteQuestion = {
-    type: 'currency_autocomplete',
+  const currencyQuestion: AutocompleteWithActions = {
+    type: 'autocomplete_with_actions',
     name: 'cur',
     hint: '',
     code: '',
+    page: {} as any,
     action: {
       action_type: 'show_inputs',
       url: '',
       value_action: {
-        type: 'show_inputs',
-        codes: ['2'],
+        '1': {
+          type: 'show_inputs',
+          codes: ['2'],
+        },
       },
     },
   }
@@ -102,19 +110,21 @@ test('select with currency', () => {
       name: '',
       code: '2',
       hint: '',
+      page: {} as any,
     },
     {
       type: 'text',
       name: '',
       code: '3',
       hint: '',
+      page: {} as any,
     },
   ]
 
   const filteredQuestionsWithA1 = getHidedElementCodes(
     mock,
     getValue({ q: 'a1' }),
-    () => true,
+    () => '0',
     'show_inputs'
   )
   expect(filteredQuestionsWithA1).toHaveLength(1)
@@ -123,7 +133,7 @@ test('select with currency', () => {
   const filteredQuestionsWithoutA1 = getHidedElementCodes(
     mock,
     getValue({ q: 'a1' }),
-    () => false,
+    () => '1',
     'show_inputs'
   )
   expect(filteredQuestionsWithoutA1).toHaveLength(0)
