@@ -281,3 +281,11 @@ var Declaration = /** @class */ (function () {
     return Declaration;
 }());
 exports.default = Declaration;
+function isIncomeTab(tab) {
+    return tab === 'Доходы';
+}
+exports.isIncomeTab = isIncomeTab;
+function isDeductionTab(tab) {
+    return tab === 'Вычеты';
+}
+exports.isDeductionTab = isDeductionTab;

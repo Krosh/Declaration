@@ -79,3 +79,5 @@ export default class Declaration {
     private processCheckboxChange;
     getQuestionProps: (question: Question, id: number) => QuestionProps;
 }
+export declare function isIncomeTab(tab: string): boolean;
+export declare function isDeductionTab(tab: string): boolean;

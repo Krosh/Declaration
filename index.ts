@@ -440,3 +440,11 @@ export default class Declaration {
     }
   }
 }
+
+export function isIncomeTab(tab: string) {
+  return tab === 'Доходы'
+}
+
+export function isDeductionTab(tab: string) {
+  return tab === 'Вычеты'
+}
