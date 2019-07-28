@@ -236,6 +236,13 @@ var Declaration = /** @class */ (function () {
             }
             else {
                 return {
+                    getTitle: function (id) {
+                        return (_this.filterMutlipleQuestionChilds(question, id)
+                            .filter(function (item) { return !!item.title_type; })
+                            .map(function (item) { return _this.valuesKeeper.getValue(item.code, id); })
+                            .filter(function (item) { return !!item; })
+                            .join(', ') || undefined);
+                    },
                     question: question,
                     ids: _this.valuesKeeper.getMultipleIds(question.code),
                     getQuestionProps: _this.getQuestionProps,

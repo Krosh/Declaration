@@ -60,6 +60,7 @@ export interface AddressQuestionProps {
 export interface MultipleQuestionProps {
   question: MultipleQuestion
   ids: number[]
+  getTitle: (id: number) => string | undefined
   getQuestionProps: (question: Question, id: number) => QuestionProps
   addMultiple: (questionCode: string, timestamp: number) => void
   deleteMultiple: (questionCode: string, id: number) => void
@@ -420,7 +421,7 @@ export default class Declaration {
           }
           this.validateKeeper.refreshQuestionCache(question, id)
           this.rerenderCallback && this.rerenderCallback()
-        }, // TODO
+        },
         setAutocompleteActionIndex: (actionIndex: string) =>
           this.valuesKeeper.processAutocompleteWithActions(
             question,
@@ -432,6 +433,15 @@ export default class Declaration {
       return t
     } else {
       return {
+        getTitle: (id: number) => {
+          return (
+            this.filterMutlipleQuestionChilds(question, id)
+              .filter(item => !!item.title_type)
+              .map(item => this.valuesKeeper.getValue(item.code, id))
+              .filter(item => !!item)
+              .join(', ') || undefined
+          )
+        },
         question: question as MultipleQuestion,
         ids: this.valuesKeeper.getMultipleIds(question.code),
         getQuestionProps: this.getQuestionProps,

@@ -35,6 +35,7 @@ export interface AddressQuestionProps {
 export interface MultipleQuestionProps {
     question: MultipleQuestion;
     ids: number[];
+    getTitle: (id: number) => string | undefined;
     getQuestionProps: (question: Question, id: number) => QuestionProps;
     addMultiple: (questionCode: string, timestamp: number) => void;
     deleteMultiple: (questionCode: string, id: number) => void;

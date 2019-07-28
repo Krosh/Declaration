@@ -53,6 +53,7 @@ export type CurrencyAutocompleteAction = AutocompleteAction & {
 }
 
 interface BaseQuestion {
+  title_type?: string
   name: string
   hint: string
   code: string
