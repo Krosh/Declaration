@@ -174,6 +174,7 @@ export interface Page {
   name: string
   code: string
   tab: string
+  type?: 'income' | 'deduction' | 'statement' | 'total' | 'files'
   id: number
   questions: Question[]
   is_title: boolean

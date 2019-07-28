@@ -13,6 +13,14 @@ var visibility_keeper_1 = require("./visibility-keeper");
 var Declaration = /** @class */ (function () {
     function Declaration(schema, initialValues, dataProvider) {
         var _this = this;
+        this.getStatistics = function () { return _this.statistics; };
+        this.loadStatistics = function () {
+            return _this.dataProvider.getStatistics().then(function (data) {
+                _this.statistics = data;
+                _this.pagesKeeper.processStatistics(data);
+                _this.rerenderCallback && _this.rerenderCallback();
+            });
+        };
         this.goToNextPage = function () {
             var page = _this.pagesKeeper.getNextPage();
             if (undefined === page) {
@@ -281,11 +289,3 @@ var Declaration = /** @class */ (function () {
     return Declaration;
 }());
 exports.default = Declaration;
-function isIncomeTab(tab) {
-    return tab === 'Доходы';
-}
-exports.isIncomeTab = isIncomeTab;
-function isDeductionTab(tab) {
-    return tab === 'Вычеты';
-}
-exports.isDeductionTab = isDeductionTab;

@@ -5,6 +5,7 @@ import {
   Question,
 } from './types/declaration'
 import { getHidedElementCodes } from './getHidedElementCodes'
+import { Statistics } from './index'
 
 export default class PageKeeper {
   tabs: string[]
@@ -12,9 +13,21 @@ export default class PageKeeper {
   activePage: Page
   activeTab: string
 
+  needStatement: boolean = false
+
   hidedPagesCodes: string[]
   visiblePages: Page[]
   activeQuestion: Question | undefined
+
+  public processStatistics(statistics: Statistics) {
+    const needStatement = statistics.payments_or_compensations.some(
+      item => item.from > 0
+    )
+    if (needStatement !== this.needStatement) {
+      this.needStatement = needStatement
+      this.visiblePages = this.getVisiblePages()
+    }
+  }
 
   constructor(
     schema: FullyLoadedDeclaration,
@@ -93,7 +106,9 @@ export default class PageKeeper {
   }
 
   private getVisiblePages = () =>
-    this.pages.filter(item => !this.hidedPagesCodes.includes(item.code))
+    this.pages
+      .filter(item => !this.hidedPagesCodes.includes(item.code))
+      .filter(item => item.type !== 'statement' || this.needStatement)
 
   processChangeValue = (
     questionCode: string,

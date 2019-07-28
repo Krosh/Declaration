@@ -4,6 +4,7 @@ var getHidedElementCodes_1 = require("./getHidedElementCodes");
 var PageKeeper = /** @class */ (function () {
     function PageKeeper(schema, getValue) {
         var _this = this;
+        this.needStatement = false;
         this.setActiveQuestion = function (question) {
             _this.activeQuestion = question;
         };
@@ -53,7 +54,9 @@ var PageKeeper = /** @class */ (function () {
             return _this.visiblePages[currentIndex - 1];
         };
         this.getVisiblePages = function () {
-            return _this.pages.filter(function (item) { return !_this.hidedPagesCodes.includes(item.code); });
+            return _this.pages
+                .filter(function (item) { return !_this.hidedPagesCodes.includes(item.code); })
+                .filter(function (item) { return item.type !== 'statement' || _this.needStatement; });
         };
         this.processChangeValue = function (questionCode, getValue) {
             // TODO:: проверить, нужно ли пересчитывать табы в зависимости от изменившегося вопроса
@@ -75,6 +78,13 @@ var PageKeeper = /** @class */ (function () {
         this.hidedPagesCodes = this.getHidedPagesCodes(getValue);
         this.visiblePages = this.getVisiblePages();
     }
+    PageKeeper.prototype.processStatistics = function (statistics) {
+        var needStatement = statistics.payments_or_compensations.some(function (item) { return item.from > 0; });
+        if (needStatement !== this.needStatement) {
+            this.needStatement = needStatement;
+            this.visiblePages = this.getVisiblePages();
+        }
+    };
     return PageKeeper;
 }());
 exports.default = PageKeeper;

@@ -1,9 +1,16 @@
 import { FullyLoadedDeclaration, MultipleQuestion, Page, Question, SingleQuestion, Values, AddressQuestion, CheckboxQuestion } from './types/declaration';
 import { Address } from './types/address';
+export interface Statistics {
+    payments_or_compensations: [{
+        to: number;
+        from: number;
+    }];
+}
 export interface DataProvider {
     saveAnswer: (questionCode: string, id: number, value: string) => void;
     deleteMultiple: (questionCode: string, id: number) => void;
     copyMultiple: (questionCode: string, id: number, newId: number) => void;
+    getStatistics: () => Promise<Statistics>;
 }
 export interface SingleQuestionProps {
     question: SingleQuestion;
@@ -55,6 +62,9 @@ export default class Declaration {
     getMultipleIds: (code: string) => number[];
     getTitlePage: (tab: string) => Page | undefined;
     getActiveQuestion: () => Question | undefined;
+    private statistics;
+    getStatistics: () => Statistics | undefined;
+    loadStatistics: () => Promise<void>;
     canGoToNextPage: () => boolean;
     canGoToPrevPage: () => boolean;
     goToNextPage: () => void;
@@ -79,5 +89,3 @@ export default class Declaration {
     private processCheckboxChange;
     getQuestionProps: (question: Question, id: number) => QuestionProps;
 }
-export declare function isIncomeTab(tab: string): boolean;
-export declare function isDeductionTab(tab: string): boolean;

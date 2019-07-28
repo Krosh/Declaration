@@ -26,10 +26,15 @@ import { VisibilityKeeper } from './visibility-keeper'
 
 type QuestionsMap = { [key: string]: Question }
 
+export interface Statistics {
+  payments_or_compensations: [{ to: number; from: number }]
+}
+
 export interface DataProvider {
   saveAnswer: (questionCode: string, id: number, value: string) => void
   deleteMultiple: (questionCode: string, id: number) => void
   copyMultiple: (questionCode: string, id: number, newId: number) => void
+  getStatistics: () => Promise<Statistics>
 }
 
 export interface SingleQuestionProps {
@@ -92,6 +97,15 @@ export default class Declaration {
   getMultipleIds: (code: string) => number[]
   getTitlePage: (tab: string) => Page | undefined
   getActiveQuestion: () => Question | undefined
+
+  private statistics: Statistics | undefined
+  public getStatistics = () => this.statistics
+  public loadStatistics = () =>
+    this.dataProvider.getStatistics().then(data => {
+      this.statistics = data
+      this.pagesKeeper.processStatistics(data)
+      this.rerenderCallback && this.rerenderCallback()
+    })
 
   canGoToNextPage: () => boolean
   canGoToPrevPage: () => boolean
@@ -439,12 +453,4 @@ export default class Declaration {
       }
     }
   }
-}
-
-export function isIncomeTab(tab: string) {
-  return tab === 'Доходы'
-}
-
-export function isDeductionTab(tab: string) {
-  return tab === 'Вычеты'
 }
