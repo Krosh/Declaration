@@ -83,7 +83,8 @@ export function getHidedElementCodes(
       })
 
       const activeValueAction = getAutocompleteValueActionIndex(question)
-      if (undefined !== activeValueAction) {
+      const isHided = hidedQuestions.includes(question.code)
+      if (activeValueAction !== undefined && !isHided) {
         const valueAction = question.action.value_action[activeValueAction]
         if (undefined !== valueAction && valueAction.type === action) {
           currentHide = currentHide.filter(hide => {
