@@ -52,7 +52,8 @@ function getHidedElementCodes(questions, getValue, getAutocompleteValueActionInd
                 return item.type === action ? item.codes : [];
             });
             var activeValueAction = getAutocompleteValueActionIndex(question);
-            if (undefined !== activeValueAction) {
+            var isHided = hidedQuestions.includes(question.code);
+            if (activeValueAction !== undefined && !isHided) {
                 var valueAction_1 = question.action.value_action[activeValueAction];
                 if (undefined !== valueAction_1 && valueAction_1.type === action) {
                     currentHide = currentHide.filter(function (hide) {
