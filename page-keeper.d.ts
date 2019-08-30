@@ -6,6 +6,7 @@ export default class PageKeeper {
     activePage: Page;
     activeTab: string;
     needStatement: boolean;
+    needDownload: boolean;
     hidedPagesCodes: string[];
     visiblePages: Page[];
     activeQuestion: Question | undefined;

@@ -27,6 +27,10 @@ import { VisibilityKeeper } from './visibility-keeper'
 type QuestionsMap = { [key: string]: Question }
 
 export interface Statistics {
+  incomes: Array<{
+    name: string
+    value: number
+  }>
   payments_or_compensations: [{ to: number; from: number }]
 }
 
@@ -337,6 +341,8 @@ export default class Declaration {
           if (!this.valuesKeeper.setValue(question.code, id, newValue)) {
             return
           }
+          this.statistics = undefined
+          this.pagesKeeper.needDownload = false
           this.pagesKeeper.processChangeValue(
             question.code,
             this.valuesKeeper.getValue
@@ -394,6 +400,8 @@ export default class Declaration {
           if (!this.valuesKeeper.setValue(question.code, id, newValue)) {
             return
           }
+          this.statistics = undefined
+          this.pagesKeeper.needDownload = false
           this.pagesKeeper.processChangeValue(
             question.code,
             this.valuesKeeper.getValue

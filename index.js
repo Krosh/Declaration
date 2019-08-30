@@ -163,6 +163,8 @@ var Declaration = /** @class */ (function () {
                         if (!_this.valuesKeeper.setValue(question.code, id, newValue)) {
                             return;
                         }
+                        _this.statistics = undefined;
+                        _this.pagesKeeper.needDownload = false;
                         _this.pagesKeeper.processChangeValue(question.code, _this.valuesKeeper.getValue);
                         _this.touchKeeper.setTouch(question.code, id, true);
                         if (getHidedElementCodes_1.hasForceValueAction(question) ||
@@ -204,6 +206,8 @@ var Declaration = /** @class */ (function () {
                         if (!_this.valuesKeeper.setValue(question.code, id, newValue)) {
                             return;
                         }
+                        _this.statistics = undefined;
+                        _this.pagesKeeper.needDownload = false;
                         _this.pagesKeeper.processChangeValue(question.code, _this.valuesKeeper.getValue);
                         if (newValue === '1' && question.type === 'checkbox') {
                             _this.processCheckboxChange(question);

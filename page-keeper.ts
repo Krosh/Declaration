@@ -14,6 +14,7 @@ export default class PageKeeper {
   activeTab: string
 
   needStatement: boolean = false
+  needDownload: boolean = false
 
   hidedPagesCodes: string[]
   visiblePages: Page[]
@@ -23,10 +24,9 @@ export default class PageKeeper {
     const needStatement = statistics.payments_or_compensations.some(
       item => item.from > 0
     )
-    if (needStatement !== this.needStatement) {
-      this.needStatement = needStatement
-      this.visiblePages = this.getVisiblePages()
-    }
+    this.needDownload = true
+    this.needStatement = needStatement
+    this.visiblePages = this.getVisiblePages()
   }
 
   constructor(
@@ -109,6 +109,7 @@ export default class PageKeeper {
     this.pages
       .filter(item => !this.hidedPagesCodes.includes(item.code))
       .filter(item => item.type !== 'statement' || this.needStatement)
+      .filter(item => item.type !== 'download' || this.needDownload)
 
   processChangeValue = (
     questionCode: string,

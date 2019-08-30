@@ -1,6 +1,10 @@
 import { FullyLoadedDeclaration, MultipleQuestion, Page, Question, SingleQuestion, Values, AddressQuestion, CheckboxQuestion } from './types/declaration';
 import { Address } from './types/address';
 export interface Statistics {
+    incomes: Array<{
+        name: string;
+        value: number;
+    }>;
     payments_or_compensations: [{
         to: number;
         from: number;
