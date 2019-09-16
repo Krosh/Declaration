@@ -28,12 +28,18 @@ var defaultFields = {
     ifnsflName: '',
     oktmo: '',
     postal: '',
+    description: '',
     userEdited: false,
 };
 exports.AddressModel = {
     create: function (jsonValue) {
         var value = JSON.parse(jsonValue || '{}');
-        return __assign({}, defaultFields, value, { city: __assign({}, defaultFiasElement, (value.city ? value.city : {})), street: __assign({}, defaultFiasElement, (value.street ? value.street : {})), house: __assign({}, defaultFiasElement, (value.house ? value.house : {})) });
+        return __assign({}, defaultFields, value, { fullAddress: {
+                description: value.description ? value.description : '',
+                city: __assign({}, defaultFiasElement, (value.city ? value.city : {})),
+                street: __assign({}, defaultFiasElement, (value.street ? value.street : {})),
+                house: __assign({}, defaultFiasElement, (value.house ? value.house : {}))
+            }, city: __assign({}, defaultFiasElement, (value.city ? value.city : {})), street: __assign({}, defaultFiasElement, (value.street ? value.street : {})), house: __assign({}, defaultFiasElement, (value.house ? value.house : {})) });
     },
     serialize: function (value) { return JSON.stringify(value); },
     changeFiasElement: function (oldValue, field, label, changeValue, isUserEdited) {

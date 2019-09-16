@@ -5,7 +5,16 @@ export interface FiasElement {
   code: string
   type: string
 }
+
+export interface FiasFullAddress {
+  description: string,
+  city: FiasElement
+  street: FiasElement
+  house: FiasElement
+}
+
 export interface Address {
+  fullAddress: FiasFullAddress
   city: FiasElement
   street: FiasElement
   house: FiasElement
@@ -15,6 +24,7 @@ export interface Address {
   ifnsflName: string
   oktmo: string
   postal: string
+  description: string,
   userEdited: boolean
 }
 
@@ -38,6 +48,7 @@ const defaultFields = {
   ifnsflName: '',
   oktmo: '',
   postal: '',
+  description: '',
   userEdited: false,
 }
 
@@ -48,6 +59,21 @@ export const AddressModel = {
     return {
       ...defaultFields,
       ...value,
+      fullAddress: {
+        description: value.description ? value.description : '',
+        city: {
+          ...defaultFiasElement,
+          ...(value.city ? value.city : {}),
+        },
+        street: {
+          ...defaultFiasElement,
+          ...(value.street ? value.street : {}),
+        },
+        house: {
+          ...defaultFiasElement,
+          ...(value.house ? value.house : {}),
+        }
+      },
       city: {
         ...defaultFiasElement,
         ...(value.city ? value.city : {}),
