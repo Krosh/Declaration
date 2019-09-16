@@ -69,6 +69,46 @@ var Declaration = /** @class */ (function () {
                 page.questions.forEach(parseActions);
             });
         };
+        this.calculateProgress = function () {
+            var questions = _this.getVisiblePages()
+                .flatMap(function (item) { return _this.getVisibleQuestionFromPage(item); })
+                .reduce(function (tot, item) {
+                var questionProps = _this.getQuestionProps(item, 0);
+                if (questionProps.question.type === 'multiple') {
+                    var props_1 = questionProps;
+                    return tot.concat(props_1.ids.flatMap(function (id) {
+                        return props_1
+                            .filterMultipleChilds(props_1.question, id)
+                            .map(function (question) {
+                            return props_1.getQuestionProps(question, id);
+                        });
+                    }));
+                }
+                return tot.concat([questionProps]);
+            }, [])
+                .filter(function (item) {
+                if (item.question.type === 'info' ||
+                    item.question.type === 'checkbox') {
+                    return false;
+                }
+                if (item.value === '' &&
+                    item.question.validation &&
+                    item.question.validation.canBeSkipped) {
+                    return false;
+                }
+                return true;
+            });
+            var answeredQuestions = questions.filter(function (questionProps) {
+                if (questionProps.question.type === 'address') {
+                    return true;
+                }
+                return (questionProps.value !== '' &&
+                    0 === questionProps.errors.length);
+            });
+            _this.progress = Math.floor((answeredQuestions.length * 100) / questions.length);
+        };
+        this.progress = 0;
+        this.getProgress = function () { return _this.progress; };
         this.calculateQuestionsMap = function (schema) {
             var getQuestions = function (question) {
                 if (question.answers) {
@@ -173,6 +213,7 @@ var Declaration = /** @class */ (function () {
                             getHidedElementCodes_1.isAutocompleteWithActions(question)) {
                             _this.visibilityKeeper.clearVisibility();
                         }
+                        _this.calculateProgress();
                         _this.visibilityKeeper.clearRequired();
                         _this.validateKeeper.refreshQuestionCache(question, id);
                         _this.rerenderCallback && _this.rerenderCallback();
@@ -219,6 +260,7 @@ var Declaration = /** @class */ (function () {
                             getHidedElementCodes_1.isAutocompleteWithActions(question)) {
                             _this.visibilityKeeper.clearVisibility();
                         }
+                        _this.calculateProgress();
                         _this.visibilityKeeper.clearRequired();
                         _this.validateKeeper.refreshQuestionCache(question, id);
                         _this.rerenderCallback && _this.rerenderCallback();
@@ -296,6 +338,7 @@ var Declaration = /** @class */ (function () {
         this.getVisiblePages = function () { return _this.pagesKeeper.visiblePages; };
         this.getMultipleIds = this.valuesKeeper.getMultipleIds;
         this.validatePage = this.validateKeeper.validatePage;
+        this.calculateProgress();
     }
     return Declaration;
 }());

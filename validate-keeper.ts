@@ -21,7 +21,11 @@ export default class ValidateKeeper {
     this.visibilityKeeper = visibilityKeeper
   }
 
-  private getErrors = (question: Question, id: number) => {
+  private getErrors = (
+    question: Question,
+    id: number,
+    checkTouch: boolean = true
+  ) => {
     if (question.type === 'info') {
       return []
     }
@@ -30,7 +34,7 @@ export default class ValidateKeeper {
       return ids.flatMap(id =>
         this.visibilityKeeper
           .getRequiredList(question.code, question.answers, id)
-          .flatMap(item => this.validateQuestion(item, id))
+          .flatMap(item => this.validateQuestion(item, id, checkTouch))
       )
     }
     if (question.type === 'address') {
@@ -42,7 +46,7 @@ export default class ValidateKeeper {
         )
       ).flat()
     }
-    if (!this.touchKeeper.getTouch(question.code, id)) {
+    if (checkTouch && !this.touchKeeper.getTouch(question.code, id)) {
       return []
     }
     const isRequiredFromAction = !!question.parent_code
@@ -61,14 +65,17 @@ export default class ValidateKeeper {
     )
   }
 
-  private getPageErrors = (page: Page) => {
+  private getPageErrors = (page: Page, checkTouch: boolean = true) => {
     return this.visibilityKeeper
       .getList(page.code, page.questions, 0)
-      .flatMap(item => this.validateQuestion(item, 0))
+      .flatMap(item => this.validateQuestion(item, 0, checkTouch))
   }
 
-  private getCacheName = (questionCode: string, id: number) =>
-    questionCode + id.toString()
+  private getCacheName = (
+    questionCode: string,
+    id: number,
+    checkTouch: boolean
+  ) => questionCode + id.toString() + '---' + checkTouch.toString()
 
   refreshQuestionCache(question: Question, id: number) {
     this.cache = {}
@@ -78,17 +85,17 @@ export default class ValidateKeeper {
     // }
   }
 
-  validateQuestion(question: Question, id: number) {
-    const cacheName = this.getCacheName(question.code, id)
+  validateQuestion(question: Question, id: number, checkTouch: boolean = true) {
+    const cacheName = this.getCacheName(question.code, id, checkTouch)
     if (this.cache[cacheName]) {
       return this.cache[cacheName]
     }
-    this.cache[cacheName] = this.getErrors(question, id)
+    this.cache[cacheName] = this.getErrors(question, id, checkTouch)
     return this.cache[cacheName]
   }
 
-  validatePage = (page: Page) => {
+  validatePage = (page: Page, checkTouch: boolean = true) => {
     // TODO:: cache it!
-    return this.getPageErrors(page)
+    return this.getPageErrors(page, checkTouch)
   }
 }

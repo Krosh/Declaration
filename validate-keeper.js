@@ -9,7 +9,8 @@ var ValidateKeeper = /** @class */ (function () {
     function ValidateKeeper(valuesKeeper, touchKeeper, visibilityKeeper) {
         var _this = this;
         this.cache = {};
-        this.getErrors = function (question, id) {
+        this.getErrors = function (question, id, checkTouch) {
+            if (checkTouch === void 0) { checkTouch = true; }
             if (question.type === 'info') {
                 return [];
             }
@@ -18,13 +19,13 @@ var ValidateKeeper = /** @class */ (function () {
                 return ids.flatMap(function (id) {
                     return _this.visibilityKeeper
                         .getRequiredList(question.code, question.answers, id)
-                        .flatMap(function (item) { return _this.validateQuestion(item, id); });
+                        .flatMap(function (item) { return _this.validateQuestion(item, id, checkTouch); });
                 });
             }
             if (question.type === 'address') {
                 return Object.values(address_1.AddressModel.validate(_this.valuesKeeper.getValue(question.code, id), function (code) { return _this.touchKeeper.getTouch(question.code + code, id); }, !!question.validation && !!question.validation.shortAnswer)).flat();
             }
-            if (!_this.touchKeeper.getTouch(question.code, id)) {
+            if (checkTouch && !_this.touchKeeper.getTouch(question.code, id)) {
                 return [];
             }
             var isRequiredFromAction = !!question.parent_code
@@ -36,17 +37,17 @@ var ValidateKeeper = /** @class */ (function () {
                     .includes(question);
             return validation_1.default(question.code, question.validation, function (code) { return _this.valuesKeeper.getValue(code, id); }, isRequiredFromAction);
         };
-        this.getPageErrors = function (page) {
+        this.getPageErrors = function (page, checkTouch) {
+            if (checkTouch === void 0) { checkTouch = true; }
             return _this.visibilityKeeper
                 .getList(page.code, page.questions, 0)
-                .flatMap(function (item) { return _this.validateQuestion(item, 0); });
+                .flatMap(function (item) { return _this.validateQuestion(item, 0, checkTouch); });
         };
-        this.getCacheName = function (questionCode, id) {
-            return questionCode + id.toString();
-        };
-        this.validatePage = function (page) {
+        this.getCacheName = function (questionCode, id, checkTouch) { return questionCode + id.toString() + '---' + checkTouch.toString(); };
+        this.validatePage = function (page, checkTouch) {
+            if (checkTouch === void 0) { checkTouch = true; }
             // TODO:: cache it!
-            return _this.getPageErrors(page);
+            return _this.getPageErrors(page, checkTouch);
         };
         this.valuesKeeper = valuesKeeper;
         this.touchKeeper = touchKeeper;
@@ -59,12 +60,13 @@ var ValidateKeeper = /** @class */ (function () {
         //   delete this.cache[this.getCacheName(question.parent_code, 0)]
         // }
     };
-    ValidateKeeper.prototype.validateQuestion = function (question, id) {
-        var cacheName = this.getCacheName(question.code, id);
+    ValidateKeeper.prototype.validateQuestion = function (question, id, checkTouch) {
+        if (checkTouch === void 0) { checkTouch = true; }
+        var cacheName = this.getCacheName(question.code, id, checkTouch);
         if (this.cache[cacheName]) {
             return this.cache[cacheName];
         }
-        this.cache[cacheName] = this.getErrors(question, id);
+        this.cache[cacheName] = this.getErrors(question, id, checkTouch);
         return this.cache[cacheName];
     };
     return ValidateKeeper;

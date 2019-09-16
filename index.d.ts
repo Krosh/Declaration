@@ -62,7 +62,7 @@ export default class Declaration {
     private rerenderCallback?;
     private questionsMap;
     private visibilityKeeper;
-    validatePage: (page: Page) => string[];
+    validatePage: (page: Page, checkTouch?: boolean) => string[];
     private touchKeeper;
     getMultipleIds: (code: string) => number[];
     getTitlePage: (tab: string) => Page | undefined;
@@ -77,6 +77,9 @@ export default class Declaration {
     getPages: () => Page[];
     constructor(schema: FullyLoadedDeclaration, initialValues: Values, dataProvider: DataProvider);
     processShowInputsActions: (schema: FullyLoadedDeclaration) => void;
+    private calculateProgress;
+    private progress;
+    getProgress: () => number;
     calculateQuestionsMap: (schema: FullyLoadedDeclaration) => {};
     setRerenderCallback: (cb: () => void) => void;
     getVisibleQuestionFromPage: (page: Page) => Question[];

@@ -97,7 +97,7 @@ export default class Declaration {
   private rerenderCallback?: () => void
   private questionsMap: QuestionsMap
   private visibilityKeeper: VisibilityKeeper
-  validatePage: (page: Page) => string[]
+  validatePage: (page: Page, checkTouch?: boolean) => string[]
   private touchKeeper: TouchKeeper
   getMultipleIds: (code: string) => number[]
   getTitlePage: (tab: string) => Page | undefined
@@ -186,6 +186,7 @@ export default class Declaration {
     this.getMultipleIds = this.valuesKeeper.getMultipleIds
 
     this.validatePage = this.validateKeeper.validatePage
+    this.calculateProgress()
   }
 
   processShowInputsActions = (schema: FullyLoadedDeclaration) => {
@@ -222,6 +223,65 @@ export default class Declaration {
       page.questions.forEach(parseActions)
     })
   }
+
+  private calculateProgress = () => {
+    const questions = this.getVisiblePages()
+      .flatMap(item => this.getVisibleQuestionFromPage(item))
+      .reduce(
+        (tot, item) => {
+          const questionProps = this.getQuestionProps(item, 0)
+          if (questionProps.question.type === 'multiple') {
+            const props = questionProps as MultipleQuestionProps
+            return tot.concat(
+              props.ids.flatMap(id =>
+                props
+                  .filterMultipleChilds(props.question, id)
+                  .map(
+                    question =>
+                      props.getQuestionProps(
+                        question,
+                        id
+                      ) as SingleQuestionProps
+                  )
+              )
+            )
+          }
+          return tot.concat([questionProps as any])
+        },
+        [] as SingleQuestionProps[]
+      )
+      .filter(item => {
+        if (
+          item.question.type === 'info' ||
+          item.question.type === 'checkbox'
+        ) {
+          return false
+        }
+        if (
+          item.value === '' &&
+          item.question.validation &&
+          item.question.validation.canBeSkipped
+        ) {
+          return false
+        }
+        return true
+      })
+    const answeredQuestions = questions.filter(questionProps => {
+      if (questionProps.question.type === 'address') {
+        return true
+      }
+      return (
+        questionProps.value !== '' &&
+        0 === (questionProps as SingleQuestionProps).errors.length
+      )
+    })
+    this.progress = Math.floor(
+      (answeredQuestions.length * 100) / questions.length
+    )
+  }
+
+  private progress = 0
+  getProgress = () => this.progress
 
   calculateQuestionsMap = (schema: FullyLoadedDeclaration) => {
     const getQuestions = (question: any) => {
@@ -356,6 +416,7 @@ export default class Declaration {
           ) {
             this.visibilityKeeper.clearVisibility()
           }
+          this.calculateProgress()
           this.visibilityKeeper.clearRequired()
           this.validateKeeper.refreshQuestionCache(question, id)
           this.rerenderCallback && this.rerenderCallback()
@@ -418,6 +479,7 @@ export default class Declaration {
           ) {
             this.visibilityKeeper.clearVisibility()
           }
+          this.calculateProgress()
           this.visibilityKeeper.clearRequired()
           this.validateKeeper.refreshQuestionCache(question, id)
           this.rerenderCallback && this.rerenderCallback()
