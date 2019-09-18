@@ -204,10 +204,10 @@ export function processAnswers(answers: any) {
 export function processData(data: any) {
   const parseActions = (item: any, page: Page) => {
     item.page = page
-    if (item.action) {
+    if (item.action && typeof item.action === 'string') {
       item.action = JSON.parse(item.action)
     }
-    if (item.validation) {
+    if (item.validation && typeof item.validation === 'string') {
       item.validation = JSON.parse(item.validation)
     }
     if (item.answers) {

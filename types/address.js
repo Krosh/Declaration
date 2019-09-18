@@ -16,10 +16,16 @@ var relatedFields = {
     street: ['house'],
     house: [],
 };
+var checkParentFields = {
+    city: [],
+    street: ['city'],
+    house: ['street', 'city'],
+};
 var defaultFiasElement = {
     name: '',
     code: '',
     type: '',
+    description: ''
 };
 var defaultFields = {
     housing: '',
@@ -35,7 +41,6 @@ exports.AddressModel = {
     create: function (jsonValue) {
         var value = JSON.parse(jsonValue || '{}');
         return __assign({}, defaultFields, value, { fullAddress: {
-                description: value.description ? value.description : '',
                 city: __assign({}, defaultFiasElement, (value.city ? value.city : {})),
                 street: __assign({}, defaultFiasElement, (value.street ? value.street : {})),
                 house: __assign({}, defaultFiasElement, (value.house ? value.house : {}))
@@ -48,13 +53,44 @@ exports.AddressModel = {
         newFiasElementValue.name = label;
         newFiasElementValue.code = isUserEdited ? '' : changeValue.id;
         newFiasElementValue.type = isUserEdited ? '' : changeValue.type;
+        newFiasElementValue.description = isUserEdited ? '' : changeValue.description;
         var newAddress = __assign({}, oldValue, (_a = {}, _a[field] = newFiasElementValue, _a));
         var relations = relatedFields[field];
         relations.forEach(function (item) { return (newAddress[item] = __assign({}, defaultFiasElement)); });
-        newAddress.ifnsfl = isUserEdited ? '' : changeValue.ifnsfl;
-        newAddress.ifnsflName = isUserEdited ? '' : changeValue.ifnsfl_name;
-        newAddress.oktmo = isUserEdited ? '' : changeValue.oktmo;
-        newAddress.postal = isUserEdited ? '' : changeValue.postal;
+        var isParent = true;
+        if (isUserEdited) {
+            var check = checkParentFields[field];
+            var parent_1 = check.map(function (item) {
+                return oldValue[field].code === oldValue[item].code;
+            });
+            if (parent_1.length) {
+                isParent = parent_1.reduce(function (item) { return item; });
+            }
+        }
+        if (changeValue.ifnsfl) {
+            newAddress.ifnsfl = changeValue.ifnsfl;
+        }
+        else if (oldValue.ifnsfl) {
+            newAddress.ifnsfl = !isParent ? '' : oldValue.ifnsfl;
+        }
+        if (changeValue.ifnsfl_name) {
+            newAddress.ifnsflName = changeValue.ifnsfl_name;
+        }
+        else if (oldValue.ifnsflName) {
+            newAddress.ifnsflName = !isParent ? '' : oldValue.ifnsflName;
+        }
+        if (changeValue.oktmo) {
+            newAddress.oktmo = changeValue.oktmo;
+        }
+        else if (oldValue.oktmo) {
+            newAddress.oktmo = !isParent ? '' : oldValue.oktmo;
+        }
+        if (changeValue.postal) {
+            newAddress.postal = changeValue.postal;
+        }
+        else if (oldValue.postal) {
+            newAddress.postal = !isParent ? '' : oldValue.postal;
+        }
         newAddress.userEdited = isUserEdited;
         return newAddress;
     },

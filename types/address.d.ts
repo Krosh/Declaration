@@ -3,9 +3,9 @@ export interface FiasElement {
     name: string;
     code: string;
     type: string;
+    description: string;
 }
 export interface FiasFullAddress {
-    description: string;
     city: FiasElement;
     street: FiasElement;
     house: FiasElement;

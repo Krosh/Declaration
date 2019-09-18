@@ -4,10 +4,10 @@ export interface FiasElement {
   name: string
   code: string
   type: string
+  description: string
 }
 
 export interface FiasFullAddress {
-  description: string,
   city: FiasElement
   street: FiasElement
   house: FiasElement
@@ -36,10 +36,17 @@ const relatedFields: { [key in FiasElements]: FiasElements[] } = {
   house: [],
 }
 
+const checkParentFields: { [key in FiasElements]: FiasElements[] } = {
+  city: [],
+  street: ['city'],
+  house: ['street', 'city'],
+}
+
 const defaultFiasElement: FiasElement = {
   name: '',
   code: '',
   type: '',
+  description: ''
 }
 const defaultFields = {
   housing: '',
@@ -60,7 +67,6 @@ export const AddressModel = {
       ...defaultFields,
       ...value,
       fullAddress: {
-        description: value.description ? value.description : '',
         city: {
           ...defaultFiasElement,
           ...(value.city ? value.city : {}),
@@ -102,14 +108,43 @@ export const AddressModel = {
     newFiasElementValue.name = label
     newFiasElementValue.code = isUserEdited ? '' : changeValue.id
     newFiasElementValue.type = isUserEdited ? '' : changeValue.type
+    newFiasElementValue.description = isUserEdited ? '' : changeValue.description
 
     const newAddress = { ...oldValue, [field]: newFiasElementValue }
     const relations = relatedFields[field]
     relations.forEach(item => (newAddress[item] = { ...defaultFiasElement }))
-    newAddress.ifnsfl = isUserEdited ? '' : changeValue.ifnsfl
-    newAddress.ifnsflName = isUserEdited ? '' : changeValue.ifnsfl_name
-    newAddress.oktmo = isUserEdited ? '' : changeValue.oktmo
-    newAddress.postal = isUserEdited ? '' : changeValue.postal
+
+    let isParent = true
+    if (isUserEdited) {
+      const check = checkParentFields[field]
+      const parent = check.map(item => {
+        return oldValue[field].code === oldValue[item].code
+      })
+      if (parent.length) {
+        isParent = parent.reduce(item => item)
+      }
+    }
+
+    if (changeValue.ifnsfl) {
+      newAddress.ifnsfl = changeValue.ifnsfl
+    } else if (oldValue.ifnsfl) {
+      newAddress.ifnsfl = !isParent ? '' : oldValue.ifnsfl
+    }
+    if (changeValue.ifnsfl_name) {
+      newAddress.ifnsflName = changeValue.ifnsfl_name
+    } else if (oldValue.ifnsflName) {
+      newAddress.ifnsflName = !isParent ? '' : oldValue.ifnsflName
+    }
+    if (changeValue.oktmo) {
+      newAddress.oktmo = changeValue.oktmo
+    } else if (oldValue.oktmo) {
+      newAddress.oktmo = !isParent ? '' : oldValue.oktmo
+    }
+    if (changeValue.postal) {
+      newAddress.postal = changeValue.postal
+    } else if (oldValue.postal) {
+      newAddress.postal = !isParent ? '' : oldValue.postal
+    }
 
     newAddress.userEdited = isUserEdited
     return newAddress

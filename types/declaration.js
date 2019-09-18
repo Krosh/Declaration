@@ -21,10 +21,10 @@ exports.processAnswers = processAnswers;
 function processData(data) {
     var parseActions = function (item, page) {
         item.page = page;
-        if (item.action) {
+        if (item.action && typeof item.action === 'string') {
             item.action = JSON.parse(item.action);
         }
-        if (item.validation) {
+        if (item.validation && typeof item.validation === 'string') {
             item.validation = JSON.parse(item.validation);
         }
         if (item.answers) {
