@@ -12,12 +12,16 @@ var __assign = (this && this.__assign) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var relatedFields = {
+    region: ['area'],
+    area: ['city'],
     city: ['street', 'house'],
     street: ['house'],
     house: [],
 };
 var checkParentFields = {
-    city: [],
+    region: [],
+    area: ['region'],
+    city: ['area'],
     street: ['city'],
     house: ['street', 'city'],
 };
@@ -41,10 +45,12 @@ exports.AddressModel = {
     create: function (jsonValue) {
         var value = JSON.parse(jsonValue || '{}');
         return __assign({}, defaultFields, value, { fullAddress: {
+                region: __assign({}, defaultFiasElement, (value.region ? value.region : {})),
+                area: __assign({}, defaultFiasElement, (value.area ? value.area : {})),
                 city: __assign({}, defaultFiasElement, (value.city ? value.city : {})),
                 street: __assign({}, defaultFiasElement, (value.street ? value.street : {})),
                 house: __assign({}, defaultFiasElement, (value.house ? value.house : {}))
-            }, city: __assign({}, defaultFiasElement, (value.city ? value.city : {})), street: __assign({}, defaultFiasElement, (value.street ? value.street : {})), house: __assign({}, defaultFiasElement, (value.house ? value.house : {})) });
+            }, region: __assign({}, defaultFiasElement, (value.region ? value.region : {})), area: __assign({}, defaultFiasElement, (value.area ? value.area : {})), city: __assign({}, defaultFiasElement, (value.city ? value.city : {})), street: __assign({}, defaultFiasElement, (value.street ? value.street : {})), house: __assign({}, defaultFiasElement, (value.house ? value.house : {})) });
     },
     serialize: function (value) { return JSON.stringify(value); },
     changeFiasElement: function (oldValue, field, label, changeValue, isUserEdited) {
