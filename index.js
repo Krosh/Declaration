@@ -100,7 +100,8 @@ var Declaration = /** @class */ (function () {
             });
             var answeredQuestions = questions.filter(function (questionProps) {
                 if (questionProps.question.type === 'address') {
-                    return true;
+                    return (Object.values(address_1.AddressModel.validate(questionProps.value, function () { return true; }, !!questionProps.question.validation &&
+                        !!questionProps.question.validation.shortAnswer)).flat().length == 0);
                 }
                 return (questionProps.value !== '' &&
                     0 === questionProps.errors.length);
@@ -326,6 +327,11 @@ var Declaration = /** @class */ (function () {
         this.pagesKeeper = new page_keeper_1.default(schema, this.valuesKeeper.getValue);
         this.touchKeeper = new touch_keeper_1.default(this.valuesKeeper);
         this.validateKeeper = new validate_keeper_1.default(this.valuesKeeper, this.touchKeeper, this.visibilityKeeper);
+        this.touchAll = function () {
+            _this.touchKeeper.touchAll();
+            _this.validateKeeper.refreshQuestionCache(null, 0);
+            _this.rerenderCallback && _this.rerenderCallback();
+        };
         this.canGoToNextPage = this.pagesKeeper.canGoToNextPage;
         this.canGoToPrevPage = this.pagesKeeper.canGoToPrevPage;
         this.isActiveTab = this.pagesKeeper.isActiveTab;

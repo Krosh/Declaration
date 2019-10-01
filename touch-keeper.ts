@@ -12,6 +12,10 @@ export default class TouchKeeper {
     this.valuesKeeper = valuesKeeper
   }
 
+  touchAll = () => {
+    this.getTouch = () => true
+  }
+
   touchAllFromPage = (page: Page) => {
     const processTouches = (questions: Question[], id: number) => {
       questions.forEach(question => {

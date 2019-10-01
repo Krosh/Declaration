@@ -131,6 +131,7 @@ export default class Declaration {
   }
 
   getPages = () => this.pagesKeeper.pages
+  touchAll: () => void
 
   constructor(
     schema: FullyLoadedDeclaration,
@@ -169,6 +170,12 @@ export default class Declaration {
       this.touchKeeper,
       this.visibilityKeeper
     )
+
+    this.touchAll = () => {
+      this.touchKeeper.touchAll()
+      this.validateKeeper.refreshQuestionCache(null as any, 0)
+      this.rerenderCallback && this.rerenderCallback()
+    }
 
     this.canGoToNextPage = this.pagesKeeper.canGoToNextPage
     this.canGoToPrevPage = this.pagesKeeper.canGoToPrevPage
@@ -268,7 +275,16 @@ export default class Declaration {
       })
     const answeredQuestions = questions.filter(questionProps => {
       if (questionProps.question.type === 'address') {
-        return true
+        return (
+          Object.values(
+            AddressModel.validate(
+              questionProps.value,
+              () => true,
+              !!questionProps.question.validation &&
+                !!questionProps.question.validation.shortAnswer
+            )
+          ).flat().length == 0
+        )
       }
       return (
         questionProps.value !== '' &&

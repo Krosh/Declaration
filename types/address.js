@@ -25,7 +25,7 @@ var defaultFiasElement = {
     name: '',
     code: '',
     type: '',
-    description: ''
+    description: '',
 };
 var defaultFields = {
     housing: '',
@@ -43,7 +43,7 @@ exports.AddressModel = {
         return __assign({}, defaultFields, value, { fullAddress: {
                 city: __assign({}, defaultFiasElement, (value.city ? value.city : {})),
                 street: __assign({}, defaultFiasElement, (value.street ? value.street : {})),
-                house: __assign({}, defaultFiasElement, (value.house ? value.house : {}))
+                house: __assign({}, defaultFiasElement, (value.house ? value.house : {})),
             }, city: __assign({}, defaultFiasElement, (value.city ? value.city : {})), street: __assign({}, defaultFiasElement, (value.street ? value.street : {})), house: __assign({}, defaultFiasElement, (value.house ? value.house : {})) });
     },
     serialize: function (value) { return JSON.stringify(value); },
@@ -53,7 +53,9 @@ exports.AddressModel = {
         newFiasElementValue.name = label;
         newFiasElementValue.code = isUserEdited ? '' : changeValue.id;
         newFiasElementValue.type = isUserEdited ? '' : changeValue.type;
-        newFiasElementValue.description = isUserEdited ? '' : changeValue.description;
+        newFiasElementValue.description = isUserEdited
+            ? ''
+            : changeValue.description;
         var newAddress = __assign({}, oldValue, (_a = {}, _a[field] = newFiasElementValue, _a));
         var relations = relatedFields[field];
         relations.forEach(function (item) { return (newAddress[item] = __assign({}, defaultFiasElement)); });
@@ -97,7 +99,7 @@ exports.AddressModel = {
     getFullCodeName: function (question, name) {
         return question.code + name;
     },
-    skipDefault: ['street', 'housing', 'flat'],
+    skipDefault: ['housing', 'flat'],
     skipOnShort: ['oktmo', 'ifnsfl', 'ifnsflName'],
     validate: function (value, isTouched, short) {
         var address = exports.AddressModel.create(value);

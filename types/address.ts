@@ -24,7 +24,7 @@ export interface Address {
   ifnsflName: string
   oktmo: string
   postal: string
-  description: string,
+  description: string
   userEdited: boolean
 }
 
@@ -46,7 +46,7 @@ const defaultFiasElement: FiasElement = {
   name: '',
   code: '',
   type: '',
-  description: ''
+  description: '',
 }
 const defaultFields = {
   housing: '',
@@ -78,7 +78,7 @@ export const AddressModel = {
         house: {
           ...defaultFiasElement,
           ...(value.house ? value.house : {}),
-        }
+        },
       },
       city: {
         ...defaultFiasElement,
@@ -108,7 +108,9 @@ export const AddressModel = {
     newFiasElementValue.name = label
     newFiasElementValue.code = isUserEdited ? '' : changeValue.id
     newFiasElementValue.type = isUserEdited ? '' : changeValue.type
-    newFiasElementValue.description = isUserEdited ? '' : changeValue.description
+    newFiasElementValue.description = isUserEdited
+      ? ''
+      : changeValue.description
 
     const newAddress = { ...oldValue, [field]: newFiasElementValue }
     const relations = relatedFields[field]
@@ -153,7 +155,7 @@ export const AddressModel = {
   getFullCodeName: (question: AddressQuestion, name: string) =>
     question.code + name,
 
-  skipDefault: ['street', 'housing', 'flat'],
+  skipDefault: ['housing', 'flat'],
   skipOnShort: ['oktmo', 'ifnsfl', 'ifnsflName'],
 
   validate: (

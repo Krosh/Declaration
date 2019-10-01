@@ -75,6 +75,7 @@ export default class Declaration {
     goToNextPage: () => void;
     goToPrevPage: () => void;
     getPages: () => Page[];
+    touchAll: () => void;
     constructor(schema: FullyLoadedDeclaration, initialValues: Values, dataProvider: DataProvider);
     processShowInputsActions: (schema: FullyLoadedDeclaration) => void;
     private calculateProgress;

@@ -4,6 +4,9 @@ var address_1 = require("./types/address");
 var TouchKeeper = /** @class */ (function () {
     function TouchKeeper(valuesKeeper) {
         var _this = this;
+        this.touchAll = function () {
+            _this.getTouch = function () { return true; };
+        };
         this.touchAllFromPage = function (page) {
             var processTouches = function (questions, id) {
                 questions.forEach(function (question) {
