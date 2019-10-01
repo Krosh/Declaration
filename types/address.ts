@@ -8,6 +8,8 @@ export interface FiasElement {
 }
 
 export interface FiasFullAddress {
+  region: FiasElement
+  area: FiasElement
   city: FiasElement
   street: FiasElement
   house: FiasElement
@@ -15,6 +17,8 @@ export interface FiasFullAddress {
 
 export interface Address {
   fullAddress: FiasFullAddress
+  region: FiasElement
+  area: FiasElement
   city: FiasElement
   street: FiasElement
   house: FiasElement
@@ -28,16 +32,20 @@ export interface Address {
   userEdited: boolean
 }
 
-export type FiasElements = 'city' | 'street' | 'house'
+export type FiasElements = 'region' | 'area' | 'city' | 'street' | 'house'
 
 const relatedFields: { [key in FiasElements]: FiasElements[] } = {
+  region: ['area'],
+  area: ['city'],
   city: ['street', 'house'],
   street: ['house'],
   house: [],
 }
 
 const checkParentFields: { [key in FiasElements]: FiasElements[] } = {
-  city: [],
+  region: [],
+  area: ['region'],
+  city: ['area'],
   street: ['city'],
   house: ['street', 'city'],
 }
@@ -67,6 +75,14 @@ export const AddressModel = {
       ...defaultFields,
       ...value,
       fullAddress: {
+        region: {
+          ...defaultFiasElement,
+          ...(value.region ? value.region : {}),
+        },
+        area: {
+          ...defaultFiasElement,
+          ...(value.area ? value.area : {}),
+        },
         city: {
           ...defaultFiasElement,
           ...(value.city ? value.city : {}),
@@ -79,6 +95,14 @@ export const AddressModel = {
           ...defaultFiasElement,
           ...(value.house ? value.house : {}),
         },
+      },
+      region: {
+        ...defaultFiasElement,
+        ...(value.region ? value.region : {}),
+      },
+      area: {
+        ...defaultFiasElement,
+        ...(value.area ? value.area : {}),
       },
       city: {
         ...defaultFiasElement,
@@ -161,7 +185,7 @@ export const AddressModel = {
   validate: (
     value: string,
     isTouched: (name: string) => boolean,
-    short: boolean
+    short: boolean,
   ) => {
     const address = AddressModel.create(value)
     const result: { [key: string]: string[] } = {}
