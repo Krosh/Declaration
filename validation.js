@@ -274,6 +274,7 @@ function validateOgrn(ogrn) {
         }
     }
 }
+exports.validateOgrn = validateOgrn;
 function validateOgrnip(ogrnip) {
     if (typeof ogrnip === 'number') {
         ogrnip = ogrnip.toString();
@@ -401,4 +402,5 @@ function validateSnils(snils) {
         }
     }
 }
+exports.validateSnils = validateSnils;
 exports.default = validate;

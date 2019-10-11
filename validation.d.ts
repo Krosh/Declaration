@@ -7,6 +7,8 @@ export declare function validateBik(bik: string | number): string[];
 export declare function validateInn(inn: string | number): string[];
 export declare function validateKpp(kpp: string | number): string[];
 export declare function validateKs(ks: string | number, bik: string | number): string[];
+export declare function validateOgrn(ogrn: string | number): string[];
 export declare function validateOgrnip(ogrnip: string | number): string[];
 export declare function validateRs(rs: string | number, bik: string | number): string[];
+export declare function validateSnils(snils: string | number): string[];
 export default validate;

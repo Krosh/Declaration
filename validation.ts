@@ -239,7 +239,7 @@ export function validateKs(ks: string | number, bik: string | number) {
   }
 }
 
-function validateOgrn(ogrn: string | number) {
+export function validateOgrn(ogrn: string | number) {
   if (typeof ogrn === 'number') {
     ogrn = ogrn.toString()
   } else if (typeof ogrn !== 'string') {
@@ -342,7 +342,7 @@ export function validateRs(rs: string | number, bik: string | number) {
   }
 }
 
-function validateSnils(snils: string | number) {
+export function validateSnils(snils: string | number) {
   var result = false
   if (typeof snils === 'number') {
     snils = snils.toString()
