@@ -44,13 +44,13 @@ var defaultFields = {
 exports.AddressModel = {
     create: function (jsonValue) {
         var value = JSON.parse(jsonValue || '{}');
-        return __assign({}, defaultFields, value, { fullAddress: {
-                region: __assign({}, defaultFiasElement, (value.region ? value.region : {})),
-                area: __assign({}, defaultFiasElement, (value.area ? value.area : {})),
-                city: __assign({}, defaultFiasElement, (value.city ? value.city : {})),
-                street: __assign({}, defaultFiasElement, (value.street ? value.street : {})),
-                house: __assign({}, defaultFiasElement, (value.house ? value.house : {})),
-            }, region: __assign({}, defaultFiasElement, (value.region ? value.region : {})), area: __assign({}, defaultFiasElement, (value.area ? value.area : {})), city: __assign({}, defaultFiasElement, (value.city ? value.city : {})), street: __assign({}, defaultFiasElement, (value.street ? value.street : {})), house: __assign({}, defaultFiasElement, (value.house ? value.house : {})) });
+        return __assign(__assign(__assign({}, defaultFields), value), { fullAddress: {
+                region: __assign(__assign({}, defaultFiasElement), (value.region ? value.region : {})),
+                area: __assign(__assign({}, defaultFiasElement), (value.area ? value.area : {})),
+                city: __assign(__assign({}, defaultFiasElement), (value.city ? value.city : {})),
+                street: __assign(__assign({}, defaultFiasElement), (value.street ? value.street : {})),
+                house: __assign(__assign({}, defaultFiasElement), (value.house ? value.house : {})),
+            }, region: __assign(__assign({}, defaultFiasElement), (value.region ? value.region : {})), area: __assign(__assign({}, defaultFiasElement), (value.area ? value.area : {})), city: __assign(__assign({}, defaultFiasElement), (value.city ? value.city : {})), street: __assign(__assign({}, defaultFiasElement), (value.street ? value.street : {})), house: __assign(__assign({}, defaultFiasElement), (value.house ? value.house : {})) });
     },
     serialize: function (value) { return JSON.stringify(value); },
     changeFiasElement: function (oldValue, field, label, changeValue, isUserEdited) {
@@ -62,7 +62,7 @@ exports.AddressModel = {
         newFiasElementValue.description = isUserEdited
             ? ''
             : changeValue.description;
-        var newAddress = __assign({}, oldValue, (_a = {}, _a[field] = newFiasElementValue, _a));
+        var newAddress = __assign(__assign({}, oldValue), (_a = {}, _a[field] = newFiasElementValue, _a));
         var relations = relatedFields[field];
         relations.forEach(function (item) { return (newAddress[item] = __assign({}, defaultFiasElement)); });
         var isParent = true;

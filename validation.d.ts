@@ -1,3 +1,12 @@
 import { Validation } from './types/declaration';
 declare const validate: (questionCode: string, qValidation: Validation | undefined, getValue: (questionCode: string) => string, requiredFromAction: boolean) => string[];
+export declare function validatePhone(value: string): string[];
+export declare function validateOkved(value: string): string[];
+export declare function validateYear(value: string): string[];
+export declare function validateBik(bik: string | number): string[];
+export declare function validateInn(inn: string | number): string[];
+export declare function validateKpp(kpp: string | number): string[];
+export declare function validateKs(ks: string | number, bik: string | number): string[];
+export declare function validateOgrnip(ogrnip: string | number): string[];
+export declare function validateRs(rs: string | number, bik: string | number): string[];
 export default validate;

@@ -16,7 +16,7 @@ var initialValidation = {
 };
 var validate = function (questionCode, qValidation, getValue, requiredFromAction) {
     var value = getValue(questionCode);
-    var validation = __assign({}, initialValidation, qValidation);
+    var validation = __assign(__assign({}, initialValidation), qValidation);
     if (value === '' && (validation.canBeSkipped || !requiredFromAction)) {
         return [];
     }
@@ -83,18 +83,21 @@ function validatePhone(value) {
     }
     return [];
 }
+exports.validatePhone = validatePhone;
 function validateOkved(value) {
     if (!value.match(/\d\d\.\d\d\.\d\d/)) {
         return ['Некорректный код ОКВЭД'];
     }
     return [];
 }
+exports.validateOkved = validateOkved;
 function validateYear(value) {
     if (parseInt(value) < 1950 || parseInt(value) > 2050) {
         return ['Указан некорректный год'];
     }
     return [];
 }
+exports.validateYear = validateYear;
 function validateBik(bik) {
     if (typeof bik === 'number') {
         bik = bik.toString();
@@ -115,6 +118,7 @@ function validateBik(bik) {
         return [];
     }
 }
+exports.validateBik = validateBik;
 function validateInn(inn) {
     var result = false;
     if (typeof inn === 'number') {
@@ -161,6 +165,7 @@ function validateInn(inn) {
     }
     return [];
 }
+exports.validateInn = validateInn;
 function validateKpp(kpp) {
     var result = false;
     if (typeof kpp === 'number') {
@@ -182,6 +187,7 @@ function validateKpp(kpp) {
     }
     return [];
 }
+exports.validateKpp = validateKpp;
 function validateKs(ks, bik) {
     var bikErrors = validateBik(bik);
     if (!!bikErrors.length) {
@@ -241,6 +247,7 @@ function validateKs(ks, bik) {
         }
     }
 }
+exports.validateKs = validateKs;
 function validateOgrn(ogrn) {
     if (typeof ogrn === 'number') {
         ogrn = ogrn.toString();
@@ -293,6 +300,7 @@ function validateOgrnip(ogrnip) {
         }
     }
 }
+exports.validateOgrnip = validateOgrnip;
 function validateRs(rs, bik) {
     var bikErrors = validateBik(bik);
     if (!!bikErrors.length) {
@@ -352,6 +360,7 @@ function validateRs(rs, bik) {
         }
     }
 }
+exports.validateRs = validateRs;
 function validateSnils(snils) {
     var result = false;
     if (typeof snils === 'number') {

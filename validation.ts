@@ -84,28 +84,28 @@ const validate = (
   return []
 }
 
-function validatePhone(value: string) {
+export function validatePhone(value: string) {
   if (value.replace(/\D/g, () => '').length !== 11) {
     return ['Введен некорректный телефон']
   }
   return []
 }
 
-function validateOkved(value: string) {
+export function validateOkved(value: string) {
   if (!value.match(/\d\d\.\d\d\.\d\d/)) {
     return ['Некорректный код ОКВЭД']
   }
   return []
 }
 
-function validateYear(value: string) {
+export function validateYear(value: string) {
   if (parseInt(value) < 1950 || parseInt(value) > 2050) {
     return ['Указан некорректный год']
   }
   return []
 }
 
-function validateBik(bik: string | number) {
+export function validateBik(bik: string | number) {
   if (typeof bik === 'number') {
     bik = bik.toString()
   } else if (typeof bik !== 'string') {
@@ -122,7 +122,7 @@ function validateBik(bik: string | number) {
   }
 }
 
-function validateInn(inn: string | number) {
+export function validateInn(inn: string | number) {
   var result = false
   if (typeof inn === 'number') {
     inn = inn.toString()
@@ -165,7 +165,7 @@ function validateInn(inn: string | number) {
   return []
 }
 
-function validateKpp(kpp: string | number) {
+export function validateKpp(kpp: string | number) {
   var result = false
   if (typeof kpp === 'number') {
     kpp = kpp.toString()
@@ -184,7 +184,7 @@ function validateKpp(kpp: string | number) {
   return []
 }
 
-function validateKs(ks: string | number, bik: string | number) {
+export function validateKs(ks: string | number, bik: string | number) {
   const bikErrors = validateBik(bik)
   if (!!bikErrors.length) {
     return bikErrors
@@ -261,7 +261,7 @@ function validateOgrn(ogrn: string | number) {
   }
 }
 
-function validateOgrnip(ogrnip: string | number) {
+export function validateOgrnip(ogrnip: string | number) {
   if (typeof ogrnip === 'number') {
     ogrnip = ogrnip.toString()
   } else if (typeof ogrnip !== 'string') {
@@ -285,7 +285,7 @@ function validateOgrnip(ogrnip: string | number) {
   }
 }
 
-function validateRs(rs: string | number, bik: string | number) {
+export function validateRs(rs: string | number, bik: string | number) {
   const bikErrors = validateBik(bik)
 
   if (!!bikErrors.length) {

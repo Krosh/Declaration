@@ -31,6 +31,10 @@ export interface Statistics {
     name: string
     value: number
   }>
+  deductions: Array<{
+    name: string
+    value: number
+  }>
   payments_or_compensations: [{ to: number; from: number }]
 }
 
