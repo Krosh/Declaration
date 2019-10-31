@@ -105,7 +105,7 @@ exports.AddressModel = {
     getFullCodeName: function (question, name) {
         return question.code + name;
     },
-    skipDefault: ['housing', 'flat'],
+    skipDefault: ['housing', 'flat', 'area', 'description'],
     skipOnShort: ['oktmo', 'ifnsfl', 'ifnsflName'],
     validate: function (value, isTouched, short) {
         var address = exports.AddressModel.create(value);
