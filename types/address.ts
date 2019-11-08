@@ -1,8 +1,8 @@
 import { AddressQuestion } from './declaration'
 
 export interface FiasElement {
+  id: string
   name: string
-  code: string
   type: string
   description: string
 }
@@ -13,10 +13,10 @@ export interface FiasFullAddress {
   city: FiasElement
   street: FiasElement
   house: FiasElement
+  flat: string
 }
 
 export interface Address {
-  fullAddress: FiasFullAddress
   region: FiasElement
   area: FiasElement
   city: FiasElement
@@ -34,12 +34,14 @@ export interface Address {
 
 export type FiasElements = 'region' | 'area' | 'city' | 'street' | 'house'
 
-const relatedFields: { [key in FiasElements]: FiasElements[] } = {
+export type ClearableElements = FiasElements | 'flat'
+
+const relatedFields: { [key in FiasElements]: ClearableElements[] } = {
   region: ['area'],
   area: ['city'],
-  city: ['street', 'house'],
-  street: ['house'],
-  house: [],
+  city: ['street', 'house', 'flat'],
+  street: ['house', 'flat'],
+  house: ['flat'],
 }
 
 const checkParentFields: { [key in FiasElements]: FiasElements[] } = {
@@ -47,12 +49,12 @@ const checkParentFields: { [key in FiasElements]: FiasElements[] } = {
   area: ['region'],
   city: ['area'],
   street: ['city'],
-  house: ['street', 'city'],
+  house: ['street', 'city']
 }
 
 const defaultFiasElement: FiasElement = {
+  id: '',
   name: '',
-  code: '',
   type: '',
   description: '',
 }
@@ -67,56 +69,46 @@ const defaultFields = {
   userEdited: false,
 }
 
+const getAdditionalFields = (address: Address & {ifnsfl_name: string}) => {
+  return {
+    ifnsfl: address.ifnsfl ? address.ifnsfl : '',
+    ifnsflName: address.ifnsflName ? address.ifnsflName : address.ifnsfl_name ? address.ifnsfl_name : '',
+    oktmo: address.oktmo ? address.oktmo : '',
+    postal: address.postal ? address.postal : '',
+  }
+}
+
 export const AddressModel = {
   create: (jsonValue: string | null): Address => {
-    const value = JSON.parse(jsonValue || '{}') as Partial<Address>
-
+    let value = JSON.parse(jsonValue || '{}') as Partial<Omit<Address, 'flat'> & {flat: string | {name: string}}>
     return {
       ...defaultFields,
       ...value,
-      fullAddress: {
-        region: {
-          ...defaultFiasElement,
-          ...(value.region ? value.region : {}),
-        },
-        area: {
-          ...defaultFiasElement,
-          ...(value.area ? value.area : {}),
-        },
-        city: {
-          ...defaultFiasElement,
-          ...(value.city ? value.city : {}),
-        },
-        street: {
-          ...defaultFiasElement,
-          ...(value.street ? value.street : {}),
-        },
-        house: {
-          ...defaultFiasElement,
-          ...(value.house ? value.house : {}),
-        },
-      },
       region: {
         ...defaultFiasElement,
-        ...(value.region ? value.region : {}),
+        ...(value.region ? value.region : {})
       },
       area: {
         ...defaultFiasElement,
-        ...(value.area ? value.area : {}),
+        ...(value.area ? value.area : {})
       },
       city: {
         ...defaultFiasElement,
-        ...(value.city ? value.city : {}),
+        ...(value.city ? value.city : {})
       },
       street: {
         ...defaultFiasElement,
-        ...(value.street ? value.street : {}),
+        ...(value.street ? value.street : {})
       },
       house: {
         ...defaultFiasElement,
-        ...(value.house ? value.house : {}),
+        ...(value.house ? value.house : {})
       },
-    }
+      flat: value.flat ? (typeof value.flat === 'string' ? value.flat : value.flat.name) : '',
+      ...getAdditionalFields({
+        ...value, ...(value.house ? value.house : {})
+      } as Address & {ifnsfl_name: string})
+    } as Address
   },
   serialize: (value: Address) => JSON.stringify(value),
   changeFiasElement: (
@@ -127,10 +119,10 @@ export const AddressModel = {
     isUserEdited: boolean
   ) => {
     const newFiasElementValue = {
-      ...oldValue[field],
+      ...oldValue[field]
     }
     newFiasElementValue.name = label
-    newFiasElementValue.code = isUserEdited ? '' : changeValue.id
+    newFiasElementValue.id = isUserEdited ? '' : changeValue.id
     newFiasElementValue.type = isUserEdited ? '' : changeValue.type
     newFiasElementValue.description = isUserEdited
       ? ''
@@ -138,13 +130,19 @@ export const AddressModel = {
 
     const newAddress = { ...oldValue, [field]: newFiasElementValue }
     const relations = relatedFields[field]
-    relations.forEach(item => (newAddress[item] = { ...defaultFiasElement }))
+    relations.forEach(item => {
+      if (item === 'flat') {
+        newAddress[item] = ''
+        return
+      }
+      newAddress[item] = { ...defaultFiasElement }
+    })
 
     let isParent = true
     if (isUserEdited) {
       const check = checkParentFields[field]
       const parent = check.map(item => {
-        return oldValue[field].code === oldValue[item].code
+        return oldValue[field].id === oldValue[item].id
       })
       if (parent.length) {
         isParent = parent.reduce(item => item)
