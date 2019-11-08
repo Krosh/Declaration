@@ -16,7 +16,7 @@ var initialValidation = {
 };
 var validate = function (questionCode, qValidation, getValue, requiredFromAction) {
     var value = getValue(questionCode);
-    var validation = __assign({}, initialValidation, qValidation);
+    var validation = __assign(__assign({}, initialValidation), qValidation);
     if (value === '' && (validation.canBeSkipped || !requiredFromAction)) {
         return [];
     }

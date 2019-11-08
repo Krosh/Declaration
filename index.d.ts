@@ -1,5 +1,8 @@
 import { FullyLoadedDeclaration, MultipleQuestion, Page, Question, SingleQuestion, Values, AddressQuestion, CheckboxQuestion } from './types/declaration';
 import { Address } from './types/address';
+declare type QuestionsMap = {
+    [key: string]: Question;
+};
 export interface Statistics {
     incomes: Array<{
         name: string;
@@ -85,7 +88,7 @@ export default class Declaration {
     private calculateProgress;
     private progress;
     getProgress: () => number;
-    calculateQuestionsMap: (schema: FullyLoadedDeclaration) => {};
+    calculateQuestionsMap: (schema: FullyLoadedDeclaration) => QuestionsMap;
     setRerenderCallback: (cb: () => void) => void;
     getVisibleQuestionFromPage: (page: Page) => Question[];
     setActivePage: (page: Page) => void;
@@ -102,3 +105,4 @@ export default class Declaration {
     private processCheckboxChange;
     getQuestionProps: (question: Question, id: number) => QuestionProps;
 }
+export {};
