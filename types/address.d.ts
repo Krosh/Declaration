@@ -1,7 +1,7 @@
 import { AddressQuestion } from './declaration';
 export interface FiasElement {
+    id: string;
     name: string;
-    code: string;
     type: string;
     description: string;
 }
@@ -11,9 +11,9 @@ export interface FiasFullAddress {
     city: FiasElement;
     street: FiasElement;
     house: FiasElement;
+    flat: string;
 }
 export interface Address {
-    fullAddress: FiasFullAddress;
     region: FiasElement;
     area: FiasElement;
     city: FiasElement;
@@ -29,11 +29,11 @@ export interface Address {
     userEdited: boolean;
 }
 export declare type FiasElements = 'region' | 'area' | 'city' | 'street' | 'house';
+export declare type ClearableElements = FiasElements | 'flat';
 export declare const AddressModel: {
     create: (jsonValue: string | null) => Address;
     serialize: (value: Address) => string;
     changeFiasElement: (oldValue: Address, field: FiasElements, label: string, changeValue: any, isUserEdited: boolean) => {
-        fullAddress: FiasFullAddress;
         region: FiasElement;
         area: FiasElement;
         city: FiasElement;
@@ -53,7 +53,6 @@ export declare const AddressModel: {
     skipOnShort: string[];
     skipRegion: string[];
     validate: (value: string, isTouched: (name: string) => boolean, short: boolean, skipRegion: boolean) => {
-        fullAddress: string[];
         region: string[];
         area: string[];
         city: string[];

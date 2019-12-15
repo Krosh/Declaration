@@ -14,9 +14,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var relatedFields = {
     region: ['area'],
     area: ['city'],
-    city: ['street', 'house'],
-    street: ['house'],
-    house: [],
+    city: ['street', 'house', 'flat'],
+    street: ['house', 'flat'],
+    house: ['flat'],
 };
 var checkParentFields = {
     region: [],
@@ -26,8 +26,8 @@ var checkParentFields = {
     house: ['street', 'city'],
 };
 var defaultFiasElement = {
+    id: '',
     name: '',
-    code: '',
     type: '',
     description: '',
 };
@@ -41,35 +41,51 @@ var defaultFields = {
     description: '',
     userEdited: false,
 };
+var getAdditionalFields = function (address) {
+    return {
+        ifnsfl: address.ifnsfl ? address.ifnsfl : '',
+        ifnsflName: address.ifnsflName
+            ? address.ifnsflName
+            : address.ifnsfl_name
+                ? address.ifnsfl_name
+                : '',
+        oktmo: address.oktmo ? address.oktmo : '',
+        postal: address.postal ? address.postal : '',
+    };
+};
 exports.AddressModel = {
     create: function (jsonValue) {
         var value = JSON.parse(jsonValue || '{}');
-        return __assign({}, defaultFields, value, { fullAddress: {
-                region: __assign({}, defaultFiasElement, (value.region ? value.region : {})),
-                area: __assign({}, defaultFiasElement, (value.area ? value.area : {})),
-                city: __assign({}, defaultFiasElement, (value.city ? value.city : {})),
-                street: __assign({}, defaultFiasElement, (value.street ? value.street : {})),
-                house: __assign({}, defaultFiasElement, (value.house ? value.house : {})),
-            }, region: __assign({}, defaultFiasElement, (value.region ? value.region : {})), area: __assign({}, defaultFiasElement, (value.area ? value.area : {})), city: __assign({}, defaultFiasElement, (value.city ? value.city : {})), street: __assign({}, defaultFiasElement, (value.street ? value.street : {})), house: __assign({}, defaultFiasElement, (value.house ? value.house : {})) });
+        return __assign({}, defaultFields, value, { region: __assign({}, defaultFiasElement, (value.region ? value.region : {})), area: __assign({}, defaultFiasElement, (value.area ? value.area : {})), city: __assign({}, defaultFiasElement, (value.city ? value.city : {})), street: __assign({}, defaultFiasElement, (value.street ? value.street : {})), house: __assign({}, defaultFiasElement, (value.house ? value.house : {})), flat: value.flat
+                ? typeof value.flat === 'string'
+                    ? value.flat
+                    : value.flat.name
+                : '' }, getAdditionalFields(__assign({}, value, (value.house ? value.house : {}))));
     },
     serialize: function (value) { return JSON.stringify(value); },
     changeFiasElement: function (oldValue, field, label, changeValue, isUserEdited) {
         var _a;
         var newFiasElementValue = __assign({}, oldValue[field]);
         newFiasElementValue.name = label;
-        newFiasElementValue.code = isUserEdited ? '' : changeValue.id;
+        newFiasElementValue.id = isUserEdited ? '' : changeValue.id;
         newFiasElementValue.type = isUserEdited ? '' : changeValue.type;
         newFiasElementValue.description = isUserEdited
             ? ''
             : changeValue.description;
         var newAddress = __assign({}, oldValue, (_a = {}, _a[field] = newFiasElementValue, _a));
         var relations = relatedFields[field];
-        relations.forEach(function (item) { return (newAddress[item] = __assign({}, defaultFiasElement)); });
+        relations.forEach(function (item) {
+            if (item === 'flat') {
+                newAddress[item] = '';
+                return;
+            }
+            newAddress[item] = __assign({}, defaultFiasElement);
+        });
         var isParent = true;
         if (isUserEdited) {
             var check = checkParentFields[field];
             var parent_1 = check.map(function (item) {
-                return oldValue[field].code === oldValue[item].code;
+                return oldValue[field].id === oldValue[item].id;
             });
             if (parent_1.length) {
                 isParent = parent_1.reduce(function (item) { return item; });
