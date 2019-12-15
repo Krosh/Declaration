@@ -1,8 +1,5 @@
 import { FullyLoadedDeclaration, MultipleQuestion, Page, Question, SingleQuestion, Values, AddressQuestion, CheckboxQuestion } from './types/declaration';
 import { Address } from './types/address';
-declare type QuestionsMap = {
-    [key: string]: Question;
-};
 export interface Statistics {
     incomes: Array<{
         name: string;
@@ -88,13 +85,13 @@ export default class Declaration {
     private calculateProgress;
     private progress;
     getProgress: () => number;
-    calculateQuestionsMap: (schema: FullyLoadedDeclaration) => QuestionsMap;
+    calculateQuestionsMap: (schema: FullyLoadedDeclaration) => {};
     setRerenderCallback: (cb: () => void) => void;
     getVisibleQuestionFromPage: (page: Page) => Question[];
     setActivePage: (page: Page) => void;
     setActiveTab: (tab: string) => void;
     filterMutlipleQuestionChilds: (multipleQuestion: MultipleQuestion, id: number) => SingleQuestion[];
-    getDefaultMutlipleQuestion: (page: Page) => import("./types/declaration").TextQuestion | import("./types/declaration").AutocompleteQuestion | import("./types/declaration").AutocompleteWithActions | AddressQuestion | import("./types/declaration").InfoQuestion | import("./types/declaration").DateQuestion | import("./types/declaration").PhoneQuestion | import("./types/declaration").OkvedQuestion | MultipleQuestion | import("./types/declaration").NumberQuestion | import("./types/declaration").RadioQuestion | import("./types/declaration").SelectQuestion | CheckboxQuestion | import("./types/declaration").MoneyQuestion | import("./types/declaration").MoneyAbroadQuestion | import("./types/declaration").MoneyCourseQuestion | import("./types/declaration").MoneyIntegerQuestion | import("./types/declaration").SharesQuestion | undefined;
+    getDefaultMutlipleQuestion: (page: Page) => import("./types/declaration").TextQuestion | import("./types/declaration").AutocompleteQuestion | import("./types/declaration").AutocompleteWithActions | AddressQuestion | import("./types/declaration").PhoneQuestion | import("./types/declaration").NumberQuestion | import("./types/declaration").RadioQuestion | import("./types/declaration").DateQuestion | import("./types/declaration").SelectQuestion | CheckboxQuestion | import("./types/declaration").MoneyQuestion | import("./types/declaration").OkvedQuestion | import("./types/declaration").MoneyAbroadQuestion | import("./types/declaration").MoneyCourseQuestion | import("./types/declaration").MoneyIntegerQuestion | import("./types/declaration").SharesQuestion | import("./types/declaration").InfoQuestion | MultipleQuestion | undefined;
     getDefaultCheckboxQuestion: (page: Page) => CheckboxQuestion | undefined;
     isPageEmpty: (page: Page) => boolean;
     /**
@@ -105,4 +102,3 @@ export default class Declaration {
     private processCheckboxChange;
     getQuestionProps: (question: Question, id: number) => QuestionProps;
 }
-export {};

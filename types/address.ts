@@ -181,22 +181,29 @@ export const AddressModel = {
 
   skipDefault: ['housing', 'flat', 'area', 'description'],
   skipOnShort: ['oktmo', 'ifnsfl', 'ifnsflName'],
+  skipRegion: ['region'],
 
   validate: (
     value: string,
     isTouched: (name: string) => boolean,
     short: boolean,
+    skipRegion: boolean
   ) => {
     const address = AddressModel.create(value)
     const result: { [key: string]: string[] } = {}
+    const skip = AddressModel.skipDefault
+    if (short) {
+      skip.push(...AddressModel.skipOnShort)
+    }
+    if (skipRegion) {
+      skip.push(...AddressModel.skipRegion)
+    }
+
     for (let key in address) {
       if (!isTouched(key)) {
         result[key] = []
         continue
       }
-      const skip = short
-        ? AddressModel.skipOnShort.concat(AddressModel.skipDefault)
-        : AddressModel.skipDefault
       if (skip.includes(key)) {
         result[key] = []
         continue

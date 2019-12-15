@@ -285,7 +285,8 @@ export default class Declaration {
               questionProps.value,
               () => true,
               !!questionProps.question.validation &&
-                !!questionProps.question.validation.shortAnswer
+                !!questionProps.question.validation.shortAnswer,
+              true
             )
           ).flat().length == 0
         )
@@ -448,7 +449,8 @@ export default class Declaration {
               AddressModel.getFullCodeName(question, name),
               id
             ),
-          !!question.validation && !!question.validation.shortAnswer
+          !!question.validation && !!question.validation.shortAnswer,
+          true
         ),
         setTouched: (name: string) => {
           if (
