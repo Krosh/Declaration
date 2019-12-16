@@ -71,6 +71,9 @@ var Declaration = /** @class */ (function () {
         };
         this.calculateProgress = function () {
             var questions = _this.getVisiblePages()
+                .filter(function (item) { return item.type !== 'statement'; })
+                .filter(function (item) { return item.type !== 'total'; })
+                .filter(function (item) { return item.type !== 'files'; })
                 .flatMap(function (item) { return _this.getVisibleQuestionFromPage(item); })
                 .reduce(function (tot, item) {
                 var questionProps = _this.getQuestionProps(item, 0);
@@ -248,9 +251,11 @@ var Declaration = /** @class */ (function () {
                         if (!_this.valuesKeeper.setValue(question.code, id, newValue)) {
                             return;
                         }
-                        _this.statistics = undefined;
-                        _this.pagesKeeper.needDownload = false;
-                        _this.pagesKeeper.processChangeValue(question.code, _this.valuesKeeper.getValue);
+                        if (question.page.type !== 'statement') {
+                            _this.statistics = undefined;
+                            _this.pagesKeeper.needDownload = false;
+                            _this.pagesKeeper.processChangeValue(question.code, _this.valuesKeeper.getValue);
+                        }
                         if (newValue === '1' && question.type === 'checkbox') {
                             _this.processCheckboxChange(question);
                         }
@@ -261,7 +266,9 @@ var Declaration = /** @class */ (function () {
                             getHidedElementCodes_1.isAutocompleteWithActions(question)) {
                             _this.visibilityKeeper.clearVisibility();
                         }
-                        _this.calculateProgress();
+                        if (question.page.type !== 'statement') {
+                            _this.calculateProgress();
+                        }
                         _this.visibilityKeeper.clearRequired();
                         _this.validateKeeper.refreshQuestionCache(question, id);
                         _this.rerenderCallback && _this.rerenderCallback();

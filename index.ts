@@ -237,6 +237,9 @@ export default class Declaration {
 
   private calculateProgress = () => {
     const questions = this.getVisiblePages()
+      .filter(item => item.type !== 'statement')
+      .filter(item => item.type !== 'total')
+      .filter(item => item.type !== 'files')
       .flatMap(item => this.getVisibleQuestionFromPage(item))
       .reduce(
         (tot, item) => {
@@ -483,12 +486,14 @@ export default class Declaration {
           if (!this.valuesKeeper.setValue(question.code, id, newValue)) {
             return
           }
-          this.statistics = undefined
-          this.pagesKeeper.needDownload = false
-          this.pagesKeeper.processChangeValue(
-            question.code,
-            this.valuesKeeper.getValue
-          )
+          if (question.page.type !== 'statement') {
+            this.statistics = undefined
+            this.pagesKeeper.needDownload = false
+            this.pagesKeeper.processChangeValue(
+              question.code,
+              this.valuesKeeper.getValue
+            )
+          }
           if (newValue === '1' && question.type === 'checkbox') {
             this.processCheckboxChange(question)
           }
@@ -501,7 +506,9 @@ export default class Declaration {
           ) {
             this.visibilityKeeper.clearVisibility()
           }
-          this.calculateProgress()
+          if (question.page.type !== 'statement') {
+            this.calculateProgress()
+          }
           this.visibilityKeeper.clearRequired()
           this.validateKeeper.refreshQuestionCache(question, id)
           this.rerenderCallback && this.rerenderCallback()
