@@ -11,6 +11,7 @@ export interface FiasFullAddress {
     city: FiasElement;
     street: FiasElement;
     house: FiasElement;
+    housing: string;
     flat: string;
 }
 export interface Address {
@@ -29,7 +30,7 @@ export interface Address {
     userEdited: boolean;
 }
 export declare type FiasElements = 'region' | 'area' | 'city' | 'street' | 'house';
-export declare type ClearableElements = FiasElements | 'flat';
+export declare type ClearableElements = FiasElements | 'housing' | 'flat';
 export declare const AddressModel: {
     create: (jsonValue: string | null) => Address;
     serialize: (value: Address) => string;

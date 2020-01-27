@@ -56,7 +56,11 @@ var getAdditionalFields = function (address) {
 exports.AddressModel = {
     create: function (jsonValue) {
         var value = JSON.parse(jsonValue || '{}');
-        return __assign({}, defaultFields, value, { region: __assign({}, defaultFiasElement, (value.region ? value.region : {})), area: __assign({}, defaultFiasElement, (value.area ? value.area : {})), city: __assign({}, defaultFiasElement, (value.city ? value.city : {})), street: __assign({}, defaultFiasElement, (value.street ? value.street : {})), house: __assign({}, defaultFiasElement, (value.house ? value.house : {})), flat: value.flat
+        return __assign({}, defaultFields, value, { region: __assign({}, defaultFiasElement, (value.region ? value.region : {})), area: __assign({}, defaultFiasElement, (value.area ? value.area : {})), city: __assign({}, defaultFiasElement, (value.city ? value.city : {})), street: __assign({}, defaultFiasElement, (value.street ? value.street : {})), house: __assign({}, defaultFiasElement, (value.house ? value.house : {})), housing: value.housing
+                ? typeof value.housing === 'string'
+                    ? value.housing
+                    : value.housing.name
+                : '', flat: value.flat
                 ? typeof value.flat === 'string'
                     ? value.flat
                     : value.flat.name
@@ -76,6 +80,10 @@ exports.AddressModel = {
         var relations = relatedFields[field];
         relations.forEach(function (item) {
             if (item === 'flat') {
+                newAddress[item] = '';
+                return;
+            }
+            if (item === 'housing') {
                 newAddress[item] = '';
                 return;
             }
@@ -121,7 +129,7 @@ exports.AddressModel = {
     getFullCodeName: function (question, name) {
         return question.code + name;
     },
-    skipDefault: ['housing', 'flat', 'area', 'description'],
+    skipDefault: ['street', 'housing', 'flat', 'area', 'description'],
     skipOnShort: ['oktmo', 'ifnsfl', 'ifnsflName'],
     skipRegion: ['region'],
     validate: function (value, isTouched, short, skipRegion) {
