@@ -13,6 +13,7 @@ export interface FiasFullAddress {
   city: FiasElement
   street: FiasElement
   house: FiasElement
+  housing: string
   flat: string
 }
 
@@ -34,7 +35,7 @@ export interface Address {
 
 export type FiasElements = 'region' | 'area' | 'city' | 'street' | 'house'
 
-export type ClearableElements = FiasElements | 'flat'
+export type ClearableElements = FiasElements | 'housing' | 'flat'
 
 const relatedFields: { [key in FiasElements]: ClearableElements[] } = {
   region: ['area'],
@@ -85,8 +86,10 @@ const getAdditionalFields = (address: Address & { ifnsfl_name: string }) => {
 export const AddressModel = {
   create: (jsonValue: string | null): Address => {
     let value = JSON.parse(jsonValue || '{}') as Partial<
-      Pick<Address, Exclude<keyof Address, 'flat'>> & {
+      Pick<Address, Exclude<keyof Address, 'flat' | 'housing'>> & {
         flat: string | { name: string }
+      } & {
+        housing: string | { name: string }
       }
     >
     return {
@@ -112,6 +115,11 @@ export const AddressModel = {
         ...defaultFiasElement,
         ...(value.house ? value.house : {}),
       },
+      housing: value.housing
+        ? typeof value.housing === 'string'
+          ? value.housing
+          : value.housing.name
+        : '',
       flat: value.flat
         ? typeof value.flat === 'string'
           ? value.flat
@@ -145,6 +153,10 @@ export const AddressModel = {
     const relations = relatedFields[field]
     relations.forEach(item => {
       if (item === 'flat') {
+        newAddress[item] = ''
+        return
+      }
+      if (item === 'housing') {
         newAddress[item] = ''
         return
       }
@@ -190,7 +202,7 @@ export const AddressModel = {
   getFullCodeName: (question: AddressQuestion, name: string) =>
     question.code + name,
 
-  skipDefault: ['housing', 'flat', 'area', 'description'],
+  skipDefault: ['street', 'housing', 'flat', 'area', 'description'],
   skipOnShort: ['oktmo', 'ifnsfl', 'ifnsflName'],
   skipRegion: ['region'],
 
