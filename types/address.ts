@@ -37,20 +37,36 @@ export type FiasElements = 'region' | 'area' | 'city' | 'street' | 'house'
 
 export type ClearableElements = FiasElements | 'housing' | 'flat'
 
+// const relatedFields: { [key in FiasElements]: ClearableElements[] } = {
+//   region: ['area'],
+//   area: ['city'],
+//   city: ['street', 'house', 'flat'],
+//   street: ['house', 'flat'],
+//   house: ['flat'],
+// }
+
 const relatedFields: { [key in FiasElements]: ClearableElements[] } = {
-  region: ['area'],
-  area: ['city'],
-  city: ['street', 'house', 'flat'],
-  street: ['house', 'flat'],
-  house: ['flat'],
+  region: [],
+  area: [],
+  city: [],
+  street: [],
+  house: [],
 }
+
+// const checkParentFields: { [key in FiasElements]: FiasElements[] } = {
+//   region: [],
+//   area: ['region'],
+//   city: ['area'],
+//   street: ['city'],
+//   house: ['street', 'city'],
+// }
 
 const checkParentFields: { [key in FiasElements]: FiasElements[] } = {
   region: [],
-  area: ['region'],
-  city: ['area'],
-  street: ['city'],
-  house: ['street', 'city'],
+  area: [],
+  city: [],
+  street: [],
+  house: [],
 }
 
 const defaultFiasElement: FiasElement = {

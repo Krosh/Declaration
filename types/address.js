@@ -11,19 +11,33 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// const relatedFields: { [key in FiasElements]: ClearableElements[] } = {
+//   region: ['area'],
+//   area: ['city'],
+//   city: ['street', 'house', 'flat'],
+//   street: ['house', 'flat'],
+//   house: ['flat'],
+// }
 var relatedFields = {
-    region: ['area'],
-    area: ['city'],
-    city: ['street', 'house', 'flat'],
-    street: ['house', 'flat'],
-    house: ['flat'],
+    region: [],
+    area: [],
+    city: [],
+    street: [],
+    house: [],
 };
+// const checkParentFields: { [key in FiasElements]: FiasElements[] } = {
+//   region: [],
+//   area: ['region'],
+//   city: ['area'],
+//   street: ['city'],
+//   house: ['street', 'city'],
+// }
 var checkParentFields = {
     region: [],
-    area: ['region'],
-    city: ['area'],
-    street: ['city'],
-    house: ['street', 'city'],
+    area: [],
+    city: [],
+    street: [],
+    house: [],
 };
 var defaultFiasElement = {
     id: '',
