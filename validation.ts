@@ -36,15 +36,22 @@ const validate = (
     if (validation.type === 'phone') {
       return validatePhone(value)
     }
+
     if (validation.type === 'okved') {
       return validateOkved(value)
     }
+
+    if (validation.type === 'passport') {
+      return validatePassport(value)
+    }
+
     if (validation.type === 'year') {
       const result = validateYear(value)
       if (!!result.length) {
         return result
       }
     }
+
     if (validation.type === 'inn') {
       const result = validateInn(value)
       if (!!result.length) {
@@ -94,6 +101,13 @@ export function validatePhone(value: string) {
 export function validateOkved(value: string) {
   if (!value.match(/\d\d\.\d\d\.\d\d/)) {
     return ['Некорректный код ОКВЭД']
+  }
+  return []
+}
+
+export function validatePassport(value: string) {
+  if (!value.match(/\d\d\s\d\d\s\d\d\d\d\d\d/)) {
+    return ['Некорректные серия и номер паспорта']
   }
   return []
 }

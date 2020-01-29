@@ -4,7 +4,7 @@ export interface Validation {
     canBeSkipped?: boolean;
     oneOf?: string[];
     bikName?: string;
-    type?: 'inn' | 'kpp' | 'oktmo' | 'year' | 'phone' | 'okved' | 'bik' | 'correspondent_account' | 'client_account';
+    type?: 'inn' | 'kpp' | 'oktmo' | 'year' | 'phone' | 'okved' | 'passport' | 'bik' | 'correspondent_account' | 'client_account';
 }
 export declare type Action = ShowInputsAction | ShowPagesAction | EnableRequiredAction | ForceValuesAction;
 export declare type ShowInputsAction = {
@@ -72,6 +72,9 @@ export interface PhoneQuestion extends BaseQuestion {
 export interface OkvedQuestion extends BaseQuestion {
     type: 'okved';
 }
+export interface PassportQuestion extends BaseQuestion {
+    type: 'passport';
+}
 export interface AnswerQuestion extends BaseQuestion {
     action?: Action;
 }
@@ -110,7 +113,7 @@ export interface SharesQuestion extends BaseQuestion {
 export interface MoneyIntegerQuestion extends BaseQuestion {
     type: 'money_integer';
 }
-export declare type SingleQuestion = TextQuestion | AutocompleteQuestion | AutocompleteWithActions | AddressQuestion | PhoneQuestion | NumberQuestion | RadioQuestion | DateQuestion | SelectQuestion | CheckboxQuestion | MoneyQuestion | OkvedQuestion | MoneyAbroadQuestion | MoneyCourseQuestion | MoneyIntegerQuestion | SharesQuestion | InfoQuestion;
+export declare type SingleQuestion = TextQuestion | AutocompleteQuestion | AutocompleteWithActions | AddressQuestion | PhoneQuestion | NumberQuestion | RadioQuestion | DateQuestion | SelectQuestion | CheckboxQuestion | MoneyQuestion | OkvedQuestion | PassportQuestion | MoneyAbroadQuestion | MoneyCourseQuestion | MoneyIntegerQuestion | SharesQuestion | InfoQuestion;
 export declare type Question = SingleQuestion | MultipleQuestion;
 export declare type QuestionHasAction<A extends Action> = Question & {
     action: A;

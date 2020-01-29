@@ -11,6 +11,7 @@ export interface Validation {
     | 'year'
     | 'phone'
     | 'okved'
+    | 'passport'
     | 'bik'
     | 'correspondent_account'
     | 'client_account'
@@ -97,6 +98,10 @@ export interface OkvedQuestion extends BaseQuestion {
   type: 'okved'
 }
 
+export interface PassportQuestion extends BaseQuestion {
+  type: 'passport'
+}
+
 export interface AnswerQuestion extends BaseQuestion {
   action?: Action
 }
@@ -156,6 +161,7 @@ export type SingleQuestion =
   | CheckboxQuestion
   | MoneyQuestion
   | OkvedQuestion
+  | PassportQuestion
   | MoneyAbroadQuestion
   | MoneyCourseQuestion
   | MoneyIntegerQuestion

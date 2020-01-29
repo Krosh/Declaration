@@ -38,6 +38,9 @@ var validate = function (questionCode, qValidation, getValue, requiredFromAction
         if (validation.type === 'okved') {
             return validateOkved(value);
         }
+        if (validation.type === 'passport') {
+            return validatePassport(value);
+        }
         if (validation.type === 'year') {
             var result = validateYear(value);
             if (!!result.length) {
@@ -91,6 +94,13 @@ function validateOkved(value) {
     return [];
 }
 exports.validateOkved = validateOkved;
+function validatePassport(value) {
+    if (!value.match(/\d\d\s\d\d\s\d\d\d\d\d\d/)) {
+        return ['Некорректные серия и номер паспорта'];
+    }
+    return [];
+}
+exports.validatePassport = validatePassport;
 function validateYear(value) {
     if (parseInt(value) < 1950 || parseInt(value) > 2050) {
         return ['Указан некорректный год'];
