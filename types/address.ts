@@ -18,6 +18,7 @@ export interface FiasFullAddress {
 }
 
 export interface Address {
+  fullAddressString: string
   region: FiasElement
   area: FiasElement
   city: FiasElement
@@ -76,6 +77,7 @@ const defaultFiasElement: FiasElement = {
   description: '',
 }
 const defaultFields = {
+  fullAddressString: '',
   housing: '',
   flat: '',
   ifnsfl: '',

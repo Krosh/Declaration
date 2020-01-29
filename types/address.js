@@ -46,6 +46,7 @@ var defaultFiasElement = {
     description: '',
 };
 var defaultFields = {
+    fullAddressString: '',
     housing: '',
     flat: '',
     ifnsfl: '',

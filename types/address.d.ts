@@ -15,6 +15,7 @@ export interface FiasFullAddress {
     flat: string;
 }
 export interface Address {
+    fullAddressString: string;
     region: FiasElement;
     area: FiasElement;
     city: FiasElement;
@@ -35,6 +36,7 @@ export declare const AddressModel: {
     create: (jsonValue: string | null) => Address;
     serialize: (value: Address) => string;
     changeFiasElement: (oldValue: Address, field: FiasElements, label: string, changeValue: any, isUserEdited: boolean) => {
+        fullAddressString: string;
         region: FiasElement;
         area: FiasElement;
         city: FiasElement;
@@ -54,6 +56,7 @@ export declare const AddressModel: {
     skipOnShort: string[];
     skipRegion: string[];
     validate: (value: string, isTouched: (name: string) => boolean, short: boolean, skipRegion: boolean) => {
+        fullAddressString: string[];
         region: string[];
         area: string[];
         city: string[];
