@@ -220,7 +220,7 @@ export const AddressModel = {
   getFullCodeName: (question: AddressQuestion, name: string) =>
     question.code + name,
 
-  skipDefault: ['street', 'housing', 'flat', 'area', 'description'],
+  skipDefault: ['fullAddressString', 'street', 'housing', 'flat', 'area', 'description'],
   skipOnShort: ['oktmo', 'ifnsfl', 'ifnsflName'],
   skipRegion: ['region'],
 
