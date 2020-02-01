@@ -13,8 +13,8 @@ export interface FiasFullAddress {
   city: FiasElement
   street: FiasElement
   house: FiasElement
-  housing: string
-  flat: string
+  housing: FiasElement
+  flat: FiasElement
 }
 
 export interface Address {
@@ -24,8 +24,8 @@ export interface Address {
   city: FiasElement
   street: FiasElement
   house: FiasElement
-  housing: string
-  flat: string
+  housing: FiasElement
+  flat: FiasElement
   ifnsfl: string
   ifnsflName: string
   oktmo: string
@@ -34,9 +34,9 @@ export interface Address {
   userEdited: boolean
 }
 
-export type FiasElements = 'region' | 'area' | 'city' | 'street' | 'house'
+export type FiasElements = 'region' | 'area' | 'city' | 'street' | 'house'  | 'housing' | 'flat'
 
-export type ClearableElements = FiasElements | 'housing' | 'flat'
+export type ClearableElements = FiasElements
 
 // const relatedFields: { [key in FiasElements]: ClearableElements[] } = {
 //   region: ['area'],
@@ -52,6 +52,8 @@ const relatedFields: { [key in FiasElements]: ClearableElements[] } = {
   city: [],
   street: [],
   house: [],
+  housing: [],
+  flat: [],
 }
 
 // const checkParentFields: { [key in FiasElements]: FiasElements[] } = {
@@ -68,6 +70,8 @@ const checkParentFields: { [key in FiasElements]: FiasElements[] } = {
   city: [],
   street: [],
   house: [],
+  housing: [],
+  flat: [],
 }
 
 const defaultFiasElement: FiasElement = {
@@ -78,8 +82,6 @@ const defaultFiasElement: FiasElement = {
 }
 const defaultFields = {
   fullAddressString: '',
-  housing: '',
-  flat: '',
   ifnsfl: '',
   ifnsflName: '',
   oktmo: '',
@@ -103,13 +105,7 @@ const getAdditionalFields = (address: Address & { ifnsfl_name: string }) => {
 
 export const AddressModel = {
   create: (jsonValue: string | null): Address => {
-    let value = JSON.parse(jsonValue || '{}') as Partial<
-      Pick<Address, Exclude<keyof Address, 'flat' | 'housing'>> & {
-        flat: string | { name: string }
-      } & {
-        housing: string | { name: string }
-      }
-    >
+    const value = JSON.parse(jsonValue || '{}') as Partial<Address>
     return {
       ...defaultFields,
       ...value,
@@ -133,16 +129,14 @@ export const AddressModel = {
         ...defaultFiasElement,
         ...(value.house ? value.house : {}),
       },
-      housing: value.housing
-        ? typeof value.housing === 'string'
-          ? value.housing
-          : value.housing.name
-        : '',
-      flat: value.flat
-        ? typeof value.flat === 'string'
-          ? value.flat
-          : value.flat.name
-        : '',
+      housing: {
+        ...defaultFiasElement,
+        ...(value.housing ? value.housing : {}),
+      },
+      flat: {
+        ...defaultFiasElement,
+        ...(value.flat ? value.flat : {}),
+      },
       ...getAdditionalFields({
         ...value,
         ...(value.house ? value.house : {}),
@@ -170,14 +164,6 @@ export const AddressModel = {
     const newAddress = { ...oldValue, [field]: newFiasElementValue }
     const relations = relatedFields[field]
     relations.forEach(item => {
-      if (item === 'flat') {
-        newAddress[item] = ''
-        return
-      }
-      if (item === 'housing') {
-        newAddress[item] = ''
-        return
-      }
       newAddress[item] = { ...defaultFiasElement }
     })
 

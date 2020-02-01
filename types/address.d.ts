@@ -11,8 +11,8 @@ export interface FiasFullAddress {
     city: FiasElement;
     street: FiasElement;
     house: FiasElement;
-    housing: string;
-    flat: string;
+    housing: FiasElement;
+    flat: FiasElement;
 }
 export interface Address {
     fullAddressString: string;
@@ -21,8 +21,8 @@ export interface Address {
     city: FiasElement;
     street: FiasElement;
     house: FiasElement;
-    housing: string;
-    flat: string;
+    housing: FiasElement;
+    flat: FiasElement;
     ifnsfl: string;
     ifnsflName: string;
     oktmo: string;
@@ -30,8 +30,8 @@ export interface Address {
     description: string;
     userEdited: boolean;
 }
-export declare type FiasElements = 'region' | 'area' | 'city' | 'street' | 'house';
-export declare type ClearableElements = FiasElements | 'housing' | 'flat';
+export declare type FiasElements = 'region' | 'area' | 'city' | 'street' | 'house' | 'housing' | 'flat';
+export declare type ClearableElements = FiasElements;
 export declare const AddressModel: {
     create: (jsonValue: string | null) => Address;
     serialize: (value: Address) => string;
@@ -42,8 +42,8 @@ export declare const AddressModel: {
         city: FiasElement;
         street: FiasElement;
         house: FiasElement;
-        housing: string;
-        flat: string;
+        housing: FiasElement;
+        flat: FiasElement;
         ifnsfl: string;
         ifnsflName: string;
         oktmo: string;
