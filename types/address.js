@@ -73,7 +73,13 @@ var getAdditionalFields = function (address) {
 exports.AddressModel = {
     create: function (jsonValue) {
         var value = JSON.parse(jsonValue || '{}');
-        return __assign({}, defaultFields, value, { region: __assign({}, defaultFiasElement, (value.region ? value.region : {})), area: __assign({}, defaultFiasElement, (value.area ? value.area : {})), city: __assign({}, defaultFiasElement, (value.city ? value.city : {})), street: __assign({}, defaultFiasElement, (value.street ? value.street : {})), house: __assign({}, defaultFiasElement, (value.house ? value.house : {})), housing: __assign({}, defaultFiasElement, (value.housing ? value.housing : {})), flat: __assign({}, defaultFiasElement, (value.flat ? value.flat : {})) }, getAdditionalFields(__assign({}, value, (value.house ? value.house : {}))));
+        return __assign({}, defaultFields, value, { region: __assign({}, defaultFiasElement, (value.region ? value.region : {})), area: __assign({}, defaultFiasElement, (value.area ? value.area : {})), city: __assign({}, defaultFiasElement, (value.city ? value.city : {})), street: __assign({}, defaultFiasElement, (value.street ? value.street : {})), house: __assign({}, defaultFiasElement, (value.house ? value.house : {})), housing: typeof value.housing === 'string' ?
+                {
+                    name: value.housing
+                } : value.housing, flat: typeof value.flat === 'string' ?
+                {
+                    name: value.flat
+                } : value.flat }, getAdditionalFields(__assign({}, value, (value.house ? value.house : {}))));
     },
     serialize: function (value) { return JSON.stringify(value); },
     changeFiasElement: function (oldValue, field, label, changeValue, isUserEdited) {

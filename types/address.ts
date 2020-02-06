@@ -105,7 +105,8 @@ const getAdditionalFields = (address: Address & { ifnsfl_name: string }) => {
 
 export const AddressModel = {
   create: (jsonValue: string | null): Address => {
-    const value = JSON.parse(jsonValue || '{}') as Partial<Address>
+    const value = JSON.parse(jsonValue || '{}') as Omit<Partial<Address>, 'flat' | 'housing'>
+      & Partial<{flat: FiasElement | string, housing: FiasElement | string}>
     return {
       ...defaultFields,
       ...value,
@@ -129,14 +130,14 @@ export const AddressModel = {
         ...defaultFiasElement,
         ...(value.house ? value.house : {}),
       },
-      housing: {
-        ...defaultFiasElement,
-        ...(value.housing ? value.housing : {}),
-      },
-      flat: {
-        ...defaultFiasElement,
-        ...(value.flat ? value.flat : {}),
-      },
+      housing: typeof value.housing === 'string' ?
+        {
+          name: value.housing
+        } : value.housing,
+      flat: typeof value.flat === 'string' ?
+        {
+          name: value.flat
+        } : value.flat,
       ...getAdditionalFields({
         ...value,
         ...(value.house ? value.house : {}),
