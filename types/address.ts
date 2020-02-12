@@ -210,21 +210,27 @@ export const AddressModel = {
   skipDefault: ['fullAddressString', 'street', 'housing', 'flat', 'area', 'description'],
   skipOnShort: ['oktmo', 'ifnsfl', 'ifnsflName'],
   skipRegion: ['region'],
+  skipWithoutIsfnl: ['oktmo', 'ifnsflName'],
 
   validate: (
     value: string,
     isTouched: (name: string) => boolean,
     short: boolean,
-    skipRegion: boolean
+    skipRegion: boolean,
+    onlyIfnsfl: boolean
   ) => {
     const address = AddressModel.create(value)
     const result: { [key: string]: string[] } = {}
-    const skip = AddressModel.skipDefault
+    const skip = [...AddressModel.skipDefault]
     if (short) {
       skip.push(...AddressModel.skipOnShort)
     }
     if (skipRegion) {
       skip.push(...AddressModel.skipRegion)
+    }
+
+    if (onlyIfnsfl) {
+      skip.push(...AddressModel.skipWithoutIsfnl)
     }
 
     for (let key in address) {

@@ -103,8 +103,9 @@ var Declaration = /** @class */ (function () {
             });
             var answeredQuestions = questions.filter(function (questionProps) {
                 if (questionProps.question.type === 'address') {
-                    return (Object.values(address_1.AddressModel.validate(questionProps.value, function () { return true; }, !!questionProps.question.validation &&
-                        !!questionProps.question.validation.shortAnswer, true)).flat().length == 0);
+                    var isShort = !!questionProps.question.validation &&
+                        !!questionProps.question.validation.shortAnswer;
+                    return (Object.values(address_1.AddressModel.validate(questionProps.value, function () { return true; }, isShort, true, isShort)).flat().length == 0);
                 }
                 return (questionProps.value !== '' &&
                     0 === questionProps.errors.length);
@@ -200,6 +201,7 @@ var Declaration = /** @class */ (function () {
         };
         this.getQuestionProps = function (question, id) {
             if (question.type === 'address') {
+                var isShort = !!question.validation && !!question.validation.shortAnswer;
                 var t = {
                     question: question,
                     value: _this.valuesKeeper.getValue(question.code, id),
@@ -224,7 +226,7 @@ var Declaration = /** @class */ (function () {
                     },
                     errors: address_1.AddressModel.validate(_this.valuesKeeper.getValue(question.code, id), function (name) {
                         return _this.touchKeeper.getTouch(address_1.AddressModel.getFullCodeName(question, name), id);
-                    }, !!question.validation && !!question.validation.shortAnswer, true),
+                    }, isShort, true, isShort),
                     setTouched: function (name) {
                         if (!_this.touchKeeper.setTouch(address_1.AddressModel.getFullCodeName(question, name), id, true)) {
                             return;

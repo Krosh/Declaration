@@ -38,12 +38,14 @@ export default class ValidateKeeper {
       )
     }
     if (question.type === 'address') {
+      const isShort = !!question.validation && !!question.validation.shortAnswer
       return Object.values(
         AddressModel.validate(
           this.valuesKeeper.getValue(question.code, id),
           (code: string) => this.touchKeeper.getTouch(question.code + code, id),
-          !!question.validation && !!question.validation.shortAnswer,
-          true
+          isShort,
+          true,
+          isShort
         )
       ).flat()
     }

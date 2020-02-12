@@ -139,15 +139,19 @@ exports.AddressModel = {
     skipDefault: ['fullAddressString', 'street', 'housing', 'flat', 'area', 'description'],
     skipOnShort: ['oktmo', 'ifnsfl', 'ifnsflName'],
     skipRegion: ['region'],
-    validate: function (value, isTouched, short, skipRegion) {
+    skipWithoutIsfnl: ['oktmo', 'ifnsflName'],
+    validate: function (value, isTouched, short, skipRegion, onlyIfnsfl) {
         var address = exports.AddressModel.create(value);
         var result = {};
-        var skip = exports.AddressModel.skipDefault;
+        var skip = exports.AddressModel.skipDefault.slice();
         if (short) {
             skip.push.apply(skip, exports.AddressModel.skipOnShort);
         }
         if (skipRegion) {
             skip.push.apply(skip, exports.AddressModel.skipRegion);
+        }
+        if (onlyIfnsfl) {
+            skip.push.apply(skip, exports.AddressModel.skipWithoutIsfnl);
         }
         for (var key in address) {
             if (!isTouched(key)) {

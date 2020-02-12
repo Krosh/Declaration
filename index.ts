@@ -282,14 +282,16 @@ export default class Declaration {
       })
     const answeredQuestions = questions.filter(questionProps => {
       if (questionProps.question.type === 'address') {
+        const isShort = !!questionProps.question.validation &&
+          !!questionProps.question.validation.shortAnswer;
         return (
           Object.values(
             AddressModel.validate(
               questionProps.value,
               () => true,
-              !!questionProps.question.validation &&
-                !!questionProps.question.validation.shortAnswer,
-              true
+              isShort,
+              true,
+              isShort
             )
           ).flat().length == 0
         )
@@ -418,6 +420,7 @@ export default class Declaration {
 
   getQuestionProps = (question: Question, id: number): QuestionProps => {
     if (question.type === 'address') {
+      const isShort = !!question.validation && !!question.validation.shortAnswer;
       const t: AddressQuestionProps = {
         question: question as AddressQuestion,
         value: this.valuesKeeper.getValue(question.code, id),
@@ -452,8 +455,9 @@ export default class Declaration {
               AddressModel.getFullCodeName(question, name),
               id
             ),
-          !!question.validation && !!question.validation.shortAnswer,
-          true
+          isShort,
+          true,
+          isShort
         ),
         setTouched: (name: string) => {
           if (

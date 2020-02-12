@@ -55,7 +55,8 @@ export declare const AddressModel: {
     skipDefault: string[];
     skipOnShort: string[];
     skipRegion: string[];
-    validate: (value: string, isTouched: (name: string) => boolean, short: boolean, skipRegion: boolean) => {
+    skipWithoutIsfnl: string[];
+    validate: (value: string, isTouched: (name: string) => boolean, short: boolean, skipRegion: boolean, onlyIfnsfl: boolean) => {
         fullAddressString: string[];
         region: string[];
         area: string[];
