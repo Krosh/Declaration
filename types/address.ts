@@ -219,7 +219,8 @@ export const AddressModel = {
     skipRegion: boolean,
     onlyIfnsfl: boolean
   ) => {
-    const address = AddressModel.create(value)
+    const address = JSON.parse(value || '{}')
+    const emptyAddress = AddressModel.create('{}');
     const result: { [key: string]: string[] } = {}
     const skip = [...AddressModel.skipDefault]
     if (short) {
@@ -233,7 +234,7 @@ export const AddressModel = {
       skip.push(...AddressModel.skipWithoutIsfnl)
     }
 
-    for (let key in address) {
+    for (let key in emptyAddress) {
       if (!isTouched(key)) {
         result[key] = []
         continue
@@ -244,6 +245,7 @@ export const AddressModel = {
       }
       if (
         address[key as keyof Address] === '' ||
+        address[key as keyof Address] === undefined ||
         (address[key as FiasElements] &&
           address[key as FiasElements].name === '')
       ) {

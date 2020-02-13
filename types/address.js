@@ -141,7 +141,8 @@ exports.AddressModel = {
     skipRegion: ['region'],
     skipWithoutIsfnl: ['oktmo', 'ifnsflName'],
     validate: function (value, isTouched, short, skipRegion, onlyIfnsfl) {
-        var address = exports.AddressModel.create(value);
+        var address = JSON.parse(value || '{}');
+        var emptyAddress = exports.AddressModel.create('{}');
         var result = {};
         var skip = exports.AddressModel.skipDefault.slice();
         if (short) {
@@ -153,7 +154,7 @@ exports.AddressModel = {
         if (onlyIfnsfl) {
             skip.push.apply(skip, exports.AddressModel.skipWithoutIsfnl);
         }
-        for (var key in address) {
+        for (var key in emptyAddress) {
             if (!isTouched(key)) {
                 result[key] = [];
                 continue;
@@ -163,6 +164,7 @@ exports.AddressModel = {
                 continue;
             }
             if (address[key] === '' ||
+                address[key] === undefined ||
                 (address[key] &&
                     address[key].name === '')) {
                 result[key] = ['Не заполнено поле'];
