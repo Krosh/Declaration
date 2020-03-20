@@ -51,6 +51,7 @@ export interface SingleQuestionProps {
   setActive: () => void
   setValue: (newValue: string) => void
   errors: string[]
+  getTouched: () => void
   setTouched: () => void
   declaration: Declaration
   setAutocompleteActionIndex: (value: string) => boolean
@@ -69,7 +70,11 @@ export interface MultipleQuestionProps {
   question: MultipleQuestion
   ids: number[]
   getTitle: (id: number) => string | undefined
-  getQuestionProps: (question: Question, id: number) => QuestionProps
+  getQuestionProps: (
+    question: Question,
+    id: number,
+    checkTouch: boolean
+  ) => QuestionProps
   addMultiple: (questionCode: string, timestamp: number) => void
   deleteMultiple: (questionCode: string, id: number) => void
   copyMultiple: (questionCode: string, id: number) => void
@@ -148,16 +153,13 @@ export default class Declaration {
     this.processShowInputsActions(this.schema)
     const questionsWithForceValuesAction = Object.keys(
       this.questionsMap
-    ).reduce(
-      (tot, cur) => {
-        const question = this.questionsMap[cur]
-        if (question.type === 'radio' && question.action) {
-          tot[cur] = question as QuestionHasAction<ForceValuesAction>
-        }
-        return tot
-      },
-      {} as { [key: string]: QuestionHasAction<ForceValuesAction> }
-    )
+    ).reduce((tot, cur) => {
+      const question = this.questionsMap[cur]
+      if (question.type === 'radio' && question.action) {
+        tot[cur] = question as QuestionHasAction<ForceValuesAction>
+      }
+      return tot
+    }, {} as { [key: string]: QuestionHasAction<ForceValuesAction> })
     this.valuesKeeper = new ValuesKeeper(
       initialValues,
       dataProvider,
@@ -241,29 +243,27 @@ export default class Declaration {
       .filter(item => item.type !== 'total')
       .filter(item => item.type !== 'files')
       .flatMap(item => this.getVisibleQuestionFromPage(item))
-      .reduce(
-        (tot, item) => {
-          const questionProps = this.getQuestionProps(item, 0)
-          if (questionProps.question.type === 'multiple') {
-            const props = questionProps as MultipleQuestionProps
-            return tot.concat(
-              props.ids.flatMap(id =>
-                props
-                  .filterMultipleChilds(props.question, id)
-                  .map(
-                    question =>
-                      props.getQuestionProps(
-                        question,
-                        id
-                      ) as SingleQuestionProps
-                  )
-              )
+      .reduce((tot, item) => {
+        const questionProps = this.getQuestionProps(item, 0, false)
+        if (questionProps.question.type === 'multiple') {
+          const props = questionProps as MultipleQuestionProps
+          return tot.concat(
+            props.ids.flatMap(id =>
+              props
+                .filterMultipleChilds(props.question, id)
+                .map(
+                  question =>
+                    props.getQuestionProps(
+                      question,
+                      id,
+                      false
+                    ) as SingleQuestionProps
+                )
             )
-          }
-          return tot.concat([questionProps as any])
-        },
-        [] as SingleQuestionProps[]
-      )
+          )
+        }
+        return tot.concat([questionProps as any])
+      }, [] as SingleQuestionProps[])
       .filter(item => {
         if (
           item.question.type === 'info' ||
@@ -282,8 +282,9 @@ export default class Declaration {
       })
     const answeredQuestions = questions.filter(questionProps => {
       if (questionProps.question.type === 'address') {
-        const isShort = !!questionProps.question.validation &&
-          !!questionProps.question.validation.shortAnswer;
+        const isShort =
+          !!questionProps.question.validation &&
+          !!questionProps.question.validation.shortAnswer
         return (
           Object.values(
             AddressModel.validate(
@@ -296,10 +297,7 @@ export default class Declaration {
           ).flat().length == 0
         )
       }
-      return (
-        questionProps.value !== '' &&
-        0 === (questionProps as SingleQuestionProps).errors.length
-      )
+      return 0 === (questionProps as SingleQuestionProps).errors.length
     })
     this.progress = Math.floor(
       (answeredQuestions.length * 100) / questions.length
@@ -418,9 +416,13 @@ export default class Declaration {
     }
   }
 
-  getQuestionProps = (question: Question, id: number): QuestionProps => {
+  getQuestionProps = (
+    question: Question,
+    id: number,
+    checkTouch: boolean = true
+  ): QuestionProps => {
     if (question.type === 'address') {
-      const isShort = !!question.validation && !!question.validation.shortAnswer;
+      const isShort = !!question.validation && !!question.validation.shortAnswer
       const t: AddressQuestionProps = {
         question: question as AddressQuestion,
         value: this.valuesKeeper.getValue(question.code, id),
@@ -443,9 +445,9 @@ export default class Declaration {
           ) {
             this.visibilityKeeper.clearVisibility()
           }
-          this.calculateProgress()
           this.visibilityKeeper.clearRequired()
           this.validateKeeper.refreshQuestionCache(question, id)
+          this.calculateProgress()
           this.rerenderCallback && this.rerenderCallback()
         },
         errors: AddressModel.validate(
@@ -510,14 +512,17 @@ export default class Declaration {
           ) {
             this.visibilityKeeper.clearVisibility()
           }
+          this.visibilityKeeper.clearRequired()
+          this.validateKeeper.refreshQuestionCache(question, id)
           if (question.page.type !== 'statement') {
             this.calculateProgress()
           }
-          this.visibilityKeeper.clearRequired()
-          this.validateKeeper.refreshQuestionCache(question, id)
           this.rerenderCallback && this.rerenderCallback()
         },
-        errors: this.validateKeeper.validateQuestion(question, id),
+        errors: this.validateKeeper.validateQuestion(question, id, checkTouch),
+        getTouched: () => {
+          return this.touchKeeper.getTouch(question.code, id)
+        },
         setTouched: () => {
           if (!this.touchKeeper.setTouch(question.code, id, true)) {
             return

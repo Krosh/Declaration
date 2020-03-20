@@ -1,5 +1,8 @@
 import { FullyLoadedDeclaration, MultipleQuestion, Page, Question, SingleQuestion, Values, AddressQuestion, CheckboxQuestion } from './types/declaration';
 import { Address } from './types/address';
+declare type QuestionsMap = {
+    [key: string]: Question;
+};
 export interface Statistics {
     incomes: Array<{
         name: string;
@@ -26,6 +29,7 @@ export interface SingleQuestionProps {
     setActive: () => void;
     setValue: (newValue: string) => void;
     errors: string[];
+    getTouched: () => void;
     setTouched: () => void;
     declaration: Declaration;
     setAutocompleteActionIndex: (value: string) => boolean;
@@ -44,7 +48,7 @@ export interface MultipleQuestionProps {
     question: MultipleQuestion;
     ids: number[];
     getTitle: (id: number) => string | undefined;
-    getQuestionProps: (question: Question, id: number) => QuestionProps;
+    getQuestionProps: (question: Question, id: number, checkTouch: boolean) => QuestionProps;
     addMultiple: (questionCode: string, timestamp: number) => void;
     deleteMultiple: (questionCode: string, id: number) => void;
     copyMultiple: (questionCode: string, id: number) => void;
@@ -85,7 +89,7 @@ export default class Declaration {
     private calculateProgress;
     private progress;
     getProgress: () => number;
-    calculateQuestionsMap: (schema: FullyLoadedDeclaration) => {};
+    calculateQuestionsMap: (schema: FullyLoadedDeclaration) => QuestionsMap;
     setRerenderCallback: (cb: () => void) => void;
     getVisibleQuestionFromPage: (page: Page) => Question[];
     setActivePage: (page: Page) => void;
@@ -100,5 +104,6 @@ export default class Declaration {
      * есть multipleQuestion, и в нем нет вариантов, то добавляем вариант
      */
     private processCheckboxChange;
-    getQuestionProps: (question: Question, id: number) => QuestionProps;
+    getQuestionProps: (question: Question, id: number, checkTouch?: boolean) => QuestionProps;
 }
+export {};

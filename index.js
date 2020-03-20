@@ -1,4 +1,11 @@
 "use strict";
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -39,7 +46,7 @@ var Declaration = /** @class */ (function () {
         this.processShowInputsActions = function (schema) {
             var parseActions = function (item) {
                 if (item.action && item.action.type === 'show_inputs') {
-                    var nonProcessedCodes_1 = item.action.codes.slice();
+                    var nonProcessedCodes_1 = __spreadArrays(item.action.codes);
                     var codes = [];
                     while (nonProcessedCodes_1.length) {
                         var curCode = nonProcessedCodes_1.pop();
@@ -76,14 +83,14 @@ var Declaration = /** @class */ (function () {
                 .filter(function (item) { return item.type !== 'files'; })
                 .flatMap(function (item) { return _this.getVisibleQuestionFromPage(item); })
                 .reduce(function (tot, item) {
-                var questionProps = _this.getQuestionProps(item, 0);
+                var questionProps = _this.getQuestionProps(item, 0, false);
                 if (questionProps.question.type === 'multiple') {
                     var props_1 = questionProps;
                     return tot.concat(props_1.ids.flatMap(function (id) {
                         return props_1
                             .filterMultipleChilds(props_1.question, id)
                             .map(function (question) {
-                            return props_1.getQuestionProps(question, id);
+                            return props_1.getQuestionProps(question, id, false);
                         });
                     }));
                 }
@@ -107,8 +114,7 @@ var Declaration = /** @class */ (function () {
                         !!questionProps.question.validation.shortAnswer;
                     return (Object.values(address_1.AddressModel.validate(questionProps.value, function () { return true; }, isShort, true, isShort)).flat().length == 0);
                 }
-                return (questionProps.value !== '' &&
-                    0 === questionProps.errors.length);
+                return 0 === questionProps.errors.length;
             });
             _this.progress = Math.floor((answeredQuestions.length * 100) / questions.length);
         };
@@ -117,7 +123,7 @@ var Declaration = /** @class */ (function () {
         this.calculateQuestionsMap = function (schema) {
             var getQuestions = function (question) {
                 if (question.answers) {
-                    return [question].concat(question.answers.flatMap(getQuestions));
+                    return __spreadArrays([question], question.answers.flatMap(getQuestions));
                 }
                 return [question];
             };
@@ -199,7 +205,8 @@ var Declaration = /** @class */ (function () {
                 }
             }
         };
-        this.getQuestionProps = function (question, id) {
+        this.getQuestionProps = function (question, id, checkTouch) {
+            if (checkTouch === void 0) { checkTouch = true; }
             if (question.type === 'address') {
                 var isShort = !!question.validation && !!question.validation.shortAnswer;
                 var t = {
@@ -219,9 +226,9 @@ var Declaration = /** @class */ (function () {
                             getHidedElementCodes_1.isAutocompleteWithActions(question)) {
                             _this.visibilityKeeper.clearVisibility();
                         }
-                        _this.calculateProgress();
                         _this.visibilityKeeper.clearRequired();
                         _this.validateKeeper.refreshQuestionCache(question, id);
+                        _this.calculateProgress();
                         _this.rerenderCallback && _this.rerenderCallback();
                     },
                     errors: address_1.AddressModel.validate(_this.valuesKeeper.getValue(question.code, id), function (name) {
@@ -268,14 +275,17 @@ var Declaration = /** @class */ (function () {
                             getHidedElementCodes_1.isAutocompleteWithActions(question)) {
                             _this.visibilityKeeper.clearVisibility();
                         }
+                        _this.visibilityKeeper.clearRequired();
+                        _this.validateKeeper.refreshQuestionCache(question, id);
                         if (question.page.type !== 'statement') {
                             _this.calculateProgress();
                         }
-                        _this.visibilityKeeper.clearRequired();
-                        _this.validateKeeper.refreshQuestionCache(question, id);
                         _this.rerenderCallback && _this.rerenderCallback();
                     },
-                    errors: _this.validateKeeper.validateQuestion(question, id),
+                    errors: _this.validateKeeper.validateQuestion(question, id, checkTouch),
+                    getTouched: function () {
+                        return _this.touchKeeper.getTouch(question.code, id);
+                    },
                     setTouched: function () {
                         if (!_this.touchKeeper.setTouch(question.code, id, true)) {
                             return;
