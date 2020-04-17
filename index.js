@@ -1,10 +1,14 @@
 "use strict";
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
 };
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -17,6 +21,7 @@ var address_1 = require("./types/address");
 var validate_keeper_1 = __importDefault(require("./validate-keeper"));
 var values_keeper_1 = __importDefault(require("./values-keeper"));
 var visibility_keeper_1 = require("./visibility-keeper");
+var deduction_buy_property_1 = require("./deduction-buy-property");
 var Declaration = /** @class */ (function () {
     function Declaration(schema, initialValues, dataProvider) {
         var _this = this;
@@ -46,7 +51,7 @@ var Declaration = /** @class */ (function () {
         this.processShowInputsActions = function (schema) {
             var parseActions = function (item) {
                 if (item.action && item.action.type === 'show_inputs') {
-                    var nonProcessedCodes_1 = __spreadArrays(item.action.codes);
+                    var nonProcessedCodes_1 = item.action.codes.slice();
                     var codes = [];
                     while (nonProcessedCodes_1.length) {
                         var curCode = nonProcessedCodes_1.pop();
@@ -123,7 +128,7 @@ var Declaration = /** @class */ (function () {
         this.calculateQuestionsMap = function (schema) {
             var getQuestions = function (question) {
                 if (question.answers) {
-                    return __spreadArrays([question], question.answers.flatMap(getQuestions));
+                    return [question].concat(question.answers.flatMap(getQuestions));
                 }
                 return [question];
             };
@@ -301,33 +306,25 @@ var Declaration = /** @class */ (function () {
                 return t;
             }
             else {
-                return {
-                    getTitle: function (id) {
+                var changedProps = new deduction_buy_property_1.DeductionBuyProperty(question, _this.valuesKeeper).init();
+                return __assign({ getTitle: function (id) {
                         return (_this.filterMutlipleQuestionChilds(question, id)
                             .filter(function (item) { return !!item.title_type; })
                             .map(function (item) { return _this.valuesKeeper.getValue(item.code, id); })
                             .filter(function (item) { return !!item; })
                             .join(', ') || undefined);
-                    },
-                    question: question,
-                    ids: _this.valuesKeeper.getMultipleIds(question.code),
-                    getQuestionProps: _this.getQuestionProps,
-                    addMultiple: function (code, timestamp) {
+                    }, question: question, ids: _this.valuesKeeper.getMultipleIds(question.code), getQuestionProps: _this.getQuestionProps, addMultiple: function (code, timestamp) {
                         _this.valuesKeeper.addMultiple(code, timestamp);
                         _this.validateKeeper.refreshQuestionCache(question, 0);
                         _this.rerenderCallback && _this.rerenderCallback();
-                    },
-                    deleteMultiple: function (code, timestamp) {
+                    }, deleteMultiple: function (code, timestamp) {
                         _this.valuesKeeper.deleteMultiple(code, timestamp);
                         _this.validateKeeper.refreshQuestionCache(question, 0);
                         _this.rerenderCallback && _this.rerenderCallback();
-                    },
-                    copyMultiple: function (code, id) {
+                    }, copyMultiple: function (code, id) {
                         _this.valuesKeeper.copyMultiple(code, id);
                         _this.rerenderCallback && _this.rerenderCallback();
-                    },
-                    filterMultipleChilds: _this.filterMutlipleQuestionChilds,
-                };
+                    }, isShowAddMultiple: function () { return true; }, isShowCopyMultiple: function () { return true; }, getHidedChildrenQuestions: function () { return []; }, filterMultipleChilds: _this.filterMutlipleQuestionChilds }, changedProps);
             }
         };
         this.schema = schema;

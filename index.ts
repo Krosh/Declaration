@@ -18,11 +18,13 @@ import {
   CheckboxQuestion,
   ForceValuesAction,
   QuestionHasAction,
+  HidedFields,
 } from './types/declaration'
 import { Address, AddressModel } from './types/address'
 import ValidateKeeper from './validate-keeper'
 import ValuesKeeper from './values-keeper'
 import { VisibilityKeeper } from './visibility-keeper'
+import { DeductionBuyProperty } from './deduction-buy-property'
 
 type QuestionsMap = { [key: string]: Question }
 
@@ -78,6 +80,9 @@ export interface MultipleQuestionProps {
   addMultiple: (questionCode: string, timestamp: number) => void
   deleteMultiple: (questionCode: string, id: number) => void
   copyMultiple: (questionCode: string, id: number) => void
+  isShowAddMultiple: () => boolean
+  isShowCopyMultiple: () => boolean
+  getHidedChildrenQuestions: () => HidedFields
   filterMultipleChilds: (
     question: MultipleQuestion,
     id: number
@@ -540,6 +545,11 @@ export default class Declaration {
       }
       return t
     } else {
+      const changedProps = new DeductionBuyProperty(
+        question,
+        this.valuesKeeper
+      ).init()
+
       return {
         getTitle: (id: number) => {
           return (
@@ -567,7 +577,11 @@ export default class Declaration {
           this.valuesKeeper.copyMultiple(code, id)
           this.rerenderCallback && this.rerenderCallback()
         },
+        isShowAddMultiple: () => true,
+        isShowCopyMultiple: () => true,
+        getHidedChildrenQuestions: () => [],
         filterMultipleChilds: this.filterMutlipleQuestionChilds,
+        ...changedProps,
       }
     }
   }

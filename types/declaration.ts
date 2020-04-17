@@ -198,13 +198,10 @@ export interface FullyLoadedDeclaration extends Declaration {
 }
 
 export function processAnswers(answers: any) {
-  return Object.keys(answers).reduce(
-    (tot, key) => {
-      tot[key] = { ...answers[key] }
-      return tot
-    },
-    {} as any
-  )
+  return Object.keys(answers).reduce((tot, key) => {
+    tot[key] = { ...answers[key] }
+    return tot
+  }, {} as any)
 }
 
 export function processData(data: any) {
@@ -229,5 +226,7 @@ export function processData(data: any) {
 
   return data
 }
+
+export type HidedFields = Array<{ id: number; codes: string[] }>
 
 export type Values = { [key: string]: { [id: number]: string } }

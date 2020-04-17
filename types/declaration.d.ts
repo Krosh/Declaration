@@ -141,6 +141,10 @@ export interface FullyLoadedDeclaration extends Declaration {
 }
 export declare function processAnswers(answers: any): any;
 export declare function processData(data: any): any;
+export declare type HidedFields = Array<{
+    id: number;
+    codes: string[];
+}>;
 export declare type Values = {
     [key: string]: {
         [id: number]: string;
