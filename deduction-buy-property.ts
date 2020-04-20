@@ -106,7 +106,7 @@ export class DeductionBuyProperty {
     let isDate = false
     let i = 0
     for (let id of this.ids) {
-      if (i !== 0) {
+      if (i === 1) {
         const date = this.valuesKeeper.getValue(this.getDateCode(id), id)
         const value = this.valuesKeeper.getValue(codeValue, id)
         const percent = this.valuesKeeper.getValue(codePercent, id)
@@ -116,8 +116,17 @@ export class DeductionBuyProperty {
       }
       i++
     }
-    const arrCodesForHide = isDate ? [codeValue] : [codeValue, codePercent]
-    this.hidedFields = this.hideFieldsByCodesAfterFirst(arrCodesForHide)
+
+    const arrCodesForHide =
+      isFirst && isSecond && isDate
+        ? [codeValue]
+        : isFirst && !isSecond && !isDate
+        ? [codeValue, codePercent]
+        : []
+    this.hidedFields = arrCodesForHide.length
+      ? this.hideFieldsByCodesAfterFirst(arrCodesForHide)
+      : []
+
     return isFirst && isSecond
   }
 

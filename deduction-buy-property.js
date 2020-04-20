@@ -75,7 +75,7 @@ var DeductionBuyProperty = /** @class */ (function () {
             var i = 0;
             for (var _i = 0, _a = _this.ids; _i < _a.length; _i++) {
                 var id = _a[_i];
-                if (i !== 0) {
+                if (i === 1) {
                     var date = _this.valuesKeeper.getValue(_this.getDateCode(id), id);
                     var value = _this.valuesKeeper.getValue(codeValue, id);
                     var percent = _this.valuesKeeper.getValue(codePercent, id);
@@ -84,8 +84,14 @@ var DeductionBuyProperty = /** @class */ (function () {
                 }
                 i++;
             }
-            var arrCodesForHide = isDate ? [codeValue] : [codeValue, codePercent];
-            _this.hidedFields = _this.hideFieldsByCodesAfterFirst(arrCodesForHide);
+            var arrCodesForHide = isFirst && isSecond && isDate
+                ? [codeValue]
+                : isFirst && !isSecond && !isDate
+                    ? [codeValue, codePercent]
+                    : [];
+            _this.hidedFields = arrCodesForHide.length
+                ? _this.hideFieldsByCodesAfterFirst(arrCodesForHide)
+                : [];
             return isFirst && isSecond;
         };
         /**
