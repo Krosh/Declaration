@@ -34,6 +34,10 @@ export declare class DeductionBuyProperty {
      * Как только они внесены у другого жилья эти данные внести нельзя.
      */
     protected checkValueLimitAndOneOfPercent: () => boolean;
+    protected hideFieldsByCodesAfterFirst: (codes: string[]) => {
+        id: number;
+        codes: string[];
+    }[];
     protected processHideFields: () => void;
     protected checkHomeGroup: () => boolean;
 }

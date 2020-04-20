@@ -56,15 +56,7 @@ export class DeductionBuyProperty {
     if (this.checkDateActValuePercent()) {
       return this.getBlockingObject()
     } else if (this.checkDateActPercentWithLimit()) {
-      return {
-        ...this.getBlockingObject(),
-        getHidedChildrenQuestions: () => {
-          return this.ids.slice(1).map((item: number) => ({
-            id: item,
-            codes: [codeValue],
-          }))
-        },
-      }
+      return this.getBlockingObject()
     } else if (this.checkValueLimitAndOneOfPercent()) {
       return this.getBlockingObject()
     }
@@ -111,18 +103,21 @@ export class DeductionBuyProperty {
     const isFirst =
       new Date(this.date).getFullYear() < yearLimit && +this.percent == 0
     let isSecond = false
+    let isDate = false
     let i = 0
     for (let id of this.ids) {
       if (i !== 0) {
         const date = this.valuesKeeper.getValue(this.getDateCode(id), id)
         const value = this.valuesKeeper.getValue(codeValue, id)
         const percent = this.valuesKeeper.getValue(codePercent, id)
-        isSecond =
-          new Date(date).getFullYear() >= yearLimit ||
-          (!value.length && !percent.length)
+
+        isDate = new Date(date).getFullYear() >= yearLimit
+        isSecond = isDate || (!value.length && !percent.length)
       }
       i++
     }
+    const arrCodesForHide = isDate ? [codeValue] : [codeValue, codePercent]
+    this.hidedFields = this.hideFieldsByCodesAfterFirst(arrCodesForHide)
     return isFirst && isSecond
   }
 
@@ -155,6 +150,13 @@ export class DeductionBuyProperty {
     }
 
     return (isDate || isValue || isHasEmpty) && this.ids.length !== 1
+  }
+
+  protected hideFieldsByCodesAfterFirst = (codes: string[]): HidedFields => {
+    return this.ids.slice(1).map((id: number) => ({
+      id,
+      codes,
+    }))
   }
 
   protected processHideFields = () => {

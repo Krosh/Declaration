@@ -1,15 +1,4 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var deductionHomeGroup = 'deduction_home_group';
 var codeBuyType = 'home_buy_type';
@@ -41,12 +30,7 @@ var DeductionBuyProperty = /** @class */ (function () {
                 return _this.getBlockingObject();
             }
             else if (_this.checkDateActPercentWithLimit()) {
-                return __assign({}, _this.getBlockingObject(), { getHidedChildrenQuestions: function () {
-                        return _this.ids.slice(1).map(function (item) { return ({
-                            id: item,
-                            codes: [codeValue],
-                        }); });
-                    } });
+                return _this.getBlockingObject();
             }
             else if (_this.checkValueLimitAndOneOfPercent()) {
                 return _this.getBlockingObject();
@@ -87,6 +71,7 @@ var DeductionBuyProperty = /** @class */ (function () {
         this.checkDateActPercentWithLimit = function () {
             var isFirst = new Date(_this.date).getFullYear() < yearLimit && +_this.percent == 0;
             var isSecond = false;
+            var isDate = false;
             var i = 0;
             for (var _i = 0, _a = _this.ids; _i < _a.length; _i++) {
                 var id = _a[_i];
@@ -94,12 +79,13 @@ var DeductionBuyProperty = /** @class */ (function () {
                     var date = _this.valuesKeeper.getValue(_this.getDateCode(id), id);
                     var value = _this.valuesKeeper.getValue(codeValue, id);
                     var percent = _this.valuesKeeper.getValue(codePercent, id);
-                    isSecond =
-                        new Date(date).getFullYear() >= yearLimit ||
-                            (!value.length && !percent.length);
+                    isDate = new Date(date).getFullYear() >= yearLimit;
+                    isSecond = isDate || (!value.length && !percent.length);
                 }
                 i++;
             }
+            var arrCodesForHide = isDate ? [codeValue] : [codeValue, codePercent];
+            _this.hidedFields = _this.hideFieldsByCodesAfterFirst(arrCodesForHide);
             return isFirst && isSecond;
         };
         /**
@@ -129,6 +115,12 @@ var DeductionBuyProperty = /** @class */ (function () {
                 _this.processHideFields();
             }
             return (isDate || isValue || isHasEmpty) && _this.ids.length !== 1;
+        };
+        this.hideFieldsByCodesAfterFirst = function (codes) {
+            return _this.ids.slice(1).map(function (id) { return ({
+                id: id,
+                codes: codes,
+            }); });
         };
         this.processHideFields = function () {
             var hasPercent = [];
