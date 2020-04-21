@@ -103,7 +103,9 @@ var DeductionBuyProperty = /** @class */ (function () {
          */
         this.checkValueLimitAndOneOfPercent = function () {
             var arDate = [];
+            var arValueForHide = [];
             var totalValue = 0;
+            var totalLimit = limitByValue;
             var hasOneEmpty = [];
             for (var _i = 0, _a = _this.ids; _i < _a.length; _i++) {
                 var id = _a[_i];
@@ -112,13 +114,22 @@ var DeductionBuyProperty = /** @class */ (function () {
                 var value = _this.valuesKeeper.getValue(codeValue, id);
                 var percent = _this.valuesKeeper.getValue(codePercent, id);
                 hasOneEmpty.push(!value.length && !percent.length);
+                if (totalLimit >= +value && totalLimit !== 0) {
+                    totalLimit -= +value;
+                }
+                else {
+                    arValueForHide.push(id);
+                }
                 totalValue += +value;
             }
             var isDate = !!arDate.filter(function (item) { return !item; }).length;
             var isHasEmpty = !!hasOneEmpty.filter(function (item) { return item; }).length;
-            var isValue = totalValue > limitByValue;
+            var isValue = totalValue >= limitByValue;
+            if (isValue) {
+                _this.processHideFieldsByValue(arValueForHide);
+            }
             if (!isDate) {
-                _this.processHideFields();
+                _this.processHideFieldsByPercent();
             }
             return (isDate || isValue || isHasEmpty) && _this.ids.length !== 1;
         };
@@ -128,7 +139,7 @@ var DeductionBuyProperty = /** @class */ (function () {
                 codes: codes,
             }); });
         };
-        this.processHideFields = function () {
+        this.processHideFieldsByPercent = function () {
             var hasPercent = [];
             for (var _i = 0, _a = _this.ids; _i < _a.length; _i++) {
                 var id = _a[_i];
@@ -137,10 +148,19 @@ var DeductionBuyProperty = /** @class */ (function () {
                     hasPercent.push(+id);
                 }
             }
-            if (hasPercent.length > 0) {
+            if (!!hasPercent.length) {
                 var hidedFields = _this.ids
                     .filter(function (item) { return item !== hasPercent[0]; })
                     .map(function (item) { return ({ id: item, codes: [codePercent] }); });
+                _this.hidedFields = _this.hidedFields.concat(hidedFields);
+            }
+        };
+        this.processHideFieldsByValue = function (arValueForHide) {
+            if (!!arValueForHide.length) {
+                var hidedFields = arValueForHide.map(function (id) { return ({
+                    id: id,
+                    codes: [codeValue],
+                }); });
                 _this.hidedFields = _this.hidedFields.concat(hidedFields);
             }
         };

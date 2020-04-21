@@ -1,21 +1,21 @@
 import { HidedFields, MultipleQuestion } from './types/declaration'
 import ValuesKeeper from './values-keeper'
 
-const deductionHomeGroup = 'deduction_home_group'
+const deductionHomeGroup: string = 'deduction_home_group'
 
-const codeBuyType = 'home_buy_type'
+const codeBuyType: string = 'home_buy_type'
 
-const codeBuyTypeInvestment = 'home_buy_type_investment'
-const codeBuyTypeAnother = 'home_buy_type_another'
+const codeBuyTypeInvestment: string = 'home_buy_type_investment'
+const codeBuyTypeAnother: string = 'home_buy_type_another'
 
-const codeDateAct = 'home_date_act'
-const codeDateRegister = 'home_date_register'
+const codeDateAct: string = 'home_date_act'
+const codeDateRegister: string = 'home_date_register'
 
-const codeValue = 'home_value'
-const codePercent = 'home_percents_before'
+const codeValue: string = 'home_value'
+const codePercent: string = 'home_percents_before'
 
-const limitByValue = 2000000
-const yearLimit = 2014
+const limitByValue: number = 2000000
+const yearLimit: number = 2014
 
 export class DeductionBuyProperty {
   private readonly question: MultipleQuestion
@@ -139,7 +139,9 @@ export class DeductionBuyProperty {
    */
   protected checkValueLimitAndOneOfPercent = (): boolean => {
     let arDate: boolean[] = []
+    let arValueForHide: number[] = []
     let totalValue: number = 0
+    let totalLimit: number = limitByValue
     let hasOneEmpty: boolean[] = []
     for (let id of this.ids) {
       const date = this.valuesKeeper.getValue(this.getDateCode(id), id)
@@ -147,15 +149,25 @@ export class DeductionBuyProperty {
       const value = this.valuesKeeper.getValue(codeValue, id)
       const percent = this.valuesKeeper.getValue(codePercent, id)
       hasOneEmpty.push(!value.length && !percent.length)
+
+      if (totalLimit >= +value && totalLimit !== 0) {
+        totalLimit -= +value
+      } else {
+        arValueForHide.push(id)
+      }
       totalValue += +value
     }
 
     const isDate = !!arDate.filter(item => !item).length
     const isHasEmpty = !!hasOneEmpty.filter(item => item).length
-    const isValue = totalValue > limitByValue
+    const isValue = totalValue >= limitByValue
+
+    if (isValue) {
+      this.processHideFieldsByValue(arValueForHide)
+    }
 
     if (!isDate) {
-      this.processHideFields()
+      this.processHideFieldsByPercent()
     }
 
     return (isDate || isValue || isHasEmpty) && this.ids.length !== 1
@@ -168,7 +180,7 @@ export class DeductionBuyProperty {
     }))
   }
 
-  protected processHideFields = () => {
+  protected processHideFieldsByPercent = () => {
     let hasPercent: number[] = []
     for (let id of this.ids) {
       const percent = this.valuesKeeper.getValue(codePercent, id)
@@ -177,10 +189,21 @@ export class DeductionBuyProperty {
       }
     }
 
-    if (hasPercent.length > 0) {
+    if (!!hasPercent.length) {
       const hidedFields: HidedFields = this.ids
         .filter((item: number) => item !== hasPercent[0])
         .map((item: number) => ({ id: item, codes: [codePercent] }))
+
+      this.hidedFields = [...this.hidedFields, ...hidedFields] as HidedFields
+    }
+  }
+
+  protected processHideFieldsByValue = (arValueForHide: number[]) => {
+    if (!!arValueForHide.length) {
+      const hidedFields: HidedFields = arValueForHide.map((id: number) => ({
+        id,
+        codes: [codeValue],
+      }))
 
       this.hidedFields = [...this.hidedFields, ...hidedFields] as HidedFields
     }
