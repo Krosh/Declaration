@@ -150,7 +150,7 @@ export class DeductionBuyProperty {
       const percent = this.valuesKeeper.getValue(codePercent, id)
       hasOneEmpty.push(!value.length && !percent.length)
 
-      if (totalLimit >= +value && totalLimit !== 0) {
+      if (totalLimit >= +value || totalLimit > 0) {
         totalLimit -= +value
       } else {
         arValueForHide.push(id)
@@ -170,7 +170,11 @@ export class DeductionBuyProperty {
       this.processHideFieldsByPercent()
     }
 
-    return (isDate || isValue || isHasEmpty) && this.ids.length !== 1
+    if (this.ids.length === 1) {
+      return !isDate && isValue && isHasEmpty
+    }
+
+    return isDate || isValue || isHasEmpty
   }
 
   protected hideFieldsByCodesAfterFirst = (codes: string[]): HidedFields => {

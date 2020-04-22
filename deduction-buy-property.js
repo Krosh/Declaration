@@ -114,7 +114,7 @@ var DeductionBuyProperty = /** @class */ (function () {
                 var value = _this.valuesKeeper.getValue(codeValue, id);
                 var percent = _this.valuesKeeper.getValue(codePercent, id);
                 hasOneEmpty.push(!value.length && !percent.length);
-                if (totalLimit >= +value && totalLimit !== 0) {
+                if (totalLimit >= +value || totalLimit > 0) {
                     totalLimit -= +value;
                 }
                 else {
@@ -131,7 +131,10 @@ var DeductionBuyProperty = /** @class */ (function () {
             if (!isDate) {
                 _this.processHideFieldsByPercent();
             }
-            return (isDate || isValue || isHasEmpty) && _this.ids.length !== 1;
+            if (_this.ids.length === 1) {
+                return !isDate && isValue && isHasEmpty;
+            }
+            return isDate || isValue || isHasEmpty;
         };
         this.hideFieldsByCodesAfterFirst = function (codes) {
             return _this.ids.slice(1).map(function (id) { return ({
