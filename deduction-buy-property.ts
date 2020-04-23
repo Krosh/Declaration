@@ -39,6 +39,7 @@ export class DeductionBuyProperty {
   }
 
   private getBlockingObject = (): Object => {
+    this.processHideFieldsByPercent()
     return {
       addMultiple: () => false,
       copyMultiple: () => false,
@@ -53,7 +54,9 @@ export class DeductionBuyProperty {
       return {}
     }
 
-    if (this.checkDateActValuePercent()) {
+    if (this.value >= limitByValue) {
+      return this.getBlockingObject()
+    } else if (this.checkDateActValuePercent()) {
       return this.getBlockingObject()
     } else if (this.checkDateActPercentWithLimit()) {
       return this.getBlockingObject()
@@ -61,6 +64,7 @@ export class DeductionBuyProperty {
       return this.getBlockingObject()
     }
 
+    this.processHideFieldsByPercent()
     return {
       getHidedChildrenQuestions: () => this.hidedFields,
     }
@@ -120,7 +124,7 @@ export class DeductionBuyProperty {
     const arrCodesForHide =
       isFirst && isSecond && isDate
         ? [codeValue]
-        : isFirst && !isSecond && !isDate
+        : isFirst && !isDate
         ? [codeValue, codePercent]
         : []
     this.hidedFields = arrCodesForHide.length
@@ -145,7 +149,11 @@ export class DeductionBuyProperty {
     let hasOneEmpty: boolean[] = []
     for (let id of this.ids) {
       const date = this.valuesKeeper.getValue(this.getDateCode(id), id)
-      arDate.push(new Date(date).getFullYear() >= yearLimit)
+      const hasDateLimit = new Date(date).getFullYear() >= yearLimit
+      arDate.push(hasDateLimit)
+      if (!hasDateLimit) {
+        arValueForHide = [...arValueForHide, id]
+      }
       const value = this.valuesKeeper.getValue(codeValue, id)
       const percent = this.valuesKeeper.getValue(codePercent, id)
       hasOneEmpty.push(!value.length && !percent.length)
@@ -153,7 +161,7 @@ export class DeductionBuyProperty {
       if (totalLimit >= +value || totalLimit > 0) {
         totalLimit -= +value
       } else {
-        arValueForHide.push(id)
+        arValueForHide = [...arValueForHide, id]
       }
       totalValue += +value
     }
@@ -162,16 +170,17 @@ export class DeductionBuyProperty {
     const isHasEmpty = !!hasOneEmpty.filter(item => item).length
     const isValue = totalValue >= limitByValue
 
-    if (isValue) {
-      this.processHideFieldsByValue(arValueForHide)
+    const notOne = this.ids.length !== 1
+    if (isValue && notOne) {
+      this.processHideFieldsByCodes(arValueForHide)
     }
 
-    if (!isDate) {
-      this.processHideFieldsByPercent()
+    if (isDate && notOne) {
+      this.processHideFieldsByCodes(arValueForHide, [codeValue, codePercent])
     }
 
-    if (this.ids.length === 1) {
-      return !isDate && isValue && isHasEmpty
+    if (!notOne) {
+      return !isDate && isValue && !isHasEmpty
     }
 
     return isDate || isValue || isHasEmpty
@@ -198,18 +207,38 @@ export class DeductionBuyProperty {
         .filter((item: number) => item !== hasPercent[0])
         .map((item: number) => ({ id: item, codes: [codePercent] }))
 
-      this.hidedFields = [...this.hidedFields, ...hidedFields] as HidedFields
+      this.combineHidedFields(hidedFields)
     }
   }
 
-  protected processHideFieldsByValue = (arValueForHide: number[]) => {
+  protected processHideFieldsByCodes = (
+    arValueForHide: number[],
+    codes: string[] = [codeValue]
+  ) => {
     if (!!arValueForHide.length) {
       const hidedFields: HidedFields = arValueForHide.map((id: number) => ({
         id,
-        codes: [codeValue],
+        codes,
       }))
 
-      this.hidedFields = [...this.hidedFields, ...hidedFields] as HidedFields
+      this.combineHidedFields(hidedFields)
+    }
+  }
+
+  combineHidedFields = (hidedFields: HidedFields) => {
+    if (this.hidedFields.length) {
+      this.hidedFields = this.hidedFields.map(item => {
+        const findField = hidedFields.filter(field => field.id === item.id)
+        if (findField[0]) {
+          const codes = item.codes.concat(findField[0].codes)
+          item.codes = codes.filter(
+            (item, index) => codes.indexOf(item) === index
+          )
+        }
+        return item
+      })
+    } else {
+      this.hidedFields = hidedFields
     }
   }
 

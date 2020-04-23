@@ -39,6 +39,10 @@ export declare class DeductionBuyProperty {
         codes: string[];
     }[];
     protected processHideFieldsByPercent: () => void;
-    protected processHideFieldsByValue: (arValueForHide: number[]) => void;
+    protected processHideFieldsByCodes: (arValueForHide: number[], codes?: string[]) => void;
+    combineHidedFields: (hidedFields: {
+        id: number;
+        codes: string[];
+    }[]) => void;
     protected checkHomeGroup: () => boolean;
 }

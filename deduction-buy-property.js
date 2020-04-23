@@ -14,6 +14,7 @@ var DeductionBuyProperty = /** @class */ (function () {
     function DeductionBuyProperty(question, valuesKeeper) {
         var _this = this;
         this.getBlockingObject = function () {
+            _this.processHideFieldsByPercent();
             return {
                 addMultiple: function () { return false; },
                 copyMultiple: function () { return false; },
@@ -26,7 +27,10 @@ var DeductionBuyProperty = /** @class */ (function () {
             if (!_this.checkHomeGroup()) {
                 return {};
             }
-            if (_this.checkDateActValuePercent()) {
+            if (_this.value >= limitByValue) {
+                return _this.getBlockingObject();
+            }
+            else if (_this.checkDateActValuePercent()) {
                 return _this.getBlockingObject();
             }
             else if (_this.checkDateActPercentWithLimit()) {
@@ -35,6 +39,7 @@ var DeductionBuyProperty = /** @class */ (function () {
             else if (_this.checkValueLimitAndOneOfPercent()) {
                 return _this.getBlockingObject();
             }
+            _this.processHideFieldsByPercent();
             return {
                 getHidedChildrenQuestions: function () { return _this.hidedFields; },
             };
@@ -86,7 +91,7 @@ var DeductionBuyProperty = /** @class */ (function () {
             }
             var arrCodesForHide = isFirst && isSecond && isDate
                 ? [codeValue]
-                : isFirst && !isSecond && !isDate
+                : isFirst && !isDate
                     ? [codeValue, codePercent]
                     : [];
             _this.hidedFields = arrCodesForHide.length
@@ -110,7 +115,11 @@ var DeductionBuyProperty = /** @class */ (function () {
             for (var _i = 0, _a = _this.ids; _i < _a.length; _i++) {
                 var id = _a[_i];
                 var date = _this.valuesKeeper.getValue(_this.getDateCode(id), id);
-                arDate.push(new Date(date).getFullYear() >= yearLimit);
+                var hasDateLimit = new Date(date).getFullYear() >= yearLimit;
+                arDate.push(hasDateLimit);
+                if (!hasDateLimit) {
+                    arValueForHide = arValueForHide.concat([id]);
+                }
                 var value = _this.valuesKeeper.getValue(codeValue, id);
                 var percent = _this.valuesKeeper.getValue(codePercent, id);
                 hasOneEmpty.push(!value.length && !percent.length);
@@ -118,21 +127,22 @@ var DeductionBuyProperty = /** @class */ (function () {
                     totalLimit -= +value;
                 }
                 else {
-                    arValueForHide.push(id);
+                    arValueForHide = arValueForHide.concat([id]);
                 }
                 totalValue += +value;
             }
             var isDate = !!arDate.filter(function (item) { return !item; }).length;
             var isHasEmpty = !!hasOneEmpty.filter(function (item) { return item; }).length;
             var isValue = totalValue >= limitByValue;
-            if (isValue) {
-                _this.processHideFieldsByValue(arValueForHide);
+            var notOne = _this.ids.length !== 1;
+            if (isValue && notOne) {
+                _this.processHideFieldsByCodes(arValueForHide);
             }
-            if (!isDate) {
-                _this.processHideFieldsByPercent();
+            if (isDate && notOne) {
+                _this.processHideFieldsByCodes(arValueForHide, [codeValue, codePercent]);
             }
-            if (_this.ids.length === 1) {
-                return !isDate && isValue && isHasEmpty;
+            if (!notOne) {
+                return !isDate && isValue && !isHasEmpty;
             }
             return isDate || isValue || isHasEmpty;
         };
@@ -155,16 +165,32 @@ var DeductionBuyProperty = /** @class */ (function () {
                 var hidedFields = _this.ids
                     .filter(function (item) { return item !== hasPercent[0]; })
                     .map(function (item) { return ({ id: item, codes: [codePercent] }); });
-                _this.hidedFields = _this.hidedFields.concat(hidedFields);
+                _this.combineHidedFields(hidedFields);
             }
         };
-        this.processHideFieldsByValue = function (arValueForHide) {
+        this.processHideFieldsByCodes = function (arValueForHide, codes) {
+            if (codes === void 0) { codes = [codeValue]; }
             if (!!arValueForHide.length) {
                 var hidedFields = arValueForHide.map(function (id) { return ({
                     id: id,
-                    codes: [codeValue],
+                    codes: codes,
                 }); });
-                _this.hidedFields = _this.hidedFields.concat(hidedFields);
+                _this.combineHidedFields(hidedFields);
+            }
+        };
+        this.combineHidedFields = function (hidedFields) {
+            if (_this.hidedFields.length) {
+                _this.hidedFields = _this.hidedFields.map(function (item) {
+                    var findField = hidedFields.filter(function (field) { return field.id === item.id; });
+                    if (findField[0]) {
+                        var codes_1 = item.codes.concat(findField[0].codes);
+                        item.codes = codes_1.filter(function (item, index) { return codes_1.indexOf(item) === index; });
+                    }
+                    return item;
+                });
+            }
+            else {
+                _this.hidedFields = hidedFields;
             }
         };
         this.checkHomeGroup = function () {
